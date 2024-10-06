@@ -1,20 +1,20 @@
-import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import mongoose from 'mongoose';
 dotenv.config();
 
-const dbUrl = process.env.DB_URL;
+const databaseURI: string = (process.env.DB_URI_1 || process.env.DB_URI_2) as string;
 
-const connectDB = async () => {
+const connectMongo: any = async () => {
     try {
-        await mongoose.connect(dbUrl)
+        await mongoose.connect(databaseURI)
             .then((data: any) => {
                 console.log(`Database connected to ${data.connection.host}`);
             })
     }
     catch (err: any) {
         console.log(err.message)
-        setTimeout(connectDB, 5000)
+        setTimeout(connectMongo, 5000)
     }
 }
 
-export default connectDB;
+export default connectMongo;
