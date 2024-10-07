@@ -8,11 +8,11 @@ const connectMongo: any = async () => {
     try {
         await mongoose.connect(databaseURI)
             .then((data: any) => {
-                console.log(`Database connected to ${data.connection.host}`);
+                console.log(`Database connected to ${data?.connection?.host}`);
             })
     }
     catch (err: any) {
-        console.log(err.message)
+        console.log(err?.message)
         setTimeout(connectMongo, 5000)
     }
 }

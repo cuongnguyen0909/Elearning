@@ -14,7 +14,7 @@ export interface IRegistration {
 
 export const userRegistration = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { name, email, password } = req.body as IRegistration
+        const { name, email, password } = req?.body as IRegistration
         //check email is already exist
         const isEmailExist: boolean = await UserModel.findOne({ email }) as boolean
         if (isEmailExist) {
@@ -30,7 +30,7 @@ export const userRegistration = catchAsyncError(async (req: Request, res: Respon
         //create activation token
         const activationToken: any = createActivationToken(user)
         //create activation code
-        const activationCode: number = activationToken.activationCode
+        const activationCode: number = activationToken?.activationCode
         // initialize data to send email
         const data: any = {
             user: {
