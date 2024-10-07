@@ -1,28 +1,16 @@
-import jwt from 'jsonwebtoken';
 import { NextFunction, Request, Response } from "express";
-import catchAsyncError from "../../middlewares/catch-async-error";
-import UserModel, { IUser } from "../../models/user.model";
+import jwt from 'jsonwebtoken';
+import catchAsyncError from "../../utils/handlers/catch-async-error";
+import UserModel from "../../models/user.model";
 import ErrorHandler from "../../utils/handlers/ErrorHandler";
 import sendRegistrationMail from '../../utils/mails/send-mail';
 import { createActivationToken } from './user.help';
+import { IActivationToken, IRegistration, ILoginRequest, IUser, IUserVerify, IActivationRequest } from "../../interfaces/user.interface";
+import { sendToken } from "../../utils/jwt/jwt";
+import { redis } from "../../utils/database/connect-redis";
 
-export interface IRegistration {
-    name: string,
-    email: string,
-    password: string
-    avatar?: string
-}
 
-interface IActivationRequest {
-    activationCode: string,
-    activationToken: string
-}
-
-interface IUserVerify {
-    user: IUser,
-    activationCode: string
-}
-
+//register user
 export const userRegistration = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { name, email, password } = req?.body as IRegistration
@@ -31,17 +19,15 @@ export const userRegistration = catchAsyncError(async (req: Request, res: Respon
         if (isEmailExist) {
             return next(new ErrorHandler('Email is already exist', 400))
         }
-        //create new user
         const user: IRegistration = {
             name,
             email,
             password
         }
-
         //create activation token
-        const activationToken: any = createActivationToken(user)
+        const activationToken: IActivationToken = createActivationToken(user)
         //create activation code
-        const activationCode: number = activationToken?.activationCode
+        const activationCode: string = activationToken?.activationCode
         // initialize data to send email
         const data: any = {
             user: {
@@ -72,6 +58,7 @@ export const userRegistration = catchAsyncError(async (req: Request, res: Respon
     }
 })
 
+//activate user
 export const userActivation = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { activationCode, activationToken } = req?.body as IActivationRequest
@@ -97,12 +84,51 @@ export const userActivation = catchAsyncError(async (req: Request, res: Response
             email,
             password
         })
+
         res.status(200).json({
             success: true,
             message: 'User is created successfully'
         })
     }
     catch (error: any) {
+        return next(new ErrorHandler(error.message, 400))
+    }
+})
+
+//login user
+export const userLogin = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { email, password } = req?.body as ILoginRequest
+        //check email or password is entered or not
+        if (!email || !password) {
+            return next(new ErrorHandler('Please enter email and password', 400))
+        }
+        //check user is exist or not
+        const user: IUser = await UserModel.findOne({ email }).select('+password') as IUser
+        //check password is matched or not
+        const isPasswordMatched: boolean = await user?.comparePassword(password)
+        if (!isPasswordMatched) {
+            return next(new ErrorHandler('Invalid email or password', 401))
+        }
+
+        sendToken(user, 200, res)
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, 400))
+    }
+})
+
+//logout user
+export const userLogout = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.cookie('accessToken', '', { maxAge: 1 })
+        res.cookie('refreshToken', '', { maxAge: 1 })
+        const userId: any = req?.user?._id as any
+        await redis.del(userId)
+        res.status(200).json({
+            success: true,
+            message: 'Logged out successfully'
+        })
+    } catch (error: any) {
         return next(new ErrorHandler(error.message, 400))
     }
 })
