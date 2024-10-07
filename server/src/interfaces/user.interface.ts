@@ -3,7 +3,7 @@ export interface IUser extends Document {
     name: string,
     email: string,
     password: string,
-    avatar?: {
+    avatar: {
         public_id: string,
         url: string
     },
@@ -49,4 +49,13 @@ export interface ITokenOptions {
     httpOnly: boolean,
     sameSite: 'strict' | 'lax' | 'none',
     secure?: boolean
+}
+
+export interface ISocialAuthRequestBody {
+    email: string,
+    name: string,
+    avatar: {
+        public_id: string,
+        url: string
+    }
 }
