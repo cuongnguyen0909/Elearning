@@ -1,19 +1,14 @@
-import { IUser } from "../../models/user.model"
-import jwt, { Secret } from 'jsonwebtoken'
 import dotenv from 'dotenv'
-import { IRegistration } from "./user.controller"
+import jwt from 'jsonwebtoken'
+import { IActivationToken, IRegistration } from '../../interfaces/user.interface'
 //using dotenv to access environment variables
 dotenv.config()
 
-interface IActivationToken {
-    token: string,
-    activationCode: string
-}
 export const createActivationToken = (user: IRegistration): IActivationToken => {
     //generate activation code
     const activationCode = Math.floor(1000 + Math.random() * 9000).toString()
     //create activation token
-    const token = jwt.sign(
+    const token: string = jwt.sign(
         { user, activationCode },
         process.env.ACTIVATION_SERCRET_KEY as string,
         { expiresIn: '5m' }
