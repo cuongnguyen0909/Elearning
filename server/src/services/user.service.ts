@@ -11,7 +11,7 @@ import {
     IUserVerify
 } from '../interfaces/user.interface'
 import UserModel from '../models/user.model'
-import { redis } from '../utils/database/connect-redis'
+import { redis } from '../config/connect.redis.config'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
 import sendRegistrationMail from '../utils/mails/send-mail'
 dotenv.config()

@@ -20,3 +20,4 @@ export const refreshTokenOptions: ITokenOptions = {
     httpOnly: true,
     sameSite: 'lax'
 }
+export const emailRegexPattern: RegExp = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}/

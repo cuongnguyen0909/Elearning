@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 import jwt from 'jsonwebtoken'
 import { IActivationToken, IRegistration, IUser } from '../interfaces/user.interface'
-import { redis } from '../utils/database/connect-redis'
+import { redis } from '../config/connect.redis.config'
 import { accessTokenOptions, refreshTokenOptions } from '../constants/user.constant'
 import { Response } from 'express'
 //using dotenv to access environment variables

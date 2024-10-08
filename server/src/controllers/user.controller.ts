@@ -5,13 +5,14 @@ import { IActivationRequest, ILoginRequest, IRegistration, ISocialAuthRequestBod
 import { userServices } from '../services/user.service'
 import catchAsyncError from '../utils/handlers/catch-async-error'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
+import { StatusCodes } from 'http-status-codes'
 
 //register user
 export const userRegistration = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const userData: IRegistration = req?.body
     try {
         const { activationToken, email } = await userServices.registerUser(userData)
-        res.status(201).json({
+        res.status(StatusCodes.ACCEPTED).json({
             success: true,
             message: `Please check your email: ${email} to activate your account`,
             activationToken
@@ -26,7 +27,7 @@ export const userActivation = catchAsyncError(async (req: Request, res: Response
     const activationRequest: IActivationRequest = req?.body
     try {
         const userActivated: IUser = (await userServices.activateUser(activationRequest)) as IUser
-        res.status(200).json({
+        res.status(StatusCodes.CREATED).json({
             success: true,
             message: 'User is created successfully',
             user: userActivated
@@ -55,7 +56,7 @@ export const userLogout = catchAsyncError(async (req: Request, res: Response, ne
         res.cookie('refreshToken', '', { maxAge: 1 })
         //remove session from redis
         await userServices.logoutUser(userId)
-        res.status(200).json({
+        res.status(StatusCodes.OK).json({
             success: true,
             message: 'Logged out successfully'
         })
@@ -70,7 +71,7 @@ export const updateAccessToken = catchAsyncError(async (req: Request, res: Respo
         const { newAccessToken, newRefreshToken } = await userServices.createNewAccessToken(refreshToken)
         res.cookie('accessToken', newAccessToken, accessTokenOptions)
         res.cookie('refreshToken', newRefreshToken, refreshTokenOptions)
-        res.status(200).json({
+        res.status(StatusCodes.OK).json({
             success: true,
             message: 'Access token is updated successfully',
             accessToken: newAccessToken
@@ -85,7 +86,7 @@ export const getUserInfo = catchAsyncError(async (req: Request, res: Response, n
         const userId: string = req.user?._id as string
         const user = await userServices.getUserById(userId)
 
-        res.status(200).json({
+        res.status(StatusCodes.OK).json({
             success: true,
             user
         })

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import jwt, { JwtPayload } from 'jsonwebtoken'
 import { IUser } from '../interfaces/user.interface'
-import { redis } from '../utils/database/connect-redis'
+import { redis } from '../config/connect.redis.config'
 import catchAsyncError from '../utils/handlers/catch-async-error'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
 

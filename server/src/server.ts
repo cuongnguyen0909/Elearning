@@ -1,6 +1,6 @@
 import app from './app'
 import dotenv from 'dotenv'
-import connectDB from './utils/database/connect-mongo'
+import connectDB from './config/connect.mongo.config'
 
 dotenv.config()
 
