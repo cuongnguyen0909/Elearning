@@ -1,5 +1,5 @@
-import Joi from 'joi';
-import { emailRegexPattern } from '../constants/user.constant';
+import Joi from 'joi'
+import { emailRegexPattern } from '../constants/user.constant'
 
 export const registerSchemaValidation = Joi.object({
     name: Joi.string().min(3).max(50).required().trim().strict(),

@@ -1,6 +1,6 @@
-import express from 'express';
-import configAppExpress from './config/app.config';
-import initializeRoutes from './routes';
+import express from 'express'
+import configAppExpress from './config/app.config'
+import initializeRoutes from './routes'
 
 //initilize express
 const app: express.Application = express()

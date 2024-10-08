@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from "express";
-import ErrorHandler from "../utils/handlers/ErrorHandler";
-import { StatusCodes } from "http-status-codes";
+import { NextFunction, Request, Response } from 'express'
+import ErrorHandler from '../utils/handlers/ErrorHandler'
+import { StatusCodes } from 'http-status-codes'
 
 const errorMiddleware = (err: any, req: Request, res: Response, next: NextFunction) => {
     err.statusCode = err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR

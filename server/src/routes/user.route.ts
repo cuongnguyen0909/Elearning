@@ -1,8 +1,20 @@
 import express from 'express'
-import { getUserInfo, socialAuthLogin, updateAccessToken, userActivation, userLogin, userLogout, userRegistration } from '../controllers/user.controller'
+import {
+    getUserInfo,
+    socialAuthLogin,
+    updateAccessToken,
+    userActivation,
+    userLogin,
+    userLogout,
+    userRegistration
+} from '../controllers/user.controller'
 import { isAuthenticated } from '../middlewares/auth.middleware'
 import validateMiddleware from '../middlewares/validate.middleware'
-import { loginSchemaValidation, registerSchemaValidation, activationSchemaValidation } from '../validations/user.validation'
+import {
+    loginSchemaValidation,
+    registerSchemaValidation,
+    activationSchemaValidation
+} from '../validations/user.validation'
 
 const userRouter = express.Router()
 

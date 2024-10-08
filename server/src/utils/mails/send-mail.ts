@@ -1,13 +1,13 @@
-import dotenv from 'dotenv';
-import ejs from 'ejs';
-import nodemailer, { Transporter } from 'nodemailer';
-import path from 'path';
+import dotenv from 'dotenv'
+import ejs from 'ejs'
+import nodemailer, { Transporter } from 'nodemailer'
+import path from 'path'
 dotenv.config()
 
 interface IEmailOptions {
-    email: string,
-    subject: string,
-    template: string,
+    email: string
+    subject: string
+    template: string
     data: {
         [key: string]: any
     }

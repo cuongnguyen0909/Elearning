@@ -1,15 +1,15 @@
-import { Request, Response, NextFunction } from 'express';
-import Joi from 'joi';
-import ErrorHandler from '../utils/handlers/ErrorHandler';
+import { Request, Response, NextFunction } from 'express'
+import Joi from 'joi'
+import ErrorHandler from '../utils/handlers/ErrorHandler'
 
 const validateMiddleware = (schema: Joi.ObjectSchema) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
-            await schema.validateAsync(req.body, { abortEarly: false });
+            await schema.validateAsync(req.body, { abortEarly: false })
         } catch (error: any) {
-            return next(new ErrorHandler(error.message, 400));
+            return next(new ErrorHandler(error.message, 400))
         }
-    };
-};
+    }
+}
 
-export default validateMiddleware;
+export default validateMiddleware

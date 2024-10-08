@@ -43,7 +43,10 @@ const registerUser = async (userData: IRegistration) => {
 
 const activateUser = async (activationRequest: IActivationRequest) => {
     const { activationCode, activationToken } = activationRequest
-    const newUser: IUserVerify = jwt.verify(activationToken, process.env.ACTIVATION_SERCRET_KEY as string) as IUserVerify
+    const newUser: IUserVerify = jwt.verify(
+        activationToken,
+        process.env.ACTIVATION_SERCRET_KEY as string
+    ) as IUserVerify
 
     //check if activation code is valid
     if (newUser && newUser.activationCode !== activationCode) {
@@ -120,7 +123,7 @@ const getUserById = async (uid: string) => {
 const loginBySoial = async (socialRequest: ISocialAuthRequestBody) => {
     const { email } = socialRequest as ISocialAuthRequestBody
     //check user is exist or not
-    const existingUser: IUser = await UserModel.findOne({ email }) as IUser
+    const existingUser: IUser = (await UserModel.findOne({ email })) as IUser
     if (!existingUser) {
         const user = await UserModel.create(socialRequest)
         return user
