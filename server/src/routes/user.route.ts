@@ -1,29 +1,17 @@
 import express from 'express'
-import {
-    getUserInfo,
-    socialAuthLogin,
-    updateAccessToken,
-    userActivation,
-    userLogin,
-    userLogout,
-    userRegistration
-} from '../controllers/user.controller'
+import { changeAvatar, changePassword, getUserInfo, updateProfile } from '../controllers/user.controller'
 import { isAuthenticated } from '../middlewares/auth.middleware'
 import validateMiddleware from '../middlewares/validate.middleware'
-import {
-    loginSchemaValidation,
-    registerSchemaValidation,
-    activationSchemaValidation
-} from '../validations/user.validation'
+import { changePasswordSchemaValidation } from '../validations/user.validation'
 
 const userRouter = express.Router()
-
-userRouter.post('/register', validateMiddleware(registerSchemaValidation), userRegistration)
-userRouter.post('/activate-user', validateMiddleware(activationSchemaValidation), userActivation)
-userRouter.post('/login', validateMiddleware(loginSchemaValidation), userLogin)
-userRouter.get('/logout', isAuthenticated, userLogout)
-userRouter.get('/refresh-token', updateAccessToken)
-userRouter.get('/me', isAuthenticated, getUserInfo)
-userRouter.post('/social-auth', socialAuthLogin)
-
+// Get user info
+userRouter
+    .route('/profile')
+    //get user info
+    .get(isAuthenticated, getUserInfo)
+    //update user info
+    .put(isAuthenticated, updateProfile)
+userRouter.put('/change-password', isAuthenticated, validateMiddleware(changePasswordSchemaValidation), changePassword)
+userRouter.put('/change-avatar', isAuthenticated, changeAvatar)
 export default userRouter

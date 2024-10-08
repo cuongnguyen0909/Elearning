@@ -1,26 +1,24 @@
+import { v2 as cloudinary } from 'cloudinary'
 import dotenv from 'dotenv'
 import jwt from 'jsonwebtoken'
-import { IActivationToken, IRegistration, IUser } from '../interfaces/user.interface'
 import { redis } from '../config/connect.redis.config'
 import { accessTokenOptions, refreshTokenOptions } from '../constants/user.constant'
-import { Response } from 'express'
+import { IActivationToken, IRegistrationRequest, IUser } from '../interfaces/user.interface'
 //using dotenv to access environment variables
 dotenv.config()
 
-export const generateActivationToken = (user: IRegistration): IActivationToken => {
+export const generateActivationToken = (user: IRegistrationRequest): IActivationToken => {
     //generate activation code
     const activationCode = Math.floor(1000 + Math.random() * 9000).toString()
     //create activation token
-    const token: string = jwt.sign(
-        { user, activationCode },
-        process.env.ACTIVATION_SERCRET_KEY as string,
-        { expiresIn: '5m' }
-    )
+    const token: string = jwt.sign({ user, activationCode }, process.env.ACTIVATION_SERCRET_KEY as string, {
+        expiresIn: '5m'
+    })
 
     return { token, activationCode }
 }
 
-export const generateToken = async (user: IUser, res: Response) => {
+export const generateToken = async (user: IUser) => {
     const accessToken: string = user.signAccessToken()
     const refreshToken: string = user.signRefreshToken()
 
@@ -33,13 +31,12 @@ export const generateToken = async (user: IUser, res: Response) => {
         refreshTokenOptions.secure = true
     }
 
-    //set cookies in the browser
-    res.cookie('accessToken', accessToken, accessTokenOptions)
-    res.cookie('refreshToken', refreshToken, refreshTokenOptions)
-    //send response
-    res.status(200).json({
-        success: true,
-        user,
-        accessToken
+    return { accessToken, refreshToken }
+}
+
+export const uploadFile = async (folder: string, fileName: string): Promise<any> => {
+    return await cloudinary.uploader.upload(fileName, {
+        folder,
+        width: 150
     })
 }

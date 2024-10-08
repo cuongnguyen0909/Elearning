@@ -1,142 +1,101 @@
 import dotenv from 'dotenv'
-import jwt, { JwtPayload } from 'jsonwebtoken'
-import { generateActivationToken, generateToken } from '../helpers/user.help'
+import cloudinary from '../config/cloudinary.config'
+import { redis } from '../config/connect.redis.config'
 import {
-    IActivationRequest,
-    IActivationToken,
-    ILoginRequest,
-    IRegistration,
-    ISocialAuthRequestBody,
-    IUser,
-    IUserVerify
+    IUpdateAvatarRequest,
+    IUpdatePasswordRequest,
+    IUpdateProfileRequest,
+    IUser
 } from '../interfaces/user.interface'
 import UserModel from '../models/user.model'
-import { redis } from '../config/connect.redis.config'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
-import sendRegistrationMail from '../utils/mails/send-mail'
+import { uploadFile } from '../helpers/user.help'
 dotenv.config()
-
-const registerUser = async (userData: IRegistration) => {
-    const { name, email, password } = userData
-
-    // Check if email already exists
-    const isEmailExist: IUser = (await UserModel.findOne({ email })) as IUser
-    if (isEmailExist) {
-        throw new ErrorHandler('Email is already exist', 400)
-    }
-
-    const user: IRegistration = { name, email, password }
-    const activationToken: IActivationToken = generateActivationToken(user)
-    const activationCode: string = activationToken.activationCode
-
-    // Send activation email
-    const data = { user: { name: user.name }, activationCode }
-    await sendRegistrationMail({
-        email: user.email,
-        subject: 'Activate your account',
-        template: 'activation-mail.template.ejs',
-        data
-    })
-
-    return { activationToken: activationToken.token, email: user.email }
-}
-
-const activateUser = async (activationRequest: IActivationRequest) => {
-    const { activationCode, activationToken } = activationRequest
-    const newUser: IUserVerify = jwt.verify(
-        activationToken,
-        process.env.ACTIVATION_SERCRET_KEY as string
-    ) as IUserVerify
-
-    //check if activation code is valid
-    if (newUser && newUser.activationCode !== activationCode) {
-        throw new ErrorHandler('Invalid activation code', 400)
-    }
-    const { name, email, password } = newUser.user as IUser
-
-    //check if user already exists
-    const existingUser: IUser = (await UserModel.findOne({ email })) as IUser
-
-    if (existingUser) {
-        throw new ErrorHandler('User is already exist', 400)
-    }
-
-    const user = await UserModel.create({ name, email, password })
-
-    return user
-}
-
-const loginUser = async (loginRequest: ILoginRequest) => {
-    const { email, password } = loginRequest
-    //check email or password is entered or not
-    if (!email || !password) {
-        throw new ErrorHandler('Please enter email and password', 400)
-    }
-
-    //check user is exist or not
-    const user: IUser = (await UserModel.findOne({ email }).select('+password')) as IUser
-
-    //check password is matched or not
-    const isPasswordMatched: boolean = await user?.comparePassword(password)
-
-    //check if password is matched
-    if (!isPasswordMatched) {
-        return new ErrorHandler('Invalid email or password', 401)
-    }
-
-    return user
-}
-
-const logoutUser = async (userId: any) => {
-    await redis.del(userId)
-}
-
-const createNewAccessToken = async (refreshToken: string) => {
-    const decoded: JwtPayload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string) as JwtPayload
-    if (!decoded) {
-        throw new ErrorHandler('Invalid refresh token', 400)
-    }
-
-    const userOfSession: any = await redis.get(decoded?.id as string)
-    if (!userOfSession) {
-        throw new ErrorHandler('User not found', 404)
-    }
-
-    const user = JSON.parse(userOfSession) as IUser
-
-    const newAccessToken: string = jwt.sign({ id: user?._id }, process.env.ACCESS_TOKEN_SECRET as string, {
-        expiresIn: '5m'
-    })
-
-    const newRefreshToken: string = jwt.sign({ id: user?._id }, process.env.REFRESH_TOKEN_SECRET as string, {
-        expiresIn: '3d'
-    })
-
-    return { newAccessToken, newRefreshToken }
-}
+//call cloudinary
 
 const getUserById = async (uid: string) => {
-    const user = await UserModel.findById(uid).select('-password -role')
+    const userSession: any = (await redis.get(uid)) as any
+    if (!userSession) {
+        throw new ErrorHandler('User not found', 404)
+    }
+    const user: IUser = JSON.parse(userSession) as IUser
     return user
 }
 
-const loginBySoial = async (socialRequest: ISocialAuthRequestBody) => {
-    const { email } = socialRequest as ISocialAuthRequestBody
-    //check user is exist or not
-    const existingUser: IUser = (await UserModel.findOne({ email })) as IUser
-    if (!existingUser) {
-        const user = await UserModel.create(socialRequest)
-        return user
+const updateUserInfo = async (userId: string, userData: any) => {
+    const { email, name } = userData as IUpdateProfileRequest
+    const user: IUser = (await UserModel.findById(userId)) as IUser
+
+    //check email is already exist or not
+    if (email && user) {
+        const isEmailExist: IUser = (await UserModel.findOne({ email })) as IUser
+        if (isEmailExist) {
+            throw new ErrorHandler('Email is already exist', 400)
+        }
+        user.email = email
     }
-    throw new ErrorHandler('User is already exist', 400)
+
+    if (name && user) {
+        user.name = name
+    }
+
+    await user?.save()
+    await redis.set(userId, JSON.stringify(user) as any)
+    return user
+}
+
+const updatePassword = async (updatePasswordRequest: IUpdatePasswordRequest, userId: any) => {
+    const { currentPassword, newPassword } = updatePasswordRequest
+
+    if (currentPassword === newPassword) {
+        throw new ErrorHandler('New password must be different from current password', 400)
+    }
+
+    const user: IUser = (await UserModel.findById(userId).select('+password')) as IUser
+
+    //check login by social then password is not set
+    if (!user.password) {
+        throw new ErrorHandler('Password is not set', 400)
+    }
+
+    //check password is matched or not
+    const isPasswordMatched: boolean = await user.comparePassword(currentPassword)
+    //check wrong pasword
+    if (!isPasswordMatched) {
+        throw new ErrorHandler('Password is incorrect', 400)
+    }
+
+    user.password = newPassword
+    await user?.save()
+    await redis.set(userId, JSON.stringify(user) as any)
+    return user
+}
+
+const uploadImage = async (userId: any, upadteAvatarRequest: IUpdateAvatarRequest) => {
+    const { avatar } = upadteAvatarRequest
+    const user: IUser = (await UserModel.findById(userId)) as IUser
+    if (avatar && user && user?.avatar?.public_id) {
+        await cloudinary.uploader.destroy(user?.avatar?.public_id)
+        const myCloud = await uploadFile('avatar', avatar)
+        user.avatar = {
+            public_id: myCloud.public_id,
+            url: myCloud.secure_url
+        }
+    } else {
+        const myCloud = await uploadFile('avatar', avatar)
+        user.avatar = {
+            public_id: myCloud.public_id,
+            url: myCloud.secure_url
+        }
+    }
+    await user?.save()
+    await redis.set(userId, JSON.stringify(user) as any)
+    return user
 }
 
 export const userServices = {
-    registerUser,
-    activateUser,
-    loginUser,
-    logoutUser,
-    createNewAccessToken,
     getUserById,
-    loginBySoial
+    updateUserInfo,
+    updatePassword,
+    uploadImage
 }

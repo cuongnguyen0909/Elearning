@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "linst": "eslint src --ext .ts --report-unused-disable-directives --max-warnings 0"
+    "linst": "eslint src --ext ts --report-unused-disable-directives --max-warnings 0"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +21,7 @@
     "@types/node": "^22.7.4",
     "@types/nodemailer": "^6.4.16",
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.5.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",

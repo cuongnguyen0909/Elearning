@@ -2,9 +2,9 @@ import bcrypt from 'bcryptjs'
 import dotenv from 'dotenv'
 import jwt from 'jsonwebtoken'
 import mongoose, { Model, Schema } from 'mongoose'
+import { emailRegexPattern } from '../constants/user.constant'
 import { UserRole } from '../constants/user.enum'
 import { IUser } from '../interfaces/user.interface'
-import { emailRegexPattern } from '../constants/user.constant'
 dotenv.config()
 
 const userSchema: Schema<IUser> = new mongoose.Schema(
