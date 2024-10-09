@@ -1,17 +1,11 @@
 import dotenv from 'dotenv'
-import cloudinary from '../config/cloudinary.config'
-import { redis } from '../config/connect.redis.config'
-import {
-    IUpdateAvatarRequest,
-    IUpdatePasswordRequest,
-    IUpdateProfileRequest,
-    IUser
-} from '../interfaces/user.interface'
-import UserModel from '../models/user.model'
+import cloudinary from '../configs/cloudinary.config'
+import { redis } from '../configs/connect.redis.config'
+import { IUpdateAvatarRequest, IUpdatePasswordRequest, IUpdateProfileRequest } from '../interfaces/user.interface'
+import { IUser, UserModel } from '../models/user.model'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
 import { uploadFile } from '../helpers/user.help'
 dotenv.config()
-//call cloudinary
 
 const getUserById = async (uid: string) => {
     const userSession: any = (await redis.get(uid)) as any
@@ -24,7 +18,7 @@ const getUserById = async (uid: string) => {
 
 const updateUserInfo = async (userId: string, userData: any) => {
     const { email, name } = userData as IUpdateProfileRequest
-    const user: IUser = (await UserModel.findById(userId)) as IUser
+    const user: IUser = (await UserModel.findById(userId).select('-role')) as IUser
 
     //check email is already exist or not
     if (email && user) {
@@ -51,7 +45,7 @@ const updatePassword = async (updatePasswordRequest: IUpdatePasswordRequest, use
         throw new ErrorHandler('New password must be different from current password', 400)
     }
 
-    const user: IUser = (await UserModel.findById(userId).select('+password')) as IUser
+    const user: IUser = (await UserModel.findById(userId).select('+password -role')) as IUser
 
     //check login by social then password is not set
     if (!user.password) {

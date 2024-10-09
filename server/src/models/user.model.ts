@@ -1,11 +1,27 @@
 import bcrypt from 'bcryptjs'
 import dotenv from 'dotenv'
 import jwt from 'jsonwebtoken'
-import mongoose, { Model, Schema } from 'mongoose'
+import mongoose, { Document, Model, Schema } from 'mongoose'
 import { emailRegexPattern } from '../constants/user.constant'
-import { UserRole } from '../constants/user.enum'
-import { IUser } from '../interfaces/user.interface'
+import { UserRole } from '../constants/enums/user.enum'
 dotenv.config()
+export interface IUser extends Document {
+    _id: string
+    name: string
+    email: string
+    password: string
+    avatar: {
+        public_id: string
+        url: string
+    }
+    role: string
+    isVerified: boolean
+    courses: Array<{ courseId: string }>
+    isModified: (password: string) => boolean
+    comparePassword: (password: string) => Promise<boolean>
+    signAccessToken: () => string
+    signRefreshToken: () => string
+}
 
 const userSchema: Schema<IUser> = new mongoose.Schema(
     {
@@ -78,6 +94,4 @@ userSchema.methods.comparePassword = async function (enteredPassword: string): P
     return await bcrypt.compare(enteredPassword, this.password)
 }
 
-const UserModel: Model<IUser> = mongoose.model('User', userSchema)
-
-export default UserModel
+export const UserModel: Model<IUser> = mongoose.model('User', userSchema)

@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express'
+import { NextFunction, Request, Response } from 'express'
 
 const fileValidatorMiddleware = (req: Request, res: Response, next: NextFunction): void => {
     // const file: any = req?.file as any

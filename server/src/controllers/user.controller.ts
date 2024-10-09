@@ -1,11 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
-import {
-    IUpdateAvatarRequest,
-    IUpdatePasswordRequest,
-    IUpdateProfileRequest,
-    IUser
-} from '../interfaces/user.interface'
+import { IUpdateAvatarRequest, IUpdatePasswordRequest, IUpdateProfileRequest } from '../interfaces/user.interface'
+import { IUser } from '../models/user.model'
 import { userServices } from '../services/user.service'
 import catchAsyncError from '../utils/handlers/catch-async-error'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
@@ -16,10 +12,10 @@ export const getUserInfo = catchAsyncError(async (req: Request, res: Response, n
         const user: IUser = (await userServices.getUserById(userId)) as IUser
         res.status(StatusCodes.OK).json({
             success: true,
-            user
+            userId: user._id
         })
     } catch (error: any) {
-        return next(new ErrorHandler(error.message, 400))
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
     }
 })
 
@@ -32,10 +28,10 @@ export const updateProfile = catchAsyncError(async (req: Request, res: Response,
         res.status(StatusCodes.OK).json({
             success: true,
             message: 'User info is updated successfully',
-            user
+            userId: user._id
         })
     } catch (error: any) {
-        return next(new ErrorHandler(error.message, 400))
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
     }
 })
 
@@ -48,10 +44,10 @@ export const changePassword = catchAsyncError(async (req: Request, res: Response
         res.status(StatusCodes.OK).json({
             success: true,
             message: 'Password is updated successfully',
-            user
+            userId: user._id
         })
     } catch (error: any) {
-        return next(new ErrorHandler(error.message, 400))
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
     }
 })
 
@@ -63,9 +59,9 @@ export const changeAvatar = catchAsyncError(async (req: Request, res: Response, 
         res.status(StatusCodes.OK).json({
             success: true,
             message: 'Avatar is updated successfully',
-            user
+            userId: user._id
         })
     } catch (error: any) {
-        return next(new ErrorHandler(error.message, 400))
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
     }
 })

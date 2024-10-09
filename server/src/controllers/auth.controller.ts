@@ -6,9 +6,9 @@ import {
     IActivationRequest,
     ILoginRequest,
     IRegistrationRequest,
-    ISocialAuthRequest,
-    IUser
+    ISocialAuthRequest
 } from '../interfaces/user.interface'
+import { IUser } from '../models/user.model'
 import { authServices } from '../services/auth.service'
 import catchAsyncError from '../utils/handlers/catch-async-error'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
@@ -24,7 +24,7 @@ export const userRegistration = catchAsyncError(async (req: Request, res: Respon
             activationToken
         })
     } catch (error: any) {
-        return next(new ErrorHandler(error.message, 400))
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
     }
 })
 
@@ -36,10 +36,10 @@ export const userActivation = catchAsyncError(async (req: Request, res: Response
         res.status(StatusCodes.CREATED).json({
             success: true,
             message: 'User is created successfully',
-            user: userActivated
+            userId: userActivated?._id
         })
     } catch (error: any) {
-        return next(new ErrorHandler(error.message, 400))
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
     }
 })
 
@@ -54,11 +54,11 @@ export const userLogin = catchAsyncError(async (req: Request, res: Response, nex
         res.cookie('refreshToken', refreshToken, refreshTokenOptions)
         res.status(StatusCodes.OK).json({
             success: true,
-            user,
+            userId: user._id,
             accessToken
         })
     } catch (error: any) {
-        return next(new ErrorHandler(error.message, 400))
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
     }
 })
 
@@ -72,10 +72,11 @@ export const userLogout = catchAsyncError(async (req: Request, res: Response, ne
         await authServices.logoutUser(userId)
         res.status(StatusCodes.OK).json({
             success: true,
-            message: 'Logged out successfully'
+            message: 'Logged out successfully',
+            userId
         })
     } catch (error: any) {
-        return next(new ErrorHandler(error.message, 400))
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
     }
 })
 
@@ -92,10 +93,10 @@ export const updateAccessToken = catchAsyncError(async (req: Request, res: Respo
         res.status(StatusCodes.OK).json({
             success: true,
             message: 'Access token is updated successfully',
-            accessToken: newAccessToken
+            newAccessToken
         })
     } catch (error: any) {
-        return next(new ErrorHandler(error.message, 400))
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
     }
 })
 
@@ -111,10 +112,10 @@ export const socialAuthLogin = catchAsyncError(async (req: Request, res: Respons
         res.cookie('refreshToken', refreshToken, refreshTokenOptions)
         res.status(StatusCodes.OK).json({
             success: true,
-            user,
+            userId: user._id,
             accessToken
         })
     } catch (error: any) {
-        return next(new ErrorHandler(error.message, 400))
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
     }
 })

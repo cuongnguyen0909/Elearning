@@ -1,5 +1,5 @@
 import express from 'express'
-import configAppExpress from './config/app.config'
+import configAppExpress from './configs/app.config'
 import initializeRoutes from './routes'
 
 //initilize express

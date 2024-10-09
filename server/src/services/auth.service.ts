@@ -1,6 +1,6 @@
 import dotenv from 'dotenv'
 import jwt, { JwtPayload } from 'jsonwebtoken'
-import { redis } from '../config/connect.redis.config'
+import { redis } from '../configs/connect.redis.config'
 import { generateActivationToken } from '../helpers/user.help'
 import {
     IActivationRequest,
@@ -8,10 +8,9 @@ import {
     ILoginRequest,
     IRegistrationRequest,
     ISocialAuthRequest,
-    IUser,
     IUserVerify
 } from '../interfaces/user.interface'
-import UserModel from '../models/user.model'
+import { IUser, UserModel } from '../models/user.model'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
 import sendRegistrationMail from '../utils/mails/send-mail'
 dotenv.config()
