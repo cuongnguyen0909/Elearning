@@ -1,8 +1,12 @@
+import mongoose, { Types } from 'mongoose'
 import { StatusCodes } from 'http-status-codes'
 import { CourseModel, ICourse } from '../models/course.model'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
 import { deleteFile, uploadFile } from '../helpers/upload.help'
 import { redis } from '../configs/connect.redis.config'
+import { ICommentRequest } from '../interfaces/course.interface'
+import { IContent } from '../models/schemas/content.schema'
+import { IComment } from '../models/schemas/comment.schema'
 
 const createCourse = async (courseDataRequest: ICourse) => {
     const thumbnail: string = courseDataRequest?.thumbnail as unknown as string
@@ -93,9 +97,42 @@ const getAccessibleCourses = async (courseList: [], courseId: string) => {
     }
     const course: ICourse = (await CourseModel.findById(courseId)) as ICourse
 
-    const content: any = course?.courseData as any
+    const content: any = course?.contents as any
 
     return { course, content }
+}
+
+const addComment = async (commentRequest: ICommentRequest, user: any) => {
+    const { comment, courseId, contentId } = commentRequest as ICommentRequest
+
+    const course: ICourse = (await CourseModel.findById(courseId)) as ICourse
+
+    if (!course) {
+        throw new ErrorHandler('Course not found', StatusCodes.NOT_FOUND)
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(courseId) || !mongoose.Types.ObjectId.isValid(contentId)) {
+        throw new ErrorHandler('Invalid course or content id', StatusCodes.BAD_REQUEST)
+    }
+    const courseContent: IContent = course?.contents?.find(
+        (content: any) => content?._id.toString() === contentId
+    ) as IContent
+    if (!courseContent) {
+        throw new ErrorHandler('Content not found', StatusCodes.NOT_FOUND)
+    }
+
+    //create a new comment
+    const newComment: any = {
+        user: user,
+        comment: comment,
+        commentReplies: []
+    }
+
+    //add comment to the course content
+    courseContent.comments?.push(newComment)
+
+    await course.save()
+    return { course, courseContent }
 }
 
 export const courseServices = {
@@ -103,5 +140,6 @@ export const courseServices = {
     updateCourse,
     getOneCourse,
     getAllCourses,
-    getAccessibleCourses
+    getAccessibleCourses,
+    addComment
 }

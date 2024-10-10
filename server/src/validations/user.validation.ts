@@ -21,3 +21,9 @@ export const changePasswordSchemaValidation = Joi.object({
     currentPassword: Joi.string().min(6).required().trim(),
     newPassword: Joi.string().min(6).required().trim()
 })
+
+export const commentValidationSchema = Joi.object({
+    comment: Joi.string().required(),
+    courseId: Joi.string().required(),
+    contentId: Joi.string().required()
+})

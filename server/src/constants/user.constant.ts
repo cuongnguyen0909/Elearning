@@ -8,8 +8,8 @@ export const refreshTokenExpire: number = parseInt(process.env.REFRESH_TOKEN_EXP
 
 //options for cookies
 export const accessTokenOptions: ITokenOptions = {
-    expires: new Date(Date.now() + accessTokenExpire * 60 * 1000), // 5 minutes
-    maxAge: accessTokenExpire * 60 * 1000,
+    expires: new Date(Date.now() + accessTokenExpire * 60 * 60 * 1000), // 5 minutes
+    maxAge: accessTokenExpire * 60 * 60 * 1000,
     httpOnly: true,
     sameSite: 'lax'
 }
@@ -20,4 +20,5 @@ export const refreshTokenOptions: ITokenOptions = {
     httpOnly: true,
     sameSite: 'lax'
 }
+
 export const emailRegexPattern: RegExp = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}/

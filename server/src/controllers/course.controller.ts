@@ -4,10 +4,12 @@ import { ICourse } from '../models/course.model'
 import { courseServices } from '../services/course.service'
 import catchAsyncError from '../utils/handlers/catch-async-error'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
+import { IComment } from '../models/schemas/comment.schema'
+import { ICommentRequest } from '../interfaces/course.interface'
 
 const createCourse = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    const data: ICourse = req.body
     try {
-        const data: ICourse = req.body
         const course: ICourse = await courseServices.createCourse(data)
         res.status(StatusCodes.CREATED).json({
             success: true,
@@ -20,9 +22,9 @@ const createCourse = catchAsyncError(async (req: Request, res: Response, next: N
 })
 
 const updateCourse = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    const courseId: string = req?.params?.id
+    const data: ICourse = req?.body
     try {
-        const courseId: string = req?.params?.id
-        const data: ICourse = req?.body
         const updatedCourse: ICourse = (await courseServices.updateCourse(courseId, data)) as ICourse
         res.status(StatusCodes.OK).json({
             success: true,
@@ -35,9 +37,8 @@ const updateCourse = catchAsyncError(async (req: Request, res: Response, next: N
 })
 
 const getSingleCourseWhithoutPurchasing = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    const courseId: string = req?.params?.id as string
     try {
-        const courseId: string = req?.params?.id as string
-
         const courseDetails: ICourse = await courseServices.getOneCourse(courseId)
         res.status(StatusCodes.OK).json({
             success: true,
@@ -61,9 +62,9 @@ const getAllCoursesWithoutPurchasing = catchAsyncError(async (req: Request, res:
 })
 
 const getAccessibleCourse = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    const courseId: string = req?.params?.id as string
+    const courseList: [] = req?.user?.courses as []
     try {
-        const courseId: string = req?.params?.id as string
-        const courseList: [] = req?.user?.courses as []
         const { content, course } = (await courseServices.getAccessibleCourses(courseList, courseId)) as any
 
         res.status(StatusCodes.OK).json({
@@ -76,10 +77,26 @@ const getAccessibleCourse = catchAsyncError(async (req: Request, res: Response, 
     }
 })
 
+const addComment = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    const commentData: ICommentRequest = req.body as ICommentRequest
+    const user: any = req?.user as any
+    try {
+        const course: ICourse = (await courseServices.addComment(commentData, user)) as unknown as ICourse
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: 'Comment is added successfully',
+            course
+        })
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
+    }
+})
+
 export const courseController = {
     createCourse,
     updateCourse,
     getSingleCourseWhithoutPurchasing,
     getAllCoursesWithoutPurchasing,
-    getAccessibleCourse
+    getAccessibleCourse,
+    addComment
 }

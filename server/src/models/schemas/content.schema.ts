@@ -1,8 +1,8 @@
 import mongoose, { Document, Schema } from 'mongoose'
-import { IComment } from '../comment.model'
+import { commentSchema, IComment } from './comment.schema'
 import { ILink, linkSchema } from './link.schema'
 
-export interface ICourseData extends Document {
+export interface IContent extends Document {
     title: string
     description: string
     videoUrl: string
@@ -12,10 +12,10 @@ export interface ICourseData extends Document {
     videoPlayer: string
     links: ILink[]
     suggestion: string
-    questions?: IComment[]
+    comments?: IComment[]
 }
 
-export const courseDataSchema: Schema<ICourseData> = new mongoose.Schema(
+export const contentSchema: Schema<IContent> = new mongoose.Schema(
     {
         title: {
             type: String,
@@ -45,12 +45,7 @@ export const courseDataSchema: Schema<ICourseData> = new mongoose.Schema(
         suggestion: {
             type: String
         },
-        questions: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Comment'
-            }
-        ]
+        comments: [commentSchema]
     },
     { timestamps: true }
 )

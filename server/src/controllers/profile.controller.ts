@@ -7,8 +7,8 @@ import catchAsyncError from '../utils/handlers/catch-async-error'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
 
 const getProfileInfo = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    const userId: string = req.user?._id as string
     try {
-        const userId: string = req.user?._id as string
         const user: IUser = (await profileServices.getProfileById(userId)) as IUser
         res.status(StatusCodes.OK).json({
             success: true,
@@ -20,11 +20,10 @@ const getProfileInfo = catchAsyncError(async (req: Request, res: Response, next:
 })
 
 const updateProfile = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    const updateInfoRequest: IUpdateProfileRequest = req?.body as IUpdateProfileRequest
+    const userId: any = req?.user?._id as any
     try {
-        const updateInfoRequest: IUpdateProfileRequest = req?.body as IUpdateProfileRequest
-        const userId: any = req?.user?._id as any
         const user: IUser = (await profileServices.updateProfile(userId, updateInfoRequest)) as IUser
-
         res.status(StatusCodes.OK).json({
             success: true,
             message: 'User info is updated successfully',
@@ -36,10 +35,9 @@ const updateProfile = catchAsyncError(async (req: Request, res: Response, next: 
 })
 
 const changePassword = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    const changePasswordRequest: IUpdatePasswordRequest = req?.body as IUpdatePasswordRequest
+    const userId: any = req?.user?._id as any
     try {
-        const changePasswordRequest: IUpdatePasswordRequest = req?.body as IUpdatePasswordRequest
-
-        const userId: any = req?.user?._id as any
         const user: IUser = (await profileServices.updatePassword(changePasswordRequest, userId)) as IUser
         res.status(StatusCodes.OK).json({
             success: true,
@@ -52,9 +50,9 @@ const changePassword = catchAsyncError(async (req: Request, res: Response, next:
 })
 
 const changeAvatar = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    const updateAvatarRequest: IUpdateAvatarRequest = req?.body as IUpdateAvatarRequest
+    const userId: any = req?.user?._id as any
     try {
-        const updateAvatarRequest: IUpdateAvatarRequest = req?.body as IUpdateAvatarRequest
-        const userId: any = req?.user?._id as any
         const user: IUser = (await profileServices.uploadImage(userId, updateAvatarRequest)) as unknown as IUser
         res.status(StatusCodes.OK).json({
             success: true,
