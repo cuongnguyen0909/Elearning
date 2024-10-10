@@ -35,9 +35,3 @@ export const generateToken = async (user: IUser) => {
     return { accessToken, refreshToken }
 }
 
-export const uploadFile = async (folder: string, fileName: string): Promise<any> => {
-    return await cloudinary.uploader.upload(fileName, {
-        folder,
-        width: 150
-    })
-}

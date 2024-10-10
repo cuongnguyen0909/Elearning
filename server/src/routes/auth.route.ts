@@ -1,5 +1,5 @@
-import { socialAuthLogin, updateAccessToken, userLogout } from './../controllers/auth.controller'
-import express from 'express'
+import { authController } from './../controllers/auth.controller'
+import express, { Router } from 'express'
 
 import { isAuthenticated } from '../middlewares/auth.middleware'
 import validateMiddleware from '../middlewares/validate.middleware'
@@ -8,20 +8,19 @@ import {
     registerSchemaValidation,
     activationSchemaValidation
 } from '../validations/user.validation'
-import { userActivation, userLogin, userRegistration } from '../controllers/auth.controller'
 
-const authRouter = express.Router()
+const authRouter: Router = express.Router() as Router
 
 // Register user
-authRouter.post('/register', validateMiddleware(registerSchemaValidation), userRegistration)
-authRouter.post('/activate', validateMiddleware(activationSchemaValidation), userActivation)
+authRouter.post('/register', validateMiddleware(registerSchemaValidation), authController.userRegistration)
+authRouter.post('/activate', validateMiddleware(activationSchemaValidation), authController.userActivation)
 // Login user
-authRouter.post('/login', validateMiddleware(loginSchemaValidation), userLogin)
+authRouter.post('/login', validateMiddleware(loginSchemaValidation), authController.userLogin)
 // Social auth
-authRouter.post('/social', socialAuthLogin)
+authRouter.post('/social', authController.socialAuthLogin)
 // Logout user
-authRouter.get('/logout', isAuthenticated, userLogout)
+authRouter.get('/logout', isAuthenticated, authController.userLogout)
 // Refresh token
-authRouter.get('/refresh-token', updateAccessToken)
+authRouter.get('/refresh-token', authController.updateAccessToken)
 
 export default authRouter

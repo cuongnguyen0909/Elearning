@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs'
 import dotenv from 'dotenv'
 import jwt from 'jsonwebtoken'
-import mongoose, { Document, Model, Schema } from 'mongoose'
+import mongoose, { Document, Model, ObjectId, Schema } from 'mongoose'
 import { emailRegexPattern } from '../constants/user.constant'
 import { UserRole } from '../constants/enums/user.enum'
 dotenv.config()
@@ -16,7 +16,7 @@ export interface IUser extends Document {
     }
     role: string
     isVerified: boolean
-    courses: Array<{ courseId: string }>
+    courses: mongoose.Schema.Types.ObjectId[]
     isModified: (password: string) => boolean
     comparePassword: (password: string) => Promise<boolean>
     signAccessToken: () => string
@@ -59,7 +59,8 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
         },
         courses: [
             {
-                courseId: String
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Course'
             }
         ]
     },

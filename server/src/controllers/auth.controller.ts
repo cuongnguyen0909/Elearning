@@ -14,7 +14,7 @@ import catchAsyncError from '../utils/handlers/catch-async-error'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
 
 //register user
-export const userRegistration = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+const userRegistration = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const userData: IRegistrationRequest = req?.body
     try {
         const { activationToken, email } = await authServices.registerUser(userData)
@@ -29,7 +29,7 @@ export const userRegistration = catchAsyncError(async (req: Request, res: Respon
 })
 
 //activate user
-export const userActivation = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+const userActivation = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const activationRequest: IActivationRequest = req?.body
     try {
         const userActivated: IUser = (await authServices.activateUser(activationRequest)) as IUser
@@ -44,7 +44,7 @@ export const userActivation = catchAsyncError(async (req: Request, res: Response
 })
 
 //login user
-export const userLogin = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+const userLogin = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const loginRequest: ILoginRequest = req?.body
     try {
         const user: IUser = (await authServices.loginUser(loginRequest)) as IUser
@@ -63,7 +63,7 @@ export const userLogin = catchAsyncError(async (req: Request, res: Response, nex
 })
 
 //logout user
-export const userLogout = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+const userLogout = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const userId: any = req?.user?._id as any
     try {
         res.cookie('accessToken', '', { maxAge: 1 })
@@ -80,7 +80,7 @@ export const userLogout = catchAsyncError(async (req: Request, res: Response, ne
     }
 })
 
-export const updateAccessToken = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+const updateAccessToken = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
         const refreshToken: string = req.cookies?.refreshToken as string
         //create new access token
@@ -100,7 +100,7 @@ export const updateAccessToken = catchAsyncError(async (req: Request, res: Respo
     }
 })
 
-export const socialAuthLogin = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+const socialAuthLogin = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const socialAuthRequest: ISocialAuthRequest = req?.body as ISocialAuthRequest
     try {
         //login by social
@@ -119,3 +119,12 @@ export const socialAuthLogin = catchAsyncError(async (req: Request, res: Respons
         return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
     }
 })
+
+export const authController = {
+    userRegistration,
+    userActivation,
+    userLogin,
+    userLogout,
+    updateAccessToken,
+    socialAuthLogin
+}
