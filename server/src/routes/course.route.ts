@@ -1,16 +1,19 @@
 import { Router } from 'express'
 import { authorizeRoles, isAuthenticated } from '../middlewares/auth.middleware'
 import { UserRole } from '../constants/enums/user.enum'
-import { createCourse, updateCourse } from '../controllers/course.controller'
+import { courseController } from '../controllers/course.controller'
 
-const courseRouter = Router()
+const courseRouter: Router = Router() as Router
 
 courseRouter
     .route('/')
-    .get()
-    .post(isAuthenticated, authorizeRoles(UserRole.ADMIN), createCourse)
-    courseRouter
-        .route('/:id')
-        .put(isAuthenticated, authorizeRoles(UserRole.ADMIN), updateCourse)
+    .get(courseController.getAllCoursesWithoutPurchasing)
+    .post(isAuthenticated, authorizeRoles(UserRole.ADMIN), courseController.createCourse)
+courseRouter
+    .route('/:id')
+    .get(courseController.getSingleCourseWhithoutPurchasing)
+    .put(isAuthenticated, authorizeRoles(UserRole.ADMIN), courseController.updateCourse)
+
+courseRouter.get('/access/:id', isAuthenticated, courseController.getAccessibleCourse)
 
 export default courseRouter
