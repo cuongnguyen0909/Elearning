@@ -1,15 +1,21 @@
-import mongoose, { Types } from 'mongoose'
 import { StatusCodes } from 'http-status-codes'
-import { CourseModel } from '../models/course.model'
-import ErrorHandler from '../utils/handlers/ErrorHandler'
-import { deleteFile, uploadFile } from '../helpers/upload.help'
+import mongoose from 'mongoose'
 import { redis } from '../configs/connect.redis.config'
-import { ICommentRequest, IReplyCommentRequest } from '../interfaces/course.interface'
 import { TypeOfEmail } from '../constants/user.constant'
-import sendMail from '../utils/mails/send-mail'
-import { ICourse } from '../models/schemas/course.schema'
-import { IContent } from '../models/schemas/content.schema'
+import { deleteFile, uploadFile } from '../helpers/upload.help'
+import {
+    ICommentRequest,
+    IReplyCommentRequest,
+    IReplyReviewRequest,
+    IReviewRequest
+} from '../interfaces/course.interface'
+import { CourseModel } from '../models/course.model'
 import { IComment } from '../models/schemas/comment.schema'
+import { IContent } from '../models/schemas/content.schema'
+import { ICourse } from '../models/schemas/course.schema'
+import { IUser } from '../models/schemas/user.schema'
+import ErrorHandler from '../utils/handlers/ErrorHandler'
+import sendMail from '../utils/mails/send-mail'
 
 const createCourse = async (courseDataRequest: ICourse) => {
     const thumbnail: string = courseDataRequest?.thumbnail as unknown as string
@@ -138,7 +144,7 @@ const addComment = async (commentRequest: ICommentRequest, user: any) => {
     return { course, courseContent }
 }
 
-const addReply = async (commentRequest: IReplyCommentRequest, user: any) => {
+const addCommentReply = async (commentRequest: IReplyCommentRequest, user: any) => {
     const { reply, courseId, contentId, commentId } = commentRequest as IReplyCommentRequest
 
     const course: ICourse = (await CourseModel.findById(courseId)) as ICourse
@@ -191,6 +197,72 @@ const addReply = async (commentRequest: IReplyCommentRequest, user: any) => {
     return { course, content, comment }
 }
 
+const addReview = async (reviewRequest: any, user: IUser, courseId: string) => {
+    const { review, rating } = reviewRequest as IReviewRequest
+    //check if the user is allowed to access the course
+    const userCourseList: [] = user?.courses as []
+    const courseExists: any = userCourseList.some((course: any) => course?._id.toString() === courseId) as any
+    if (!courseExists) {
+        throw new ErrorHandler('You are not allowed to access this course', StatusCodes.FORBIDDEN)
+    }
+    const course: ICourse = (await CourseModel.findById(courseId)) as ICourse
+    //create a new review
+    const newReview: any = {
+        user,
+        review,
+        rating,
+        reviewReplies: []
+    }
+    course?.reviews?.push(newReview)
+    //calculate the average rating
+    let toltalrating: number = 0
+    course?.reviews?.forEach((review: any) => {
+        toltalrating += parseInt(review.rating)
+    })
+    if (course) {
+        course.rating = (toltalrating / course.reviews.length) as number
+    }
+
+    const notification = {
+        title: 'New Review Added',
+        message: `${user?.name} added a review to ${course?.title}`
+    }
+    await course?.save()
+
+    return { course, newReview, notification }
+}
+
+//if only admin can reply to the review
+const addReviewReply = async (reviewRequest: IReplyReviewRequest, user: IUser) => {
+    const { reply, reviewId, courseId } = reviewRequest as IReplyReviewRequest
+
+    //check course exist
+    const course: ICourse = (await CourseModel.findById(courseId)) as ICourse
+    if (!course) {
+        throw new ErrorHandler('Course not found', StatusCodes.NOT_FOUND)
+    }
+    //check review exist
+    const review: any = course?.reviews?.find((review: any) => review?._id.toString() === reviewId) as any
+    if (!review) {
+        throw new ErrorHandler('Review not found', StatusCodes.NOT_FOUND)
+    }
+    //create a new review reply
+    const newReviewReply: any = {
+        user,
+        reply
+    }
+
+    //add review reply to the review
+    if (!review.reviewReplies) {
+        review.reviewReplies = []
+    }
+    review.reviewReplies?.push(newReviewReply)
+
+    await course?.save()
+
+    return { course, review, newReviewReply }
+}
+
 export const courseServices = {
     createCourse,
     updateCourse,
@@ -198,5 +270,7 @@ export const courseServices = {
     getAllCourses,
     getAccessibleCourses,
     addComment,
-    addReply
+    addCommentReply,
+    addReview,
+    addReviewReply
 }
