@@ -5,22 +5,23 @@ import { changePasswordSchemaValidation } from '../validations/user.validation'
 import { profileController } from '../controllers/profile.controller'
 
 const profileRouter: Router = express.Router() as Router
+//isAuthenticated
+profileRouter.use(isAuthenticated)
 // Get user info
 profileRouter
     .route('/')
     //get user info
-    .get(isAuthenticated, profileController.getProfileInfo)
+    .get(profileController.getProfileInfo)
     //update user info
-    .put(isAuthenticated, profileController.updateProfile)
+    .put(profileController.updateProfile)
 
 // Change password
 profileRouter.put(
     '/change-password',
-    isAuthenticated,
     validateMiddleware(changePasswordSchemaValidation),
     profileController.changePassword
 )
 //change avatar
-profileRouter.put('/change-avatar', isAuthenticated, profileController.changeAvatar)
+profileRouter.put('/change-avatar', profileController.changeAvatar)
 
 export default profileRouter

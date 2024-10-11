@@ -6,15 +6,21 @@ import validateMiddleware from '../middlewares/validate.middleware'
 import { commentValidationSchema } from '../validations/user.validation'
 
 const courseRouter: Router = Router() as Router
-courseRouter.post('/create', isAuthenticated, authorizeRoles(UserRole.ADMIN), courseController.createCourse)
+
 courseRouter.route('/').get(courseController.getAllCoursesWithoutPurchasing)
-courseRouter.put('/comment', isAuthenticated, validateMiddleware(commentValidationSchema), courseController.addComment)
-courseRouter.put('/reply', isAuthenticated, courseController.addCommentReply)
-courseRouter.put('/reply-review', isAuthenticated, authorizeRoles(UserRole.ADMIN), courseController.addReviewReply)
-courseRouter.put('/review/:id', isAuthenticated, courseController.addReview)
-courseRouter.put('/update/:id', isAuthenticated, authorizeRoles(UserRole.ADMIN), courseController.updateCourse)
 courseRouter.route('/:id').get(courseController.getSingleCourseWhithoutPurchasing)
 
-courseRouter.get('/access/:id', isAuthenticated, courseController.getAccessibleCourse)
+//authencicating user
+courseRouter.use(isAuthenticated)
+courseRouter.put('/reply', courseController.addCommentReply)
+courseRouter.put('/comment', validateMiddleware(commentValidationSchema), courseController.addComment)
+courseRouter.put('/review/:id', courseController.addReview)
+courseRouter.get('/access/:id', courseController.getAccessibleCourse)
+
+//check ADMIN role
+courseRouter.use(authorizeRoles(UserRole.ADMIN))
+courseRouter.post('/create', courseController.createCourse)
+courseRouter.put('/reply-review', courseController.addReviewReply)
+courseRouter.put('/update/:id', courseController.updateCourse)
 
 export default courseRouter

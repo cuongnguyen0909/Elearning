@@ -15,7 +15,7 @@ import ErrorHandler from '../utils/handlers/ErrorHandler'
 const createCourse = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const data: ICourse = req.body
     try {
-        const course: ICourse = await courseServices.createCourse(data)
+        const course: ICourse = (await courseServices.createCourse(data)) as ICourse
         res.status(StatusCodes.CREATED).json({
             success: true,
             message: 'Course is created successfully',
@@ -44,7 +44,7 @@ const updateCourse = catchAsyncError(async (req: Request, res: Response, next: N
 const getSingleCourseWhithoutPurchasing = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const courseId: string = req?.params?.id as string
     try {
-        const courseDetails: ICourse = await courseServices.getOneCourse(courseId)
+        const courseDetails: ICourse = (await courseServices.getOneCourse(courseId)) as unknown as ICourse
         res.status(StatusCodes.OK).json({
             success: true,
             course: courseDetails
@@ -56,7 +56,7 @@ const getSingleCourseWhithoutPurchasing = catchAsyncError(async (req: Request, r
 
 const getAllCoursesWithoutPurchasing = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const courses: ICourse[] = (await courseServices.getAllCourses()) as ICourse[]
+        const courses: ICourse[] = (await courseServices.getAllCourses()) as unknown as ICourse[]
         res.status(StatusCodes.OK).json({
             success: true,
             courses
@@ -71,7 +71,6 @@ const getAccessibleCourse = catchAsyncError(async (req: Request, res: Response, 
     const courseList: [] = req?.user?.courses as []
     try {
         const { content, course } = (await courseServices.getAccessibleCourses(courseList, courseId)) as any
-
         res.status(StatusCodes.OK).json({
             success: true,
             course,
@@ -113,11 +112,21 @@ const addCommentReply = catchAsyncError(async (req: Request, res: Response, next
 })
 
 const addReview = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const courseId: string = req?.params?.id as string
-    const user: IUser = req?.user as IUser
-    const reviewRequest: IReviewRequest = req.body as IReviewRequest
     try {
-        const { course, newReview, notification } = await courseServices.addReview(reviewRequest, user, courseId)
+        const courseId: string = req?.params?.id as string
+        const user: IUser = req?.user as IUser
+        const reviewRequest: IReviewRequest = req.body as IReviewRequest
+        const { course, newReview, notification, userCourseList }: any = (await courseServices.addReview(
+            reviewRequest,
+            user,
+            courseId
+        )) as any
+        if (userCourseList?.length === 0 || !userCourseList) {
+            return res.status(StatusCodes.FORBIDDEN).json({
+                success: false,
+                message: 'You are not allowed to access this course'
+            })
+        }
         res.status(StatusCodes.OK).json({
             success: true,
             message: 'Review is added successfully',
