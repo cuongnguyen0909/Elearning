@@ -7,7 +7,7 @@ import { profileController } from '../controllers/profile.controller'
 const profileRouter: Router = express.Router() as Router
 // Get user info
 profileRouter
-    .route('/profile')
+    .route('/')
     //get user info
     .get(isAuthenticated, profileController.getProfileInfo)
     //update user info

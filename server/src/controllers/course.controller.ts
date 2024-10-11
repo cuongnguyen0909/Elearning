@@ -1,11 +1,10 @@
 import { NextFunction, Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
-import { ICourse } from '../models/course.model'
+import { ICommentRequest, IReplyCommentRequest } from '../interfaces/course.interface'
 import { courseServices } from '../services/course.service'
 import catchAsyncError from '../utils/handlers/catch-async-error'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
-import { IComment } from '../models/schemas/comment.schema'
-import { ICommentRequest } from '../interfaces/course.interface'
+import { ICourse } from '../models/schemas/course.schema'
 
 const createCourse = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const data: ICourse = req.body

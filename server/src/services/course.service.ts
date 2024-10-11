@@ -1,10 +1,13 @@
 import mongoose, { Types } from 'mongoose'
 import { StatusCodes } from 'http-status-codes'
-import { CourseModel, ICourse } from '../models/course.model'
+import { CourseModel } from '../models/course.model'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
 import { deleteFile, uploadFile } from '../helpers/upload.help'
 import { redis } from '../configs/connect.redis.config'
-import { ICommentRequest } from '../interfaces/course.interface'
+import { ICommentRequest, IReplyCommentRequest } from '../interfaces/course.interface'
+import { TypeOfEmail } from '../constants/user.constant'
+import sendMail from '../utils/mails/send-mail'
+import { ICourse } from '../models/schemas/course.schema'
 import { IContent } from '../models/schemas/content.schema'
 import { IComment } from '../models/schemas/comment.schema'
 
@@ -134,6 +137,7 @@ const addComment = async (commentRequest: ICommentRequest, user: any) => {
     await course.save()
     return { course, courseContent }
 }
+
 const addReply = async (commentRequest: IReplyCommentRequest, user: any) => {
     const { reply, courseId, contentId, commentId } = commentRequest as IReplyCommentRequest
 

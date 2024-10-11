@@ -22,3 +22,8 @@ export const refreshTokenOptions: ITokenOptions = {
 }
 
 export const emailRegexPattern: RegExp = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}/
+
+export enum TypeOfEmail {
+    ACTIVATE = 'activate',
+    NOTIFICATION = 'notification'
+}

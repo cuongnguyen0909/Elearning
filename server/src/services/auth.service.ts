@@ -12,7 +12,8 @@ import {
 } from '../interfaces/user.interface'
 import { IUser, UserModel } from '../models/user.model'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
-import sendRegistrationMail from '../utils/mails/send-mail'
+import sendMail from '../utils/mails/send-mail'
+import { TypeOfEmail } from '../constants/user.constant'
 dotenv.config()
 
 const registerUser = async (userData: IRegistrationRequest) => {
@@ -29,13 +30,21 @@ const registerUser = async (userData: IRegistrationRequest) => {
     const activationCode: string = activationToken.activationCode
 
     // Send activation email
-    const data = { user: { name: user.name }, activationCode }
-    await sendRegistrationMail({
-        email: user.email,
-        subject: 'Activate your account',
-        template: 'activation-mail.template.ejs',
-        data
-    })
+    const data = {
+        user: {
+            name: user.name
+        },
+        activationCode
+    }
+    await sendMail(
+        {
+            email: user.email,
+            subject: 'Activate your account',
+            template: 'activation-mail.template.ejs',
+            data
+        },
+        TypeOfEmail.ACTIVATE
+    )
 
     return { activationToken: activationToken.token, email: user.email }
 }

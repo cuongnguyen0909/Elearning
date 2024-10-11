@@ -1,8 +1,8 @@
-import mongoose, { Document, Model, Schema } from 'mongoose'
-import { IComment } from './comment.schema'
+import mongoose, { Document, Schema } from 'mongoose'
+import { IUser } from './user.schema'
 
 export interface IReview extends Document {
-    user: object
+    user: IUser
     rating: number
     review: string
 }

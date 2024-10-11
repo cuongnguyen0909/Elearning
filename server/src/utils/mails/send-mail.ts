@@ -13,7 +13,7 @@ interface IEmailOptions {
     }
 }
 
-const sendRegistrationMail = async (options: IEmailOptions): Promise<void> => {
+const sendMail = async (options: IEmailOptions, type: string): Promise<void> => {
     const transporter: Transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST,
         port: parseInt(process.env.SMTP_PORT || '465'),
@@ -25,10 +25,10 @@ const sendRegistrationMail = async (options: IEmailOptions): Promise<void> => {
         }
     } as nodemailer.TransportOptions)
 
-    const { email, subject, template, data } = options
+    const { email, subject, template, data } = options as IEmailOptions
 
     //get path of mail template file
-    const mailTemplatePath: string = path.join(__dirname, `../../templates`, template)
+    const mailTemplatePath: string = path.join(__dirname, `../../templates`, template) 
     //render the email template with ejs
     const html: string = await ejs.renderFile(mailTemplatePath, data)
 
@@ -44,4 +44,4 @@ const sendRegistrationMail = async (options: IEmailOptions): Promise<void> => {
     await transporter.sendMail(mailOptions)
 }
 
-export default sendRegistrationMail
+export default sendMail

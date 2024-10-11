@@ -6,7 +6,7 @@ import courseRouter from './course.route'
 
 const initializeRoutes = (app: express.Application) => {
     app.use('/api/v1/auth', authRouter)
-    app.use('/api/v1/me', profileRouter)
+    app.use('/api/v1/profile', profileRouter)
     app.use('/api/v1/course', courseRouter)
 
     app.use(errorMiddleware)
