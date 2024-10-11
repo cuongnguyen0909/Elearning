@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose'
-import { IReview, reviewSchema } from './review.schema'
 import { contentSchema, IContent } from './content.schema'
+import { IReview, reviewSchema } from './review.schema'
 
 export interface ICourse extends Document {
     title: string

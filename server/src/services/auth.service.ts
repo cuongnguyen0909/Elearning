@@ -1,6 +1,7 @@
 import dotenv from 'dotenv'
 import jwt, { JwtPayload } from 'jsonwebtoken'
 import { redis } from '../configs/connect.redis.config'
+import { TypeOfEmail } from '../constants/user.constant'
 import { generateActivationToken } from '../helpers/user.help'
 import {
     IActivationRequest,
@@ -10,10 +11,10 @@ import {
     ISocialAuthRequest,
     IUserVerify
 } from '../interfaces/user.interface'
-import { IUser, UserModel } from '../models/user.model'
+import { IUser } from '../models/schemas/user.schema'
+import { UserModel } from '../models/user.model'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
 import sendMail from '../utils/mails/send-mail'
-import { TypeOfEmail } from '../constants/user.constant'
 dotenv.config()
 
 const registerUser = async (userData: IRegistrationRequest) => {
@@ -82,8 +83,10 @@ const loginUser = async (loginRequest: ILoginRequest) => {
     }
 
     //check user is exist or not
-    const user: IUser = (await UserModel.findOne({ email }).select('+password')) as IUser
-
+    const user: IUser = (await UserModel.findOne({ email }).select('+password')?.populate({
+        path: 'courses',
+        select: 'title description price'
+    })) as unknown as IUser
     //check password is matched or not
     const isPasswordMatched: boolean = await user?.comparePassword(password)
 

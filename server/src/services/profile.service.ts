@@ -1,10 +1,10 @@
 import dotenv from 'dotenv'
-import cloudinary from '../configs/cloudinary.config'
 import { redis } from '../configs/connect.redis.config'
-import { IUpdateAvatarRequest, IUpdatePasswordRequest, IUpdateProfileRequest } from '../interfaces/user.interface'
-import { IUser, UserModel } from '../models/user.model'
-import ErrorHandler from '../utils/handlers/ErrorHandler'
 import { deleteFile, uploadFile } from '../helpers/upload.help'
+import { IUpdateAvatarRequest, IUpdatePasswordRequest, IUpdateProfileRequest } from '../interfaces/user.interface'
+import { IUser } from '../models/schemas/user.schema'
+import { UserModel } from '../models/user.model'
+import ErrorHandler from '../utils/handlers/ErrorHandler'
 dotenv.config()
 
 const getProfileById = async (uid: string) => {

@@ -1,5 +1,5 @@
-import mongoose, { Document, Model, Schema } from 'mongoose'
-import { IUser } from '../user.model'
+import mongoose, { Document, Schema } from 'mongoose'
+import { IUser } from './user.schema'
 
 export interface IComment extends Document {
     user: IUser

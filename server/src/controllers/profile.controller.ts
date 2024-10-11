@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { IUpdateAvatarRequest, IUpdatePasswordRequest, IUpdateProfileRequest } from '../interfaces/user.interface'
+import { IUser } from '../models/schemas/user.schema'
 import { profileServices } from '../services/profile.service'
 import catchAsyncError from '../utils/handlers/catch-async-error'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
-import { IUser } from '../models/schemas/user.schema'
 
 const getProfileInfo = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const userId: string = req.user?._id as string

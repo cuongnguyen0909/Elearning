@@ -1,10 +1,9 @@
-import { v2 as cloudinary } from 'cloudinary'
 import dotenv from 'dotenv'
 import jwt from 'jsonwebtoken'
 import { redis } from '../configs/connect.redis.config'
 import { accessTokenOptions, refreshTokenOptions } from '../constants/user.constant'
 import { IActivationToken, IRegistrationRequest } from '../interfaces/user.interface'
-import { IUser } from '../models/user.model'
+import { IUser } from '../models/schemas/user.schema'
 //using dotenv to access environment variables
 dotenv.config()
 
@@ -34,4 +33,3 @@ export const generateToken = async (user: IUser) => {
 
     return { accessToken, refreshToken }
 }
-

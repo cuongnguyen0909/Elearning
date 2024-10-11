@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose'
-import { ILink, linkSchema } from './link.schema'
 import { commentSchema, IComment } from './comment.schema'
+import { ILink, linkSchema } from './link.schema'
 
 export interface IContent extends Document {
     title: string

@@ -8,7 +8,7 @@ import {
     IRegistrationRequest,
     ISocialAuthRequest
 } from '../interfaces/user.interface'
-import { IUser } from '../models/user.model'
+import { IUser } from '../models/schemas/user.schema'
 import { authServices } from '../services/auth.service'
 import catchAsyncError from '../utils/handlers/catch-async-error'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
