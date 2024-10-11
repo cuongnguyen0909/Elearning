@@ -92,11 +92,27 @@ const addComment = catchAsyncError(async (req: Request, res: Response, next: Nex
     }
 })
 
+const addReply = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    const replyCommentRequest: IReplyCommentRequest = req.body as IReplyCommentRequest
+    const user: any = req?.user as any
+    try {
+        const course: ICourse = (await courseServices.addReply(replyCommentRequest, user)) as unknown as ICourse
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: 'Reply is added successfully',
+            course
+        })
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
+    }
+})
+
 export const courseController = {
     createCourse,
     updateCourse,
     getSingleCourseWhithoutPurchasing,
     getAllCoursesWithoutPurchasing,
     getAccessibleCourse,
-    addComment
+    addComment,
+    addReply
 }

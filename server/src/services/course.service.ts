@@ -134,6 +134,58 @@ const addComment = async (commentRequest: ICommentRequest, user: any) => {
     await course.save()
     return { course, courseContent }
 }
+const addReply = async (commentRequest: IReplyCommentRequest, user: any) => {
+    const { reply, courseId, contentId, commentId } = commentRequest as IReplyCommentRequest
+
+    const course: ICourse = (await CourseModel.findById(courseId)) as ICourse
+
+    const content: IContent = course?.contents?.find(
+        (content: any) => content?._id.toString() === contentId
+    ) as IContent
+
+    const comment: IComment = content?.comments?.find(
+        (comment: any) => comment?._id.toString() === commentId
+    ) as IComment
+
+    if (!course) {
+        throw new ErrorHandler('Course not found', StatusCodes.NOT_FOUND)
+    }
+    if (!content) {
+        throw new ErrorHandler('Content not found', StatusCodes.NOT_FOUND)
+    }
+    if (!comment) {
+        throw new ErrorHandler('Comment not found', StatusCodes.NOT_FOUND)
+    }
+    const newReply: any = {
+        user: user,
+        reply
+    }
+    comment.commentReplies?.push(newReply)
+    await course?.save()
+
+    //send notifcation mail to the user when admin reply to the comment
+    if (user?._id === comment.user?._id) {
+        // create a notification
+    } else {
+        // send email
+        const data = {
+            commnetName: comment?.user?.name,
+            contentTitle: content?.title,
+            replierName: user?.name,
+            courseName: course?.title
+        }
+        await sendMail(
+            {
+                email: comment?.user?.email,
+                subject: 'Reply to your comment',
+                template: 'reply-comment.template.ejs',
+                data
+            },
+            TypeOfEmail.NOTIFICATION
+        )
+    }
+    return { course, content, comment }
+}
 
 export const courseServices = {
     createCourse,
@@ -141,5 +193,6 @@ export const courseServices = {
     getOneCourse,
     getAllCourses,
     getAccessibleCourses,
-    addComment
+    addComment,
+    addReply
 }
