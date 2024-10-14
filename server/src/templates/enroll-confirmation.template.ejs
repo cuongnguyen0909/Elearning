@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-type" content="text/html: charset=UTF-8" />
+    <title>Enrollment Confirmation</title>
+    <style type="text/css">
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            background-color: #4CAF50;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .header h1 {
+            color: #fff;
+            font-size: 24px;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .content p {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table th,
+        table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #f8f8f8;
+        }
+
+        table td {
+            background-color: #f9f9f9;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            color: #777;
+            background-color: #f4f4f4;
+            border-radius: 0 0 10px 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Enrollment Confirmation</h1>
+        </div>
+
+        <div class="content">
+            <p>Dear userName,</p>
+            <p>Thank you for enrolling in the course <strong>
+                    <%= enroll.courseName %>
+                </strong>. Below are the details of your enrollment:</p>
+
+            <table>
+                <tr>
+                    <th>Course ID</th>
+                    <td>
+                        <%= enroll.courseId %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Course Name</th>
+                    <td>
+                        <%= enroll.courseName %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Price</th>
+                    <td>
+                        <%= enroll.price ? enroll.price.toLocaleString('vi-VN', {style: 'currency' , currency: 'VND' })
+                            : 'Free' %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Enrollment Date</th>
+                    <td>
+                        <%= enroll.date %>
+                    </td>
+                </tr>
+            </table>
+
+            <p>If you have any questions, feel free to reach out to us at any time. We are looking forward to seeing you
+                in the course!
+                <a href="mailto:support.elearningQNU@gmail.com"> support.elearningQNU@gmail.com </a>
+            </p>
+            <p>Best regards,<br>The Course Team</p>
+        </div>
+
+        <div class="footer">
+            <p>&copy; <%= new Date().getFullYear() %> Your Company. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+
+</html>
