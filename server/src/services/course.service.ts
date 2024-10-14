@@ -203,7 +203,7 @@ const addCommentReply = async (commentRequest: IReplyCommentRequest, user: any) 
             // create a notification
         } else {
             // send email
-            const data = {
+            const data: any = {
                 commnetName: comment?.user?.name,
                 contentTitle: content?.title,
                 replierName: user?.name,
