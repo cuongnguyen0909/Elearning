@@ -2,16 +2,17 @@ import mongoose, { Document, Schema } from 'mongoose'
 import { IUser } from './user.schema'
 
 export interface IReview extends Document {
-    user: IUser
+    user: Schema.Types.ObjectId
     rating: number
     review: string
-    reviewReplies: IReview[]
+    reviewReplies: Object[]
 }
 
 export const reviewSchema: Schema<IReview> = new mongoose.Schema(
     {
         user: {
-            type: Object,
+            type: Schema.Types.ObjectId,
+            ref: 'User',
             required: true
         },
         rating: {
@@ -21,7 +22,19 @@ export const reviewSchema: Schema<IReview> = new mongoose.Schema(
         review: {
             type: String
         },
-        reviewReplies: [Object]
+        reviewReplies: [
+            {
+                user: {
+                    type: Schema.Types.ObjectId,
+                    ref: 'User',
+                    required: true
+                },
+                reply: {
+                    type: String,
+                    required: true
+                }
+            }
+        ]
     },
     { timestamps: true }
 )

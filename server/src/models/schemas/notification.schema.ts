@@ -4,7 +4,7 @@ export interface INotification extends Document {
     title: string
     message: string
     status: string
-    userId: mongoose.Types.ObjectId
+    user: mongoose.Types.ObjectId
 }
 
 export const notificationSchema = new mongoose.Schema<INotification>(
@@ -21,7 +21,7 @@ export const notificationSchema = new mongoose.Schema<INotification>(
             type: String,
             default: 'unread'
         },
-        userId: {
+        user: {
             type: Schema.Types.ObjectId,
             ref: 'User',
             required: true

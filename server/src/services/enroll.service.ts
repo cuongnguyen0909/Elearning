@@ -34,8 +34,8 @@ const createNewEnrollment = async (enrollRequest: IEnrollRequest, userId: string
 
         //create new enroll
         const newEnroll: IEnroll = (await EnrollmentModel.create({
-            userId,
-            courseId,
+            user: userId,
+            course: courseId,
             payment_method
         })) as IEnroll
         //increase course quantity purchased
@@ -68,7 +68,7 @@ const createNewEnrollment = async (enrollRequest: IEnrollRequest, userId: string
         await user?.save()
 
         const notification: INotification = (await NotificationModel.create({
-            userId: user?._id,
+            user: user?._id,
             title: 'New Course Enrolled',
             message: `You have a new course enrolled: ${course?.title}`
         })) as INotification

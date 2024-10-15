@@ -1,17 +1,17 @@
 import mongoose, { Schema } from 'mongoose'
 export interface IEnroll {
-    userId: mongoose.Types.ObjectId
-    courseId: mongoose.Types.ObjectId
+    user: mongoose.Types.ObjectId
+    course: mongoose.Types.ObjectId
     payment_method: string
 }
 export const enrollmentSchema: Schema<IEnroll> = new Schema<IEnroll>(
     {
-        userId: {
+        user: {
             type: Schema.Types.ObjectId,
             ref: 'User',
             required: true
         },
-        courseId: {
+        course: {
             type: Schema.Types.ObjectId,
             ref: 'Course',
             required: true
