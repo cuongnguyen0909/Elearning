@@ -83,9 +83,9 @@ const getAccessibleCourse = catchAsyncError(async (req: Request, res: Response, 
 
 const addComment = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const commentData: ICommentRequest = req.body as ICommentRequest
-    const user: any = req?.user as any
+    const userId: any = req?.user?._id as any
     try {
-        const course: ICourse = (await courseServices.addComment(commentData, user)) as unknown as ICourse
+        const course = (await courseServices.addComment(commentData, userId)) as any
         res.status(StatusCodes.OK).json({
             success: true,
             message: 'Comment is added successfully',
@@ -121,12 +121,12 @@ const addReview = catchAsyncError(async (req: Request, res: Response, next: Next
             user,
             courseId
         )) as any
-        if (userCourseList?.length === 0 || !userCourseList) {
-            return res.status(StatusCodes.FORBIDDEN).json({
-                success: false,
-                message: 'You are not allowed to access this course'
-            })
-        }
+        // if (userCourseList?.length === 0 || !userCourseList) {
+        //     return res.status(StatusCodes.FORBIDDEN).json({
+        //         success: false,
+        //         message: 'You are not allowed to access this course'
+        //     })
+        // }
         res.status(StatusCodes.OK).json({
             success: true,
             message: 'Review is added successfully',
@@ -138,13 +138,18 @@ const addReview = catchAsyncError(async (req: Request, res: Response, next: Next
 //just only admin can reply to the review
 const addReviewReply = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const reviewRequest: IReplyReviewRequest = req.body as IReplyReviewRequest
-    const user: IUser = req?.user as IUser
+    const userId: any = req?.user?._id as any
     try {
-        const course: ICourse = (await courseServices.addReviewReply(reviewRequest, user)) as unknown as ICourse
+        const { course, review, newReviewReply }: any = (await courseServices.addReviewReply(
+            reviewRequest,
+            userId
+        )) as any
         res.status(StatusCodes.OK).json({
             success: true,
             message: 'Review reply is added successfully',
-            course
+            course,
+            review,
+            newReviewReply
         })
     } catch (error: any) {
         return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))

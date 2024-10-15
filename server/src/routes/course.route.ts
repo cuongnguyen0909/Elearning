@@ -7,8 +7,8 @@ import { commentValidationSchema } from '../validations/user.validation'
 
 const courseRouter: Router = Router() as Router
 
-courseRouter.get('/search', courseController.searchCourse)
 courseRouter.route('/').get(courseController.getAllCoursesWithoutPurchasing)
+courseRouter.get('/search', courseController.searchCourse)
 
 //authencicating user
 courseRouter.put('/reply', isAuthenticated, courseController.addCommentReply)

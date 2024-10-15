@@ -13,7 +13,7 @@ export interface ICourse extends Document {
     demoUrl: string
     benefits: { title: string }[]
     prerequisites: { title: string }[]
-    reviews: IReview[]
+    reviews: Schema.Types.ObjectId[]
     contents: IContent[]
     rating?: number
     purchased?: number
@@ -60,7 +60,12 @@ export const courseSchema: Schema<ICourse> = new mongoose.Schema(
         },
         benefits: [{ title: String }],
         prerequisites: [{ title: String }],
-        reviews: [reviewSchema],
+        reviews: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'Review'
+            }
+        ],
         contents: [contentSchema],
         rating: {
             type: Number,
