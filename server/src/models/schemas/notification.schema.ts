@@ -1,6 +1,6 @@
-import mongoose, { Schema } from 'mongoose'
+import mongoose, { Document, Schema } from 'mongoose'
 
-export interface INotification {
+export interface INotification extends Document {
     title: string
     message: string
     status: string
