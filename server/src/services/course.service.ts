@@ -16,6 +16,7 @@ import { ICourse } from '../models/schemas/course.schema'
 import { IUser } from '../models/schemas/user.schema'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
 import sendMail from '../utils/mails/send-mail'
+import { NotificationModel } from '../models/notification.model'
 
 const createCourse = async (courseDataRequest: ICourse) => {
     try {
@@ -73,7 +74,7 @@ const updateCourse = async (courseId: string, courseDataRequest: ICourse) => {
     }
 }
 
-const getOneCourse = async (courseId: string) => {
+const getOneCourseWithoutLogin = async (courseId: string) => {
     try {
         const isCachedExist: string = (await redis.get(courseId)) as unknown as string
         let course: ICourse
@@ -91,7 +92,7 @@ const getOneCourse = async (courseId: string) => {
     }
 }
 
-const getAllCourses = async () => {
+const getAllCoursesWithoutLogin = async () => {
     try {
         const isCachedExist: string = (await redis.get('allCourses')) as unknown as string
         let courses: ICourse[]
@@ -161,6 +162,13 @@ const addComment = async (commentRequest: ICommentRequest, user: any) => {
         //add comment to the course content
         courseContent.comments?.push(newComment)
 
+        //create new a notification for admin
+        await NotificationModel.create({
+            userId: user?._id,
+            title: 'New Comment Received',
+            message: `${user?.name} added a comment to ${courseContent?.title}`
+        })
+
         await course.save()
         return { course, courseContent }
     } catch (error: any) {
@@ -201,6 +209,11 @@ const addCommentReply = async (commentRequest: IReplyCommentRequest, user: any) 
         //send notifcation mail to the user when admin reply to the comment
         if (user?._id === comment.user?._id) {
             // create a notification
+            await NotificationModel.create({
+                userId: user?._id,
+                title: 'New Comment Received',
+                message: `You have a comment from ${user?.name} on ${content?.title}`
+            })
         } else {
             // send email
             const data: any = {
@@ -303,14 +316,36 @@ const addReviewReply = async (reviewRequest: IReplyReviewRequest, user: IUser) =
     }
 }
 
+const getAllCoursesByAdmin = async () => {
+    try {
+        const courses: ICourse[] = (await CourseModel.find().sort({ createdAt: -1 })) as ICourse[]
+        return courses
+    } catch (error: any) {
+        throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
+    }
+}
+
+//seach course by title
+const searchCourse = async (title: string) => {
+    try {
+        const query: any = title ? { title: { $regex: title, $options: 'i' } } : {}
+        const courses: ICourse[] = (await CourseModel.find(query)) as ICourse[]
+        return courses
+    } catch (error: any) {
+        throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
+    }
+}
+
 export const courseServices = {
     createCourse,
     updateCourse,
-    getOneCourse,
-    getAllCourses,
+    getOneCourseWithoutLogin,
+    getAllCoursesWithoutLogin,
     getAccessibleCourses,
     addComment,
     addCommentReply,
     addReview,
-    addReviewReply
+    addReviewReply,
+    searchCourse,
+    getAllCoursesByAdmin
 }

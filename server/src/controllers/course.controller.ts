@@ -44,7 +44,7 @@ const updateCourse = catchAsyncError(async (req: Request, res: Response, next: N
 const getSingleCourseWhithoutPurchasing = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const courseId: string = req?.params?.id as string
     try {
-        const courseDetails: ICourse = (await courseServices.getOneCourse(courseId)) as unknown as ICourse
+        const courseDetails: ICourse = (await courseServices.getOneCourseWithoutLogin(courseId)) as unknown as ICourse
         res.status(StatusCodes.OK).json({
             success: true,
             course: courseDetails
@@ -56,7 +56,7 @@ const getSingleCourseWhithoutPurchasing = catchAsyncError(async (req: Request, r
 
 const getAllCoursesWithoutPurchasing = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const courses: ICourse[] = (await courseServices.getAllCourses()) as unknown as ICourse[]
+        const courses: ICourse[] = (await courseServices.getAllCoursesWithoutLogin()) as unknown as ICourse[]
         res.status(StatusCodes.OK).json({
             success: true,
             courses
@@ -150,6 +150,34 @@ const addReviewReply = catchAsyncError(async (req: Request, res: Response, next:
         return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
     }
 })
+
+//search course by title
+const searchCourse = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { title } = req?.query as any
+        const courses: ICourse[] = (await courseServices.searchCourse(title)) as ICourse[]
+        res.status(StatusCodes.OK).json({
+            success: true,
+            courses
+        })
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
+    }
+})
+
+const getAllCoursesByAdmin = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const courses: ICourse[] = (await courseServices.getAllCoursesByAdmin()) as ICourse[]
+        res.status(StatusCodes.OK).json({
+            success: true,
+            courses,
+            count: courses.length
+        })
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
+    }
+})
+
 export const courseController = {
     createCourse,
     updateCourse,
@@ -159,5 +187,7 @@ export const courseController = {
     addComment,
     addCommentReply,
     addReview,
-    addReviewReply
+    addReviewReply,
+    searchCourse,
+    getAllCoursesByAdmin
 }

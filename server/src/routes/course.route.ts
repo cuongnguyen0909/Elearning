@@ -7,20 +7,23 @@ import { commentValidationSchema } from '../validations/user.validation'
 
 const courseRouter: Router = Router() as Router
 
+courseRouter.get('/search', courseController.searchCourse)
 courseRouter.route('/').get(courseController.getAllCoursesWithoutPurchasing)
-courseRouter.route('/:id').get(courseController.getSingleCourseWhithoutPurchasing)
 
 //authencicating user
-courseRouter.use(isAuthenticated)
-courseRouter.put('/reply', courseController.addCommentReply)
-courseRouter.put('/comment', validateMiddleware(commentValidationSchema), courseController.addComment)
-courseRouter.put('/review/:id', courseController.addReview)
-courseRouter.get('/access/:id', courseController.getAccessibleCourse)
+courseRouter.put('/reply', isAuthenticated, courseController.addCommentReply)
+courseRouter.put('/comment', isAuthenticated, validateMiddleware(commentValidationSchema), courseController.addComment)
+//search course by title
 
 //check ADMIN role
-courseRouter.use(authorizeRoles(UserRole.ADMIN))
-courseRouter.post('/create', courseController.createCourse)
-courseRouter.put('/reply-review', courseController.addReviewReply)
-courseRouter.put('/update/:id', courseController.updateCourse)
+courseRouter
+    .route('/admin')
+    .get(isAuthenticated, authorizeRoles(UserRole.ADMIN), courseController.getAllCoursesByAdmin)
+    .post(isAuthenticated, authorizeRoles(UserRole.ADMIN), courseController.createCourse)
+courseRouter.put('/reply-review', isAuthenticated, authorizeRoles(UserRole.ADMIN), courseController.addReviewReply)
+courseRouter.put('/update/:id', isAuthenticated, authorizeRoles(UserRole.ADMIN), courseController.updateCourse)
+courseRouter.put('/review/:id', isAuthenticated, courseController.addReview)
+courseRouter.get('/access/:id', isAuthenticated, courseController.getAccessibleCourse)
+courseRouter.route('/:id').get(courseController.getSingleCourseWhithoutPurchasing)
 
 export default courseRouter

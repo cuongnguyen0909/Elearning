@@ -20,6 +20,20 @@ const createNewEnrollment = catchAsyncError(async (req: Request, res: Response, 
         return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
     }
 })
+
+const getAllEnrollments = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const enrollments = await enrollServices.getAllEnrollments()
+        res.status(StatusCodes.OK).json({
+            success: true,
+            enrollments,
+            count: enrollments.length
+        })
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
+    }
+})
 export const enrollController = {
-    createNewEnrollment
+    createNewEnrollment,
+    getAllEnrollments
 }
