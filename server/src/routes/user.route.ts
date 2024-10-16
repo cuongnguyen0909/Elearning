@@ -5,8 +5,9 @@ import { userController } from '../controllers/user.controller'
 
 const userRouter = Router()
 
-userRouter.use(isAuthenticated)
-userRouter.use(authorizeRoles(UserRole.ADMIN))
-userRouter.route('/').get(userController.getAllUser)
+userRouter.route('/all').get(isAuthenticated, authorizeRoles(UserRole.ADMIN), userController.getAllUser)
+userRouter.route('/update').put(isAuthenticated, authorizeRoles(UserRole.ADMIN), userController.updateUserRole)
+userRouter.route('/lock').put(isAuthenticated, authorizeRoles(UserRole.ADMIN), userController.lockUser)
+userRouter.route('/unlock').put(isAuthenticated, authorizeRoles(UserRole.ADMIN), userController.unLockUser)
 
 export default userRouter
