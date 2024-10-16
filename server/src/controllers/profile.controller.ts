@@ -12,7 +12,7 @@ const getProfileInfo = catchAsyncError(async (req: Request, res: Response, next:
         const user: IUser = (await profileServices.getProfileById(userId)) as IUser
         res.status(StatusCodes.OK).json({
             success: true,
-            userId: user._id
+            user
         })
     } catch (error: any) {
         return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))

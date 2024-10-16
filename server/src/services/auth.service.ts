@@ -15,6 +15,7 @@ import { IUser } from '../models/schemas/user.schema'
 import { UserModel } from '../models/user.model'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
 import sendMail from '../utils/mails/send-mail'
+import { StatusCodes } from 'http-status-codes'
 dotenv.config()
 
 const registerUser = async (userData: IRegistrationRequest) => {
@@ -24,7 +25,7 @@ const registerUser = async (userData: IRegistrationRequest) => {
         // Check if email already exists
         const isEmailExist: IUser = (await UserModel.findOne({ email })) as IUser
         if (isEmailExist) {
-            throw new ErrorHandler('Email is already exist', 400)
+            throw new ErrorHandler('Email is already exist', StatusCodes.BAD_REQUEST)
         }
 
         const user: IRegistrationRequest = { name, email, password }
@@ -50,7 +51,7 @@ const registerUser = async (userData: IRegistrationRequest) => {
 
         return { activationToken: activationToken.token, email: user.email }
     } catch (error: any) {
-        throw new ErrorHandler(error.message, 400)
+        throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
     }
 }
 
@@ -64,7 +65,7 @@ const activateUser = async (activationRequest: IActivationRequest) => {
 
         //check if activation code is valid
         if (newUser && newUser.activationCode !== activationCode) {
-            throw new ErrorHandler('Invalid activation code', 400)
+            throw new ErrorHandler('Invalid activation code', StatusCodes.BAD_REQUEST)
         }
         const { name, email, password } = newUser.user as IUser
 
@@ -72,14 +73,15 @@ const activateUser = async (activationRequest: IActivationRequest) => {
         const existingUser: IUser = (await UserModel.findOne({ email })) as IUser
 
         if (existingUser) {
-            throw new ErrorHandler('User is already exist', 400)
+            throw new ErrorHandler('User is already exist', StatusCodes.BAD_REQUEST)
         }
 
         const user = await UserModel.create({ name, email, password })
-
+        user.isVerified = true
+        await user.save()
         return user
     } catch (error: any) {
-        throw new ErrorHandler(error.message, 400)
+        throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
     }
 }
 
@@ -88,25 +90,31 @@ const loginUser = async (loginRequest: ILoginRequest) => {
         const { email, password } = loginRequest
         //check email or password is entered or not
         if (!email || !password) {
-            throw new ErrorHandler('Please enter email and password', 400)
+            throw new ErrorHandler('Please enter email and password', StatusCodes.BAD_REQUEST)
         }
 
         //check user is exist or not
         const user: IUser = (await UserModel.findOne({ email }).select('+password')?.populate({
-            path: 'courses',
-            select: 'title description price'
+            path: 'courses'
         })) as unknown as IUser
         //check password is matched or not
         const isPasswordMatched: boolean = await user?.comparePassword(password)
 
         //check if password is matched
         if (!isPasswordMatched) {
-            return new ErrorHandler('Invalid email or password', 401)
+            return new ErrorHandler('Invalid email or password', StatusCodes.UNAUTHORIZED)
+        }
+        //check user is blocked or not
+        if (user.isBlocked) {
+            throw new ErrorHandler(
+                'Something went wrong. Please contact us via email for more information about your account',
+                StatusCodes.UNAUTHORIZED
+            )
         }
 
         return user
     } catch (error: any) {
-        throw new ErrorHandler(error.message, 400)
+        throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
     }
 }
 
@@ -114,7 +122,7 @@ const logoutUser = async (userId: any) => {
     try {
         await redis.del(userId)
     } catch (error: any) {
-        throw new ErrorHandler(error.message, 400)
+        throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
     }
 }
 
@@ -122,12 +130,12 @@ const createNewAccessToken = async (refreshToken: string) => {
     try {
         const decoded: JwtPayload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string) as JwtPayload
         if (!decoded) {
-            throw new ErrorHandler('Invalid refresh token', 400)
+            throw new ErrorHandler('Invalid refresh token', StatusCodes.BAD_REQUEST)
         }
 
         const userOfSession: any = await redis.get(decoded?.id as string)
         if (!userOfSession) {
-            throw new ErrorHandler('User not found', 404)
+            throw new ErrorHandler('User not found', StatusCodes.NOT_FOUND)
         }
 
         const user = JSON.parse(userOfSession) as IUser
@@ -142,7 +150,7 @@ const createNewAccessToken = async (refreshToken: string) => {
 
         return { user, newAccessToken, newRefreshToken }
     } catch (error: any) {
-        throw new ErrorHandler(error.message, 400)
+        throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
     }
 }
 
@@ -155,9 +163,9 @@ const loginBySoial = async (socialRequest: ISocialAuthRequest) => {
             const user = await UserModel.create(socialRequest)
             return user
         }
-        throw new ErrorHandler('User is already exist', 400)
+        throw new ErrorHandler('User is already exist', StatusCodes.BAD_REQUEST)
     } catch (error: any) {
-        throw new ErrorHandler(error.message, 400)
+        throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
     }
 }
 

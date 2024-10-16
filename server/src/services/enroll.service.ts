@@ -83,7 +83,9 @@ const createNewEnrollment = async (enrollRequest: IEnrollRequest, userId: string
 
 const getAllEnrollments = async () => {
     try {
-        const enrollments: IEnroll[] = (await EnrollmentModel.find().sort({ createdAt: -1 })) as IEnroll[]
+        const enrollments: IEnroll[] = (await EnrollmentModel.find().sort({ createdAt: -1 }).populate({
+            path: 'user course'
+        })) as IEnroll[]
         return enrollments
     } catch (error: any) {
         throw new ErrorHandler(error.message, 400)

@@ -54,7 +54,7 @@ const userLogin = catchAsyncError(async (req: Request, res: Response, next: Next
         res.cookie('refreshToken', refreshToken, refreshTokenOptions)
         res.status(StatusCodes.OK).json({
             success: true,
-            userId: user._id,
+            user,
             accessToken
         })
     } catch (error: any) {

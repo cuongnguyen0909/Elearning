@@ -21,6 +21,7 @@ import { IReview } from '../models/schemas/review.schema'
 import { ReviewModel } from '../models/review.model'
 import { UserRole } from '../constants/enums/user.enum'
 import { UserModel } from '../models/user.model'
+import { INotification } from '../models/schemas/notification.schema'
 
 const createCourse = async (courseDataRequest: ICourse) => {
     try {
@@ -93,15 +94,15 @@ const getOneCourseWithoutLogin = async (courseId: string) => {
             course = (await CourseModel.findById(courseId)
                 .select('-courseData.videoUrl -courseData.suggestion -courseData.links -courseData.questions')
                 .populate({
-                    path: 'reviews', // Populate các reviews
+                    path: 'reviews',
                     populate: [
                         {
-                            path: 'user', // Populate thông tin người dùng của review
-                            select: 'name email' // Chọn các thông tin cần thiết của user
+                            path: 'user',
+                            select: 'name email'
                         },
                         {
-                            path: 'reviewReplies.user', // Populate thông tin người dùng của review reply
-                            select: 'name email' // Chọn các thông tin cần thiết của user
+                            path: 'reviewReplies.user',
+                            select: 'name email'
                         }
                     ]
                 })) as ICourse
@@ -193,15 +194,15 @@ const addComment = async (commentRequest: ICommentRequest, userId: any) => {
         //add comment to the course content
         courseContent.comments?.push(newComment)
         await course?.save()
-        await redis.set(courseId, JSON.stringify(course) as any)
+        // await redis.set(courseId, JSON.stringify(course) as any)
 
         //create new a notification for admin
-        await NotificationModel.create({
-            userId: user?._id,
+        const newNotification: INotification = (await NotificationModel.create({
+            user: user?._id,
             title: 'New Comment Received',
             message: `${user?.name} added a comment to ${courseContent?.title}`
-        })
-
+        })) as INotification
+        console.log('newNotification', newNotification)
         const allCourses = await CourseModel.find().sort({ createdAt: -1 })
         await redis.set('allCourses', JSON.stringify(allCourses))
         return course

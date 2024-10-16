@@ -1,3 +1,4 @@
+import path from 'path'
 import { NotificationModel } from '../models/notification.model'
 import { INotification } from '../models/schemas/notification.schema'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
@@ -6,7 +7,10 @@ import cron from 'node-cron'
 const getNotifications = async () => {
     try {
         //get all notifications
-        const notifications: INotification[] = await NotificationModel.find().sort({ createdAt: -1 })
+        const notifications: INotification[] = await NotificationModel.find().sort({ createdAt: -1 }).populate({
+            path: 'user',
+            select: 'name email'
+        })
         return notifications
     } catch (error: any) {
         throw new ErrorHandler(error.message, 400)
@@ -20,10 +24,17 @@ const updateNotificationStatus = async (notificationId: string) => {
         if (!notification) {
             throw new ErrorHandler('Notification not found', 404)
         }
-        notification.status ? (notification.status = 'read') : notification.status
-        await notification.save()
+        if (notification.status) {
+            notification.status = 'read'
+        }
+        ;(await notification?.save()).populate({
+            path: 'user'
+        })
 
-        const notifications: INotification[] = await NotificationModel.find().sort({ createdAt: -1 })
+        const notifications: INotification[] = await NotificationModel.find().sort({ createdAt: -1 }).populate({
+            path: 'user',
+            select: 'name email'
+        })
         return { notification, notifications }
     } catch (error: any) {
         throw new ErrorHandler(error.message, 400)
