@@ -3,6 +3,7 @@ import { IUser } from './user.schema'
 
 export interface IReview extends Document {
     user: Schema.Types.ObjectId
+    course: Schema.Types.ObjectId
     rating: number
     review: string
     reviewReplies: Object[]
@@ -13,6 +14,11 @@ export const reviewSchema: Schema<IReview> = new mongoose.Schema(
         user: {
             type: Schema.Types.ObjectId,
             ref: 'User',
+            required: true
+        },
+        course: {
+            type: Schema.Types.ObjectId,
+            ref: 'Course',
             required: true
         },
         rating: {
