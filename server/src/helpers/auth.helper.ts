@@ -7,7 +7,7 @@ import { IUser } from '../models/schemas/user.schema'
 //using dotenv to access environment variables
 dotenv.config()
 
-export const generateActivationToken = (user: IRegistrationRequest): IActivationToken => {
+const generateActivationToken = (user: IRegistrationRequest): IActivationToken => {
     //generate activation code
     const activationCode = Math.floor(1000 + Math.random() * 9000).toString()
     //create activation token
@@ -18,7 +18,7 @@ export const generateActivationToken = (user: IRegistrationRequest): IActivation
     return { token, activationCode }
 }
 
-export const generateToken = async (user: IUser) => {
+const generateToken = async (user: IUser) => {
     const accessToken: string = user.signAccessToken()
     const refreshToken: string = user.signRefreshToken()
 
@@ -32,4 +32,9 @@ export const generateToken = async (user: IUser) => {
     }
 
     return { accessToken, refreshToken }
+}
+
+export const authHelper = {
+    generateActivationToken,
+    generateToken
 }

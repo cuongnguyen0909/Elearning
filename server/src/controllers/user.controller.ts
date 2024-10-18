@@ -14,20 +14,21 @@ const getAllUser = catchAsyncError(async (req: Request, res: Response, next: Nex
             count: users.length
         })
     } catch (error: any) {
-        return next(new ErrorHandler(error.message, 400))
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
     }
 })
 
 const updateUserRole = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { userId, role } = req.body as any
-        const updatedUser: IUser = (await userServices.updateUserRole(userId)) as IUser
+        const currentUserId: string = req?.user?._id as string
+        const updatedUser: IUser = (await userServices.updateUserRole(currentUserId, userId)) as IUser
         res.status(StatusCodes.OK).json({
             success: true,
             user: updatedUser
         })
     } catch (error: any) {
-        return next(new ErrorHandler(error.message, 400))
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
     }
 })
 
@@ -40,7 +41,7 @@ const lockUser = catchAsyncError(async (req: Request, res: Response, next: NextF
             user: updatedUser
         })
     } catch (error: any) {
-        return next(new ErrorHandler(error.message, 400))
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
     }
 })
 
@@ -53,7 +54,7 @@ const unLockUser = catchAsyncError(async (req: Request, res: Response, next: Nex
             user: updatedUser
         })
     } catch (error: any) {
-        return next(new ErrorHandler(error.message, 400))
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
     }
 })
 

@@ -7,5 +7,6 @@ const reviewRouter = Router()
 
 reviewRouter.put('/reply', isAuthenticated, authorizeRoles(UserRole.ADMIN), reviewController.addReviewReply)
 reviewRouter.post('/add/:id', isAuthenticated, reviewController.addReview)
+reviewRouter.get('/all', isAuthenticated, authorizeRoles(UserRole.ADMIN), reviewController.getAllReviews)
 
 export default reviewRouter

@@ -1,35 +1,35 @@
-import { INotification } from './../models/schemas/notification.schema'
-import { enrollController } from './../controllers/enroll.controller'
+import { ObjectId } from 'mongoose'
+import { TypeOfEmail } from '../constants/user.constant'
+import { IEnrollMailData, IEnrollRequest } from '../interfaces/enroll.interface'
 import { CourseModel } from '../models/course.model'
+import { EnrollmentModel } from '../models/enrollment.model'
+import { NotificationModel } from '../models/notification.model'
 import { ICourse } from '../models/schemas/course.schema'
+import { IEnroll } from '../models/schemas/enrollment.schema'
 import { IUser } from '../models/schemas/user.schema'
 import { UserModel } from '../models/user.model'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
-import { IEnroll } from '../models/schemas/enrollment.schema'
-import { EnrollmentModel } from '../models/enrollment.model'
 import sendMail from '../utils/mails/send-mail'
-import { TypeOfEmail } from '../constants/user.constant'
-import { ObjectId } from 'mongoose'
-import { NotificationModel } from '../models/notification.model'
-import { IEnrollMailData, IEnrollRequest } from '../interfaces/enroll.interface'
+import { INotification } from './../models/schemas/notification.schema'
+import { StatusCodes } from 'http-status-codes'
 
 const createNewEnrollment = async (enrollRequest: IEnrollRequest, userId: string) => {
     try {
         const { courseId, payment_method } = enrollRequest as IEnrollRequest
         const user: IUser = (await UserModel.findById(userId)) as IUser
         if (!courseId || !payment_method) {
-            throw new ErrorHandler('Missing required fields', 400)
+            throw new ErrorHandler('Missing required fields', StatusCodes.BAD_REQUEST)
         }
         //check course is already enrolled or not
         const isCourseEnrolled: any = user?.courses?.some((course: any) => course?._id.toString() === courseId)
 
         if (isCourseEnrolled) {
-            throw new ErrorHandler('You have already purchased this course', 400)
+            throw new ErrorHandler('You have already purchased this course', StatusCodes.BAD_REQUEST)
         }
 
         const course: ICourse = (await CourseModel.findById(courseId)) as ICourse
         if (!course) {
-            throw new ErrorHandler('Course not found', 404)
+            throw new ErrorHandler('Course not found', StatusCodes.NOT_FOUND)
         }
 
         //create new enroll
@@ -77,7 +77,7 @@ const createNewEnrollment = async (enrollRequest: IEnrollRequest, userId: string
 
         return { newEnroll, course, notification, user }
     } catch (error: any) {
-        throw new ErrorHandler(error.message, 400)
+        throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
     }
 }
 
@@ -88,7 +88,7 @@ const getAllEnrollments = async () => {
         })) as IEnroll[]
         return enrollments
     } catch (error: any) {
-        throw new ErrorHandler(error.message, 400)
+        throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
     }
 }
 

@@ -7,6 +7,7 @@ import { StatusCodes } from 'http-status-codes'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
 import { IReview } from '../models/schemas/review.schema'
 import { ICourse } from '../models/schemas/course.schema'
+import { ReviewModel } from '../models/review.model'
 
 const addReview = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -52,4 +53,24 @@ const addReviewReply = catchAsyncError(async (req: Request, res: Response, next:
     }
 })
 
-export const reviewController = { addReview, addReviewReply }
+const getAllReviews = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const reviews: IReview[] = (await reviewServices.getAllReviews()) as IReview[]
+        if (!reviews || reviews instanceof ErrorHandler) {
+            return next(new ErrorHandler(reviews.message, reviews.statusCode || StatusCodes.BAD_REQUEST))
+        }
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: 'All reviews are fetched successfully',
+            reviews
+        })
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
+    }
+})
+
+export const reviewController = {
+    addReview,
+    addReviewReply,
+    getAllReviews
+}

@@ -3,6 +3,7 @@ import { NotificationModel } from '../models/notification.model'
 import { INotification } from '../models/schemas/notification.schema'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
 import cron from 'node-cron'
+import { StatusCodes } from 'http-status-codes'
 
 const getNotifications = async () => {
     try {
@@ -13,7 +14,7 @@ const getNotifications = async () => {
         })
         return notifications
     } catch (error: any) {
-        throw new ErrorHandler(error.message, 400)
+        throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
     }
 }
 
@@ -22,7 +23,7 @@ const updateNotificationStatus = async (notificationId: string) => {
     try {
         const notification: INotification = (await NotificationModel.findById(notificationId)) as INotification
         if (!notification) {
-            throw new ErrorHandler('Notification not found', 404)
+            throw new ErrorHandler('Notification not found', StatusCodes.NOT_FOUND)
         }
         if (notification.status) {
             notification.status = 'read'
@@ -37,7 +38,7 @@ const updateNotificationStatus = async (notificationId: string) => {
         })
         return { notification, notifications }
     } catch (error: any) {
-        throw new ErrorHandler(error.message, 400)
+        throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
     }
 }
 
@@ -49,7 +50,7 @@ const deleleNotificationsAfter30Days = async () => {
             console.log('Deleted read notifications after 30 days')
         })
     } catch (error: any) {
-        throw new ErrorHandler(error.message, 400)
+        throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
     }
 }
 export const notificationServices = {

@@ -2,7 +2,6 @@ import dotenv from 'dotenv'
 import jwt, { JwtPayload } from 'jsonwebtoken'
 import { redis } from '../configs/connect.redis.config'
 import { TypeOfEmail } from '../constants/user.constant'
-import { generateActivationToken } from '../helpers/user.help'
 import {
     IActivationRequest,
     IActivationToken,
@@ -16,6 +15,7 @@ import { UserModel } from '../models/user.model'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
 import sendMail from '../utils/mails/send-mail'
 import { StatusCodes } from 'http-status-codes'
+import { authHelper } from '../helpers/auth.helper'
 dotenv.config()
 
 const registerUser = async (userData: IRegistrationRequest) => {
@@ -29,7 +29,7 @@ const registerUser = async (userData: IRegistrationRequest) => {
         }
 
         const user: IRegistrationRequest = { name, email, password }
-        const activationToken: IActivationToken = generateActivationToken(user)
+        const activationToken: IActivationToken = authHelper.generateActivationToken(user)
         const activationCode: string = activationToken.activationCode
 
         // Send activation email

@@ -97,7 +97,6 @@ const addCommentReply = async (commentRequest: IReplyCommentRequest, userId: any
                 title: 'New Comment Received',
                 message: `You have a comment from ${userReply?.name} on ${content?.title}`
             })
-            console.log('newNotification')
         } else {
             // send email
             const data: any = {
@@ -115,7 +114,6 @@ const addCommentReply = async (commentRequest: IReplyCommentRequest, userId: any
                 },
                 TypeOfEmail.NOTIFICATION
             )
-            console.log('new mail')
         }
         await redis.set(comment.course.toString(), JSON.stringify(course) as any)
         const allCourses = await CourseModel.find().sort({ createdAt: -1 })

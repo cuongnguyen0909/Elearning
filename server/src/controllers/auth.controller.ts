@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { accessTokenOptions, refreshTokenOptions } from '../constants/user.constant'
-import { generateToken } from '../helpers/user.help'
 import {
     IActivationRequest,
     ILoginRequest,
@@ -12,6 +11,7 @@ import { IUser } from '../models/schemas/user.schema'
 import { authServices } from '../services/auth.service'
 import catchAsyncError from '../utils/handlers/catch-async-error'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
+import { authHelper } from '../helpers/auth.helper'
 
 //register user
 const userRegistration = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
@@ -48,7 +48,7 @@ const userLogin = catchAsyncError(async (req: Request, res: Response, next: Next
     const loginRequest: ILoginRequest = req?.body
     try {
         const user: IUser = (await authServices.loginUser(loginRequest)) as IUser
-        const { accessToken, refreshToken } = await generateToken(user)
+        const { accessToken, refreshToken } = await authHelper.generateToken(user)
         //set cookies in the browser
         res.cookie('accessToken', accessToken, accessTokenOptions)
         res.cookie('refreshToken', refreshToken, refreshTokenOptions)
@@ -106,7 +106,7 @@ const socialAuthLogin = catchAsyncError(async (req: Request, res: Response, next
         //login by social
         const user = await authServices.loginBySoial(socialAuthRequest)
         //generate token
-        const { accessToken, refreshToken } = await generateToken(user)
+        const { accessToken, refreshToken } = await authHelper.generateToken(user)
         //set cookies in the browser
         res.cookie('accessToken', accessToken, accessTokenOptions)
         res.cookie('refreshToken', refreshToken, refreshTokenOptions)
