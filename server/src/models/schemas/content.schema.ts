@@ -12,7 +12,7 @@ export interface IContent extends Document {
     videoPlayer: string
     links: ILink[]
     suggestion: string
-    comments?: IComment[]
+    comments?: Schema.Types.ObjectId[]
 }
 
 export const contentSchema: Schema<IContent> = new mongoose.Schema(
@@ -45,7 +45,12 @@ export const contentSchema: Schema<IContent> = new mongoose.Schema(
         suggestion: {
             type: String
         },
-        comments: [commentSchema]
+        comments: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'Comment'
+            }
+        ]
     },
     { timestamps: true }
 )
