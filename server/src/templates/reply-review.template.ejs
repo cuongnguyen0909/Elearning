@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-type" content="text/html: charset=UTF-8" />
+    <title>QNU ELearning Nofiication email</title>
+    <style type="text/css">
+        .email-wrapper {
+            max-width: 400;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .email-header {
+            background-color: #0070f3;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .email-footer {
+            background-color: #f6f6f6;
+            padding: 24px;
+        }
+
+        .email-body {
+            padding: 20px;
+        }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 24px;
+        }
+
+        a {
+            color: #000;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="email-wrapper">
+        <div class="email-header">
+            <h1>Welcome, <%= reviewerName %>
+            </h1>
+        </div>
+        <div class="email-body">
+            <p>Your comment has been replied by <%= replierName %>
+            </p>
+            <p>
+                A new comment has been replied to your comment on the course <strong>
+                    <%= courseName %>
+                </strong>
+
+            </p>
+            <p>Please login to your account to check the reply</p>
+        </div>
+        <div class="email-footer">
+            <div class="email-footer">
+                <p>
+                    If you have any questions, please dont't hesitate to contact us at
+                    <a href="mailto:support.elearningQNU@gmail.com"> support.elearningQNU@gmail.com </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

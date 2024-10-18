@@ -10,12 +10,21 @@ import { IReview } from '../models/schemas/review.schema'
 import { IUser } from '../models/schemas/user.schema'
 import { UserModel } from '../models/user.model'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
+import { UserRole } from '../constants/enums/user.enum'
+import sendMail from '../utils/mails/send-mail'
+import { TypeOfEmail } from '../constants/user.constant'
 
 const addReview = async (reviewRequest: IReviewRequest, userId: any, courseId: string) => {
     try {
         const { review, rating } = reviewRequest as IReviewRequest
         //check if the user is allowed to access the course
         const user: IUser = (await UserModel.findById(userId)) as IUser
+        if (!user) {
+            throw new ErrorHandler('User not found', StatusCodes.NOT_FOUND)
+        }
+        if (user.role === UserRole.ADMIN) {
+            throw new ErrorHandler('Admin is not allowed to add review', StatusCodes.FORBIDDEN)
+        }
         const userCourseList: any = user?.courses as any
 
         if (Number(rating) < 1 || Number(rating) > 5) {
@@ -90,6 +99,7 @@ const addReviewReply = async (reviewRequest: IReplyReviewRequest, userId: string
         if (!user) {
             throw new ErrorHandler('User not found', StatusCodes.NOT_FOUND)
         }
+
         //check course exist
         const course: ICourse = (await CourseModel.findById(courseId)) as ICourse
         if (!course) {
@@ -97,6 +107,7 @@ const addReviewReply = async (reviewRequest: IReplyReviewRequest, userId: string
         }
         //check review exist
         const review: IReview = (await ReviewModel.findById(reviewId)) as IReview
+        const reviewrUser: IUser = (await UserModel.findById(review?.user)) as IUser
         if (!review) {
             throw new ErrorHandler('Review not found', StatusCodes.NOT_FOUND)
         }
@@ -113,6 +124,20 @@ const addReviewReply = async (reviewRequest: IReplyReviewRequest, userId: string
         review.reviewReplies?.push(newReviewReply)
 
         await review?.save()
+        const data: any = {
+            reviewerName: reviewrUser?.name,
+            courseName: course?.title,
+            replierName: user?.name
+        }
+        await sendMail(
+            {
+                email: reviewrUser?.email,
+                subject: 'Reply to your review',
+                template: 'reply-review.template.ejs',
+                data
+            },
+            TypeOfEmail.NOTIFICATION
+        )
 
         return review
     } catch (error: any) {
@@ -120,4 +145,26 @@ const addReviewReply = async (reviewRequest: IReplyReviewRequest, userId: string
     }
 }
 
-export const reviewServices = { addReview, addReviewReply }
+const getAllReviews = async () => {
+    try {
+        const reviews: IReview[] = (await ReviewModel.find()
+            .sort({ createdAt: -1 })
+            .populate({
+                path: 'user',
+                select: 'name email avatar'
+            })
+            .populate({
+                path: 'reviewReplies.user',
+                select: 'name email avatar'
+            })) as IReview[]
+        return reviews
+    } catch (error: any) {
+        return new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
+    }
+}
+
+export const reviewServices = {
+    addReview,
+    addReviewReply,
+    getAllReviews
+}
