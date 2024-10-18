@@ -3,11 +3,7 @@ import express, { Router } from 'express'
 
 import { isAuthenticated } from '../middlewares/auth.middleware'
 import validateMiddleware from '../middlewares/validate.middleware'
-import {
-    loginSchemaValidation,
-    registerSchemaValidation,
-    activationSchemaValidation
-} from '../validations/user.validation'
+import { loginSchemaValidation, registerSchemaValidation, activationSchemaValidation } from '../validations/validation'
 
 const authRouter: Router = express.Router() as Router
 

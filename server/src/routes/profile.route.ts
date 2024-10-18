@@ -1,7 +1,7 @@
 import express, { Router } from 'express'
 import { isAuthenticated } from '../middlewares/auth.middleware'
 import validateMiddleware from '../middlewares/validate.middleware'
-import { changePasswordSchemaValidation } from '../validations/user.validation'
+import { changePasswordSchemaValidation } from '../validations/validation'
 import { profileController } from '../controllers/profile.controller'
 
 const profileRouter: Router = express.Router() as Router
