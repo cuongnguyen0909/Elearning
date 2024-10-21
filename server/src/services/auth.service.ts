@@ -94,9 +94,17 @@ const loginUser = async (loginRequest: ILoginRequest) => {
         }
 
         //check user is exist or not
-        const user: IUser = (await UserModel.findOne({ email }).select('+password')?.populate({
-            path: 'courses'
-        })) as unknown as IUser
+        //check user with isBlocked and isDeleted is false
+        const user: IUser = (await UserModel.findOne({ email }).select('+password')) as IUser
+        if (!user) {
+            throw new ErrorHandler('Invalid email or password', StatusCodes.UNAUTHORIZED)
+        }
+        if (!user.isBlocked || !user.isDeleted) {
+            throw new ErrorHandler(
+                'You are not allowed to login. Please contact us via email for more information about your account',
+                StatusCodes.UNAUTHORIZED
+            )
+        }
         //check password is matched or not
         const isPasswordMatched: boolean = await user?.comparePassword(password)
 

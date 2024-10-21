@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
+import { IEnrollRequest } from '../interfaces/enroll.interface'
 import { enrollServices } from '../services/enroll.service'
 import catchAsyncError from '../utils/handlers/catch-async-error'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
-import { IEnrollRequest } from '../interfaces/enroll.interface'
 
 const createNewEnrollment = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const enrollRequest: IEnrollRequest = req.body as IEnrollRequest
