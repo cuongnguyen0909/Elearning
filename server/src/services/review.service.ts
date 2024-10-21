@@ -78,7 +78,8 @@ const addReview = async (reviewRequest: IReviewRequest, userId: any, courseId: s
         const notification = await NotificationModel.create({
             title: 'New Review Added',
             message: `${user?.name} added a review to ${course?.title} with rating ${rating}`,
-            user: userId
+            user: userId,
+            review: newReview?._id
         })
         const courseAfterUpdate: ICourse = (await courseHelper.getOneCourseById(courseId)) as unknown as ICourse
         await redis.set(courseId, JSON.stringify(courseAfterUpdate) as any)

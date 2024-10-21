@@ -7,6 +7,7 @@ export interface IReview extends Document {
     rating: number
     review: string
     reviewReplies: Object[]
+    isDeleted?: boolean
 }
 
 export const reviewSchema: Schema<IReview> = new mongoose.Schema(
@@ -40,7 +41,11 @@ export const reviewSchema: Schema<IReview> = new mongoose.Schema(
                     required: true
                 }
             }
-        ]
+        ],
+        isDeleted: {
+            type: Boolean,
+            default: false
+        }
     },
     { timestamps: true }
 )

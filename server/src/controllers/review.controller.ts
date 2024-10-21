@@ -1,13 +1,12 @@
 import { NextFunction, Request, Response } from 'express'
-import catchAsyncError from '../utils/handlers/catch-async-error'
-import { IUser } from '../models/schemas/user.schema'
-import { IReplyReviewRequest, IReviewRequest } from '../interfaces/review.interface'
-import { reviewServices } from '../services/review.service'
 import { StatusCodes } from 'http-status-codes'
-import ErrorHandler from '../utils/handlers/ErrorHandler'
-import { IReview } from '../models/schemas/review.schema'
+import { IReplyReviewRequest, IReviewRequest } from '../interfaces/review.interface'
 import { ICourse } from '../models/schemas/course.schema'
-import { ReviewModel } from '../models/review.model'
+import { IReview } from '../models/schemas/review.schema'
+import { IUser } from '../models/schemas/user.schema'
+import { reviewServices } from '../services/review.service'
+import catchAsyncError from '../utils/handlers/catch-async-error'
+import ErrorHandler from '../utils/handlers/ErrorHandler'
 
 const addReview = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
