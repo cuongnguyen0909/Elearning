@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
-import catchAsyncError from '../utils/handlers/catch-async-error'
-import ErrorHandler from '../utils/handlers/ErrorHandler'
+import { StatusCodes } from 'http-status-codes'
 import { IUser } from '../models/schemas/user.schema'
 import { userServices } from '../services/user.service'
-import { StatusCodes } from 'http-status-codes'
+import catchAsyncError from '../utils/handlers/catch-async-error'
+import ErrorHandler from '../utils/handlers/ErrorHandler'
 
 const getAllUser = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -20,7 +20,7 @@ const getAllUser = catchAsyncError(async (req: Request, res: Response, next: Nex
 
 const updateUserRole = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { userId, role } = req.body as any
+        const { userId } = req.body as any
         const currentUserId: string = req?.user?._id as string
         const updatedUser: IUser = (await userServices.updateUserRole(currentUserId, userId)) as IUser
         res.status(StatusCodes.OK).json({
@@ -58,9 +58,25 @@ const unLockUser = catchAsyncError(async (req: Request, res: Response, next: Nex
     }
 })
 
+const deleteUser = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const userId = req.params?.id as any
+
+        const deletedUser: IUser = (await userServices.deleteUser(userId)) as IUser
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: 'User deleted successfully',
+            user: deletedUser
+        })
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
+    }
+})
+
 export const userController = {
     getAllUser,
     updateUserRole,
     lockUser,
-    unLockUser
+    unLockUser,
+    deleteUser
 }

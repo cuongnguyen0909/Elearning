@@ -18,6 +18,7 @@ export interface IUser extends Document {
     role: string
     isVerified: boolean
     isBlocked: boolean
+    isDeleted: boolean
     courses: mongoose.Schema.Types.ObjectId[]
     isModified: (password: string) => boolean
     comparePassword: (password: string) => Promise<boolean>
@@ -60,6 +61,10 @@ export const userSchema: Schema<IUser> = new mongoose.Schema(
             default: false
         },
         isBlocked: {
+            type: Boolean,
+            default: false
+        },
+        isDeleted: {
             type: Boolean,
             default: false
         },
