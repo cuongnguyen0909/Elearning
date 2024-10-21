@@ -341,6 +341,24 @@ const searchCourse = async (title: string) => {
     }
 }
 
+const deleteCourse = async (courseId: string) => {
+    try {
+        const course: ICourse = (await CourseModel.findById(courseId)) as ICourse
+        if (!course) {
+            throw new ErrorHandler('Course not found', StatusCodes.NOT_FOUND)
+        }
+        course.isDeleted = true
+        await course?.save()
+        const deletedCourse: ICourse = (await courseHelper.getOneCourseById(courseId)) as ICourse
+        await redis.del(courseId)
+        const allCourses = await courseHelper.getAllCourses()
+        await redis.set('allCourses', JSON.stringify(allCourses))
+        return deletedCourse
+    } catch (error: any) {
+        throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
+    }
+}
+
 export const courseServices = {
     createCourse,
     updateCourse,
@@ -352,5 +370,6 @@ export const courseServices = {
     // addReview,
     // addReviewReply,
     searchCourse,
-    getAllCoursesByAdmin
+    getAllCoursesByAdmin,
+    deleteCourse
 }

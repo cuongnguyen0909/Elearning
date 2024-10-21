@@ -21,6 +21,6 @@ courseRouter
 courseRouter.put('/update/:id', isAuthenticated, authorizeRoles(UserRole.ADMIN), courseController.updateCourse)
 // courseRouter.put('/review/:id', isAuthenticated, courseController.addReview)
 courseRouter.get('/access/:id', isAuthenticated, courseController.getAccessibleCourse)
-courseRouter.route('/:id').get(courseController.getSingleCourseWhithoutPurchasing)
 
+courseRouter.route('/delete/:id').put(isAuthenticated, authorizeRoles(UserRole.ADMIN), courseController.deleteCourse    )
 export default courseRouter

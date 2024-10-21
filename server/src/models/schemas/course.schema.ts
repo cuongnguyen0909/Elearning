@@ -17,6 +17,7 @@ export interface ICourse extends Document {
     contents: IContent[]
     rating?: number
     purchased?: number
+    isDeleted: boolean
 }
 
 export const courseSchema: Schema<ICourse> = new mongoose.Schema(
@@ -74,6 +75,10 @@ export const courseSchema: Schema<ICourse> = new mongoose.Schema(
         purchased: {
             type: Number,
             default: 0
+        },
+        isDeleted: {
+            type: Boolean,
+            default: false
         }
     },
     { timestamps: true }

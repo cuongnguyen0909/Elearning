@@ -179,6 +179,20 @@ const getAllCoursesByAdmin = catchAsyncError(async (req: Request, res: Response,
     }
 })
 
+const deleteCourse = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const courseId: string = req.params?.id as string
+        const deletedCourse: ICourse = (await courseServices.deleteCourse(courseId)) as ICourse
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: 'Course deleted successfully',
+            course: deletedCourse
+        })
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
+    }
+})
+
 export const courseController = {
     createCourse,
     updateCourse,
@@ -190,5 +204,6 @@ export const courseController = {
     // addReview,
     // addReviewReply,
     searchCourse,
-    getAllCoursesByAdmin
+    getAllCoursesByAdmin,
+    deleteCourse
 }
