@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose'
+import { isBlock } from 'typescript'
 
 export interface IComment extends Document {
     user: Schema.Types.ObjectId
@@ -6,7 +7,8 @@ export interface IComment extends Document {
     commentReplies?: Object[]
     content: Schema.Types.ObjectId
     course: Schema.Types.ObjectId
-    isShown?: boolean
+    isDeleted?: boolean
+    isBlocked?: boolean
 }
 
 export const commentSchema: Schema<IComment> = new mongoose.Schema(
@@ -38,9 +40,13 @@ export const commentSchema: Schema<IComment> = new mongoose.Schema(
         content: {
             type: Schema.Types.ObjectId
         },
-        isShown: {
+        isDeleted: {
             type: Boolean,
-            default: true
+            default: false
+        },
+        isBlocked: {
+            type: Boolean,
+            default: false
         }
     },
     { timestamps: true }

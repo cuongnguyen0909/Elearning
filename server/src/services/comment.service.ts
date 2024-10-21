@@ -50,7 +50,8 @@ const addComment = async (commentRequest: ICommentRequest, userId: any) => {
         const newNotification: INotification = (await NotificationModel.create({
             user: user?._id,
             title: 'New Comment Received',
-            message: `${user?.name} added a comment to ${courseContent?.title}`
+            message: `${user?.name} added a comment to ${courseContent?.title}`,
+            comment: newComment?._id
         })) as INotification
         // console.log('newNotification', newNotification)
         const courseAfterUpdate: ICourse = (await courseHelper.getOneCourseById(courseId)) as unknown as ICourse
@@ -95,7 +96,8 @@ const addCommentReply = async (commentRequest: IReplyCommentRequest, userId: any
             await NotificationModel.create({
                 user: userReply?._id,
                 title: 'New Comment Received',
-                message: `You have a comment from ${userReply?.name} on ${content?.title}`
+                message: `You have a comment from ${userReply?.name} on ${content?.title}`,
+                comment: commentId
             })
         } else {
             // send email
