@@ -1,10 +1,8 @@
 import { NextFunction, Request, Response } from 'express'
+import { StatusCodes } from 'http-status-codes'
+import { notificationServices } from '../services/notification.service'
 import catchAsyncError from '../utils/handlers/catch-async-error'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
-import { notificationServices } from '../services/notification.service'
-import { StatusCodes } from 'http-status-codes'
-import cron from 'node-cron'
-import { NotificationModel } from '../models/notification.model'
 
 const getNotifications = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {

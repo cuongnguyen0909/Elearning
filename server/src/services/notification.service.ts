@@ -8,10 +8,28 @@ import { StatusCodes } from 'http-status-codes'
 const getNotifications = async () => {
     try {
         //get all notifications
-        const notifications: INotification[] = await NotificationModel.find().sort({ createdAt: -1 }).populate({
-            path: 'user',
-            select: 'name email'
-        })
+        const notifications: INotification[] = await NotificationModel.find()
+            .sort({ createdAt: -1 })
+            ?.populate({
+                path: 'user',
+                select: 'name email'
+            })
+            ?.populate({
+                path: 'comment',
+                populate: [
+                    {
+                        path: 'user',
+                        select: 'avatar name email'
+                    },
+                    {
+                        path: 'commentReplies.user',
+                        select: 'avatar name email'
+                    }
+                ]
+            })
+            ?.populate({
+                path: 'review'
+            })
         return notifications
     } catch (error: any) {
         throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
