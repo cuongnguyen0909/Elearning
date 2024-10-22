@@ -7,6 +7,10 @@ const courseRouter: Router = Router() as Router
 
 courseRouter.route('/').get(courseController.getAllCoursesWithoutPurchasing)
 courseRouter.get('/search', courseController.searchCourse)
+courseRouter.route('/get-vdocipher-otp').get(courseController.generateVideoUrl)
+// <div style="padding-top:41%;position:relative;">
+// <iframe src="https://player.vdocipher.com/v2/?otp={otp}&playbackInfo={playbackInfo}&player={playerId}" style="border:0;max-width:100%;position:absolute;top:0;left:0;height:100%;width:100%;" allowFullScreen="true" allow="encrypted-media"></iframe>
+// </div>
 
 //authencicating user
 // courseRouter.put('/reply', isAuthenticated, courseController.addCommentReply)
@@ -22,5 +26,5 @@ courseRouter.put('/update/:id', isAuthenticated, authorizeRoles(UserRole.ADMIN),
 // courseRouter.put('/review/:id', isAuthenticated, courseController.addReview)
 courseRouter.get('/access/:id', isAuthenticated, courseController.getAccessibleCourse)
 
-courseRouter.route('/delete/:id').put(isAuthenticated, authorizeRoles(UserRole.ADMIN), courseController.deleteCourse    )
+courseRouter.route('/delete/:id').put(isAuthenticated, authorizeRoles(UserRole.ADMIN), courseController.deleteCourse)
 export default courseRouter

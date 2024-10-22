@@ -4,6 +4,7 @@ import { ICourse } from '../models/schemas/course.schema'
 import { courseServices } from '../services/course.service'
 import catchAsyncError from '../utils/handlers/catch-async-error'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
+import axios from 'axios'
 
 const createCourse = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const data: ICourse = req.body
@@ -193,6 +194,26 @@ const deleteCourse = catchAsyncError(async (req: Request, res: Response, next: N
     }
 })
 
+const generateVideoUrl = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { videoId } = req.body as any
+        const response = await axios.post(
+            `https://dev.vdocipher.com/api/videos/${videoId}/otp`,
+            { ttl: 300 },
+            {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Apisecret ${process.env.VDOCIPHER_API_KEY_SECRET}`
+                }
+            }
+        )
+        res.json(response.data)
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
+    }
+})
+
 export const courseController = {
     createCourse,
     updateCourse,
@@ -205,5 +226,6 @@ export const courseController = {
     // addReviewReply,
     searchCourse,
     getAllCoursesByAdmin,
-    deleteCourse
+    deleteCourse,
+    generateVideoUrl
 }
