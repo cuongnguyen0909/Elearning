@@ -99,7 +99,7 @@ const loginUser = async (loginRequest: ILoginRequest) => {
         if (!user) {
             throw new ErrorHandler('Invalid email or password', StatusCodes.UNAUTHORIZED)
         }
-        if (!user.isBlocked || !user.isDeleted) {
+        if (user.isBlocked || user.isDeleted) {
             throw new ErrorHandler(
                 'You are not allowed to login. Please contact us via email for more information about your account',
                 StatusCodes.UNAUTHORIZED
@@ -143,7 +143,7 @@ const createNewAccessToken = async (refreshToken: string) => {
 
         const userOfSession: any = await redis.get(decoded?.id as string)
         if (!userOfSession) {
-            throw new ErrorHandler('User not found', StatusCodes.NOT_FOUND)
+            throw new ErrorHandler('Please login to access this resource', StatusCodes.NOT_FOUND)
         }
 
         const user = JSON.parse(userOfSession) as IUser

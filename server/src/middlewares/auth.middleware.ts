@@ -20,7 +20,7 @@ export const isAuthenticated = catchAsyncError(async (req: Request, res: Respons
     const userOfSession: any = await redis.get(decoded?.id as string)
 
     if (!userOfSession) {
-        return next(new ErrorHandler('User not found', StatusCodes.NOT_FOUND))
+        return next(new ErrorHandler('Please login to access this resource', StatusCodes.NOT_FOUND))
     }
 
     req.user = JSON.parse(userOfSession) as IUser

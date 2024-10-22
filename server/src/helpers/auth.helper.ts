@@ -23,7 +23,7 @@ const generateToken = async (user: IUser) => {
     const refreshToken: string = user.signRefreshToken()
 
     //upload session to redis
-    await redis.set(user?._id, JSON.stringify(user) as any)
+    await redis.set(user?._id, JSON.stringify(user), 'EX', 60 * 60 * 24 * 7) // 7 days
 
     //only set secure to true in production
     if (process.env.NODE_ENV === 'production') {

@@ -80,7 +80,7 @@ const getOneCourseWithoutLogin = async (courseId: string) => {
         } else {
             course = (await courseHelper.getOneCourseById(courseId)) as unknown as ICourse
 
-            await redis.set(courseId, JSON.stringify(course) as any)
+            await redis.set(courseId, JSON.stringify(course), 'EX', 60 * 60 * 24 * 7) // 7 days
         }
         return course
     } catch (error: any) {

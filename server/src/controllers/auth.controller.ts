@@ -12,6 +12,7 @@ import { authServices } from '../services/auth.service'
 import catchAsyncError from '../utils/handlers/catch-async-error'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
 import { authHelper } from '../helpers/auth.helper'
+import { redis } from '../configs/connect.redis.config'
 
 //register user
 const userRegistration = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
@@ -90,6 +91,8 @@ const updateAccessToken = catchAsyncError(async (req: Request, res: Response, ne
         //set cookies in the browser
         res.cookie('accessToken', newAccessToken, accessTokenOptions)
         res.cookie('refreshToken', newRefreshToken, refreshTokenOptions)
+
+        // await redis.set(user._id, JSON.stringify(user), 'EX', 5) //set user in redis for 5 seconds
         res.status(StatusCodes.OK).json({
             success: true,
             message: 'Access token is updated successfully',
