@@ -35,7 +35,8 @@ export default function RootLayout({
         dark:bg-gradient-to-b
         dark:from-gray-900
          dark:to-black 
-         duration-300`}
+         `}
+      //  duration-300
       >
         <ThemeProvider attribute="class" defaultTheme={'system'} enableSystem >
           {children}
