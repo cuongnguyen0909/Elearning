@@ -1,24 +1,24 @@
-'use client'
-import { useTheme } from 'next-themes'
-import React, { useEffect, useState } from 'react'
-import { BiMoon, BiSun } from 'react-icons/bi'
+'use client';
+import { useTheme } from 'next-themes';
+import React, { useEffect, useState } from 'react';
+import { BiMoon, BiSun } from 'react-icons/bi';
 
-type Props = {}
+type Props = {};
 
 const ThemeSwitcher: React.FC<Props> = (props) => {
-  const [mounted, setMounted] = useState(false)
-  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
   if (!mounted) {
-    return null
+    return null;
   }
 
   return (
-    <div className="flex items-center justify-center mx-4">
+    <div className="mx-4 flex items-center justify-center">
       {theme === 'light' ? (
         <BiMoon
           className="cursor-pointer"
@@ -34,7 +34,7 @@ const ThemeSwitcher: React.FC<Props> = (props) => {
         />
       )}
     </div>
-  )
-}
+  );
+};
 
-export default ThemeSwitcher
+export default ThemeSwitcher;

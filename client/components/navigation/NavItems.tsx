@@ -1,36 +1,36 @@
-import Link from 'next/link'
-import React, { FC } from 'react'
+import Link from 'next/link';
+import React, { FC } from 'react';
 
 type Props = {
-  activeItem: number
-  isMobile: boolean
-}
+  activeItem: number;
+  isMobile: boolean;
+};
 
 export const navItemsData = [
   {
     name: 'Home',
-    url: '/'
+    url: '/',
   },
   {
     name: 'Courses',
-    url: '/courses'
+    url: '/courses',
   },
   {
     name: 'About',
-    url: '/about'
+    url: '/about',
   },
   {
     name: 'Policy',
-    url: '/policy'
+    url: '/policy',
   },
   {
     name: 'FAQ',
-    url: '/faq'
-  }
-]
+    url: '/faq',
+  },
+];
 
 const NavItems: FC<Props> = (props) => {
-  const { activeItem, isMobile } = props
+  const { activeItem, isMobile } = props;
   return (
     <>
       <div className="hidden 800px:flex">
@@ -40,9 +40,9 @@ const NavItems: FC<Props> = (props) => {
               <span
                 className={`${
                   activeItem === index
-                    ? 'dark:text-[#37a39a] text-[#37b668]'
-                    : 'dark:text-white text-black'
-                } text-[18px] px-6 font-Poppins font-[400]`}
+                    ? 'text-[#37b668] dark:text-[#37a39a]'
+                    : 'text-black dark:text-white'
+                } px-6 font-Poppins text-[18px] font-[400]`}
               >
                 {item?.name}
               </span>
@@ -50,10 +50,10 @@ const NavItems: FC<Props> = (props) => {
           ))}
       </div>
       {isMobile && (
-        <div className="800px:hidden mt-5">
-          <div className="w-full text-center py-6">
+        <div className="mt-5 800px:hidden">
+          <div className="w-full py-6 text-center">
             <Link href={'/'} passHref>
-              <span className="text-[25px] font-Poppins font-[500] text-black dark:text-white">
+              <span className="font-Poppins text-[25px] font-[500] text-black dark:text-white">
                 ELearning
               </span>
             </Link>
@@ -64,9 +64,9 @@ const NavItems: FC<Props> = (props) => {
                 <span
                   className={`${
                     activeItem === index
-                      ? 'dark:text-[#37a39a] text-[crimson]'
-                      : 'dark:text-white text-black'
-                  } block py-5 text-[18px] px-6 font-Poppins font-[400]`}
+                      ? 'text-[crimson] dark:text-[#37a39a]'
+                      : 'text-black dark:text-white'
+                  } block px-6 py-5 font-Poppins text-[18px] font-[400]`}
                 >
                   {item?.name}
                 </span>
@@ -75,7 +75,7 @@ const NavItems: FC<Props> = (props) => {
         </div>
       )}
     </>
-  )
-}
+  );
+};
 
-export default NavItems
+export default NavItems;
