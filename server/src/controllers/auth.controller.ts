@@ -37,7 +37,7 @@ const userActivation = catchAsyncError(async (req: Request, res: Response, next:
         res.status(StatusCodes.CREATED).json({
             success: true,
             message: 'User is created successfully',
-            userId: userActivated?._id
+            user: userActivated
         })
     } catch (error: any) {
         return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
