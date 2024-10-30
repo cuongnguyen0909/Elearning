@@ -1,10 +1,10 @@
 'use client';
 
-import React, { FC, useEffect, useState } from 'react';
-import Heading from '../components/public/Heading';
-import Header from './components/header/Header';
-import Hero from '../components/public/Hero';
 import { useTheme } from 'next-themes';
+import { FC, useEffect, useState } from 'react';
+import Heading from '../components/public/Heading';
+import Hero from '../components/public/Hero';
+import Header from './components/header/Header';
 
 type Props = {};
 

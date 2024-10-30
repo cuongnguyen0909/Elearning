@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { userLoggedId } from '../auth/authSlice';
+import { userLoggedIn } from '../auth/authSlice';
 
 export const apiSlice = createApi({
     reducerPath: 'api',
@@ -17,7 +17,7 @@ export const apiSlice = createApi({
             }
         }),
         loadUser: builder.query({
-            query: (data) => {
+            query: () => {
                 return {
                     url: 'profile',
                     method: 'GET',
@@ -28,13 +28,13 @@ export const apiSlice = createApi({
                 try {
                     const result = await queryFulfilled;
                     dispatch(
-                        userLoggedId({
+                        userLoggedIn({
                             accessToken: result.data.accessToken,
                             user: result.data.user
                         })
                     );
                 } catch (error: any) {
-                    console.log(error);
+                    console.log('hello', error);
                 }
             }
         })

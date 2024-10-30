@@ -12,7 +12,7 @@ import { styles } from '../../utils/style';
 import { useLoginMutation } from '../../../redux/features/auth/authApi';
 import toast from 'react-hot-toast';
 import Loading from '../../../components/common/Loading';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 
 type Props = {
     setRoute: (route: string) => void;
@@ -31,6 +31,7 @@ const loginSchema = Yup.object().shape({
 const Login: React.FC<Props> = (props) => {
     const { setRoute, setOpen } = props;
     const [show, setShow] = useState(false);
+    const { data: session } = useSession();
     const [login, { isLoading, isSuccess, error, data }] = useLoginMutation();
     const formik = useFormik({
         initialValues: { email: '', password: '' },
@@ -44,7 +45,9 @@ const Login: React.FC<Props> = (props) => {
         if (isSuccess) {
             const successMessage =
                 data?.message || 'User logged in successfully';
-            toast.success(successMessage);
+            toast.success(successMessage, {
+                duration: 2000
+            });
             setOpen(false);
         }
         if (error) {
@@ -52,7 +55,9 @@ const Login: React.FC<Props> = (props) => {
             const errorMessage =
                 // errorData?.data?.message ||
                 'User login failed';
-            toast.error(errorMessage);
+            toast.error(errorMessage, {
+                duration: 2000
+            });
         }
     }, [isSuccess, error]);
 
