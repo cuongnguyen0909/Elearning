@@ -4,6 +4,7 @@ import { redis } from '../configs/connect.redis.config'
 import { accessTokenOptions, refreshTokenOptions } from '../constants/user.constant'
 import { IActivationToken, IRegistrationRequest } from '../interfaces/user.interface'
 import { IUser } from '../models/schemas/user.schema'
+import { UserModel } from '../models/user.model'
 //using dotenv to access environment variables
 dotenv.config()
 
@@ -18,7 +19,8 @@ const generateActivationToken = (user: IRegistrationRequest): IActivationToken =
     return { token, activationCode }
 }
 
-const generateToken = async (user: IUser) => {
+const generateToken = async (userId: string) => {
+    const user: IUser = (await UserModel.findById(userId)) as IUser
     const accessToken: string = user.signAccessToken()
     const refreshToken: string = user.signRefreshToken()
 

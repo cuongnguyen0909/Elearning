@@ -38,6 +38,7 @@ export interface ITokenOptions {
 export interface ISocialAuthRequest {
     email: string
     name: string
+    avatar: string
 }
 
 export interface IUpdateProfileRequest {

@@ -1,16 +1,21 @@
 'use client';
 
+import { useTheme } from 'next-themes';
+import Image from 'next/image';
 import Link from 'next/link';
-import React, { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
+import { HiOutlineMenuAlt3, HiOutlineUserCircle } from 'react-icons/hi';
+import { useSelector } from 'react-redux';
+import CustomModal from '../../../components/modal/CustomModal';
 import NavItems from '../../../components/navigation/NavItems';
 import ThemeSwitcher from '../../../components/theme/ThemeSwitcher';
-import { HiOutlineMenuAlt3, HiOutlineUserCircle } from 'react-icons/hi';
-import { useTheme } from 'next-themes';
-import CustomModal from '../../../components/modal/CustomModal';
+import avatar from '../../../public/assets/avatar.png';
 import Login from '../auth/Login';
 import SignUp from '../auth/SignUp';
 import Verification from '../auth/Verification';
-
+import { useSession } from 'next-auth/react';
+import { useSocialLoginMutation } from '../../../redux/features/auth/authApi';
+import toast from 'react-hot-toast';
 type Props = {
     open: boolean;
     setOpen: (open: boolean) => void;
@@ -18,13 +23,39 @@ type Props = {
     route: string;
     setRoute: (route: string) => void;
 };
+const URL_API = process.env.NEXT_PUBLIC_API_SERVER_URL;
 
 const Header: FC<Props> = (props) => {
     const { activeItem, open, setOpen, route, setRoute } = props;
+    const { user, isLoggedIn } = useSelector((state: any) => state.auth);
+    const { data } = useSession();
+    const [socialLogin, { isLoading, isSuccess, error }] =
+        useSocialLoginMutation();
     const [active, setActive] = useState(false);
     const [openSidebar, setOpenSidebar] = useState(false);
     const { theme } = useTheme();
 
+    useEffect(() => {
+        if (data && !isLoggedIn && !user) {
+            socialLogin({
+                email: data?.user?.email,
+                name: data?.user?.name,
+                avatar: data?.user?.image
+            });
+        } else {
+            console.log('no data');
+        }
+        if (isSuccess) {
+            toast.success('User logged in successfully', {
+                duration: 2000
+            });
+        }
+        if (error) {
+            toast.error('User login failed', {
+                duration: 2000
+            });
+        }
+    }, [data, isLoggedIn, error, isSuccess, user]);
     if (typeof window !== 'undefined') {
         window.addEventListener('scroll', () => {
             if (window.scrollY > 80) {
@@ -82,14 +113,30 @@ const Header: FC<Props> = (props) => {
                                     onClick={() => setOpenSidebar(!openSidebar)}
                                 />
                             </div>
-                            <HiOutlineUserCircle
-                                size={30}
-                                className="hidden cursor-pointer text-black dark:text-white 800px:block"
-                                onClick={() => {
-                                    setRoute('Login');
-                                    setOpen(true);
-                                }}
-                            />
+                            {user ? (
+                                <Link href={`/profile`}>
+                                    <Image
+                                        src={
+                                            user.avatar
+                                                ? user?.avatar?.url
+                                                : avatar
+                                        }
+                                        width={30}
+                                        height={30}
+                                        alt="avatar"
+                                        className="cursor-pointer rounded-full"
+                                    />
+                                </Link>
+                            ) : (
+                                <HiOutlineUserCircle
+                                    size={30}
+                                    className="hidden cursor-pointer text-black dark:text-white 800px:block"
+                                    onClick={() => {
+                                        setRoute('Login');
+                                        setOpen(true);
+                                    }}
+                                />
+                            )}
                         </div>
                     </div>
                 </div>

@@ -1,5 +1,5 @@
 import { apiSlice } from '../api/apiSlice';
-import { userRegistration } from './authSlice';
+import { userLoggedId, userRegistration } from './authSlice';
 
 type RegistrationResponse = {
     message: string;
@@ -40,11 +40,73 @@ export const authApi = apiSlice.injectEndpoints({
                     body: {
                         activationCode,
                         activationToken
-                    }
+                    },
+                    credentials: 'include' as const
                 };
+            }
+        }),
+        login: builder.mutation({
+            query: (data) => {
+                const { email, password } = data;
+                return {
+                    url: 'auth/login',
+                    method: 'POST',
+                    body: {
+                        email,
+                        password
+                    },
+                    credentials: 'include' as const
+                };
+            },
+            async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+                try {
+                    const result = await queryFulfilled;
+                    dispatch(
+                        userLoggedId({
+                            accessToken: result.data.accessToken,
+                            user: result.data.user
+                        })
+                    );
+                } catch (error: any) {
+                    console.log(error);
+                }
+            }
+        }),
+        socialLogin: builder.mutation({
+            query: (data) => {
+                const { email, name, avatar } = data;
+                return {
+                    url: 'auth/social',
+                    method: 'POST',
+                    body: {
+                        email,
+                        name,
+                        avatar
+                    },
+                    credentials: 'include' as const
+                };
+            },
+            async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+                try {
+                    const result = await queryFulfilled;
+                    console.log(result);
+                    dispatch(
+                        userLoggedId({
+                            accessToken: result.data.accessToken,
+                            user: result.data.user
+                        })
+                    );
+                } catch (error: any) {
+                    console.log(error);
+                }
             }
         })
     })
 });
 
-export const { useRegisterMutation, useActivateMutation } = authApi;
+export const {
+    useRegisterMutation,
+    useActivateMutation,
+    useLoginMutation,
+    useSocialLoginMutation
+} = authApi;

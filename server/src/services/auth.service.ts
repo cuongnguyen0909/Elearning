@@ -110,7 +110,7 @@ const loginUser = async (loginRequest: ILoginRequest) => {
 
         //check if password is matched
         if (!isPasswordMatched) {
-            return new ErrorHandler('Invalid email or password', StatusCodes.UNAUTHORIZED)
+            return new ErrorHandler("Email or password doesn't match. Please try again", StatusCodes.UNAUTHORIZED)
         }
         //check user is blocked or not
         if (user.isBlocked) {
@@ -164,11 +164,18 @@ const createNewAccessToken = async (refreshToken: string) => {
 
 const loginBySoial = async (socialRequest: ISocialAuthRequest) => {
     try {
-        const { email } = socialRequest as ISocialAuthRequest
+        const { email, name, avatar } = socialRequest as ISocialAuthRequest
         //check user is exist or not
         const existingUser: IUser = (await UserModel.findOne({ email })) as IUser
         if (!existingUser) {
-            const user = await UserModel.create(socialRequest)
+            const user = await UserModel.create({
+                email,
+                name,
+                avatar: {
+                    public_id: '',
+                    url: avatar
+                }
+            })
             return user
         }
         throw new ErrorHandler('User is already exist', StatusCodes.BAD_REQUEST)

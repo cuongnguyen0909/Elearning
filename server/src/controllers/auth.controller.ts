@@ -49,7 +49,8 @@ const userLogin = catchAsyncError(async (req: Request, res: Response, next: Next
     const loginRequest: ILoginRequest = req?.body
     try {
         const user: IUser = (await authServices.loginUser(loginRequest)) as IUser
-        const { accessToken, refreshToken } = await authHelper.generateToken(user)
+        const userId: any = user._id as any
+        const { accessToken, refreshToken } = await authHelper.generateToken(userId)
         //set cookies in the browser
         res.cookie('accessToken', accessToken, accessTokenOptions)
         res.cookie('refreshToken', refreshToken, refreshTokenOptions)
@@ -108,14 +109,15 @@ const socialAuthLogin = catchAsyncError(async (req: Request, res: Response, next
     try {
         //login by social
         const user = await authServices.loginBySoial(socialAuthRequest)
+        const userId: any = user._id as any
         //generate token
-        const { accessToken, refreshToken } = await authHelper.generateToken(user)
+        const { accessToken, refreshToken } = await authHelper.generateToken(userId)
         //set cookies in the browser
         res.cookie('accessToken', accessToken, accessTokenOptions)
         res.cookie('refreshToken', refreshToken, refreshTokenOptions)
         res.status(StatusCodes.OK).json({
             success: true,
-            userId: user._id,
+            user,
             accessToken
         })
     } catch (error: any) {

@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import {
@@ -9,9 +9,14 @@ import {
 } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
 import { styles } from '../../utils/style';
+import { useLoginMutation } from '../../../redux/features/auth/authApi';
+import toast from 'react-hot-toast';
+import Loading from '../../../components/common/Loading';
+import { signIn } from 'next-auth/react';
 
 type Props = {
     setRoute: (route: string) => void;
+    setOpen: (open: boolean) => void;
 };
 
 const loginSchema = Yup.object().shape({
@@ -24,20 +29,38 @@ const loginSchema = Yup.object().shape({
 });
 
 const Login: React.FC<Props> = (props) => {
-    const { setRoute } = props;
+    const { setRoute, setOpen } = props;
     const [show, setShow] = useState(false);
+    const [login, { isLoading, isSuccess, error, data }] = useLoginMutation();
     const formik = useFormik({
         initialValues: { email: '', password: '' },
         validationSchema: loginSchema,
         onSubmit: async ({ email, password }) => {
-            console.log(email, password);
+            await login({ email, password });
         }
     });
+
+    useEffect(() => {
+        if (isSuccess) {
+            const successMessage =
+                data?.message || 'User logged in successfully';
+            toast.success(successMessage);
+            setOpen(false);
+        }
+        if (error) {
+            const errorData = error as any;
+            const errorMessage =
+                // errorData?.data?.message ||
+                'User login failed';
+            toast.error(errorMessage);
+        }
+    }, [isSuccess, error]);
 
     const { errors, touched, values, handleChange, handleSubmit } = formik;
 
     return (
         <div className="w-full">
+            {isLoading && <Loading isLoading={isLoading} />}
             <h1 className={`${styles.title}`}>Login to ELearning</h1>
             <form onSubmit={handleSubmit}>
                 {/* email field */}
@@ -108,10 +131,12 @@ const Login: React.FC<Props> = (props) => {
                     <FcGoogle
                         size={30}
                         className="mr-2 cursor-pointer text-black dark:text-white"
+                        onClick={() => signIn('google')}
                     />
                     <AiFillGithub
                         size={30}
                         className="ml-2 cursor-pointer text-black dark:text-white"
+                        onClick={() => signIn('github')}
                     />
                 </div>
                 <h5 className="cursor-pointer pt-4 text-center font-Poppins text-black dark:text-white">

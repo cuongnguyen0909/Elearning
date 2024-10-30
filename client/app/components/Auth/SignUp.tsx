@@ -59,120 +59,116 @@ const SignUp: React.FC<Props> = (props) => {
     const { errors, touched, values, handleChange, handleSubmit } = formik;
 
     return (
-        <>
-            <div className="w-full">
-                {isLoading && <Loading isLoading={isLoading} />}
-            </div>
-            <div className="w-full">
-                <h1 className={`${styles.title}`}>Join to ELearning</h1>
-                <form onSubmit={handleSubmit}>
-                    {/* name field */}
-                    <div>
-                        <label htmlFor="name" className={`${styles.label}`}>
-                            Enter your name
-                        </label>
-                        <input
-                            type="text"
-                            name="name"
-                            value={values.name}
-                            onChange={handleChange}
-                            id="name"
-                            placeholder="Enter your name"
-                            className={`${errors.name && touched.name && 'border-red-500'} ${styles.input}`}
+        <div className="w-full">
+            {isLoading && <Loading isLoading={isLoading} />}
+            <h1 className={`${styles.title}`}>Join to ELearning</h1>
+            <form onSubmit={handleSubmit}>
+                {/* name field */}
+                <div>
+                    <label htmlFor="name" className={`${styles.label}`}>
+                        Enter your name
+                    </label>
+                    <input
+                        type="text"
+                        name="name"
+                        value={values.name}
+                        onChange={handleChange}
+                        id="name"
+                        placeholder="Enter your name"
+                        className={`${errors.name && touched.name && 'border-red-500'} ${styles.input}`}
+                    />
+                </div>
+                {errors.name && touched.name && (
+                    <span className="block pt-2 font-semibold text-red-500">
+                        {errors.name}
+                    </span>
+                )}
+                {/* email field */}
+                <div className="mt-5">
+                    <label htmlFor="email" className={`${styles.label}`}>
+                        Enter your email
+                    </label>
+                    <input
+                        type="email"
+                        name="email"
+                        value={values.email}
+                        onChange={handleChange}
+                        id="email"
+                        placeholder="Enter your email"
+                        className={`${errors.email && touched.email && 'border-red-500'} ${styles.input}`}
+                    />
+                </div>
+                {errors.email && touched.email && (
+                    <span className="block pt-2 font-semibold text-red-500">
+                        {errors.email}
+                    </span>
+                )}
+                {/* password field */}
+                <div className="relative mb-1 mt-5 w-full">
+                    <label htmlFor="password" className={`${styles.label}`}>
+                        Enter your password
+                    </label>
+                    <input
+                        type={`${!show ? 'password' : 'text'}`}
+                        name="password"
+                        value={values.password}
+                        onChange={handleChange}
+                        id="password"
+                        placeholder="Enter your password"
+                        className={`${errors.password && touched.password && 'border-red-500'} ${styles.input}`}
+                    />
+                    {!show ? (
+                        <AiOutlineEyeInvisible
+                            className="z-1 absolute bottom-3 right-2 cursor-pointer text-black dark:text-white"
+                            size={20}
+                            onClick={() => setShow(!show)}
                         />
-                    </div>
-                    {errors.name && touched.name && (
-                        <span className="block pt-2 font-semibold text-red-500">
-                            {errors.name}
-                        </span>
+                    ) : (
+                        <AiOutlineEye
+                            className="z-1 absolute bottom-3 right-2 cursor-pointer text-black dark:text-white"
+                            size={20}
+                            onClick={() => setShow(!show)}
+                        />
                     )}
-                    {/* email field */}
-                    <div className="mt-5">
-                        <label htmlFor="email" className={`${styles.label}`}>
-                            Enter your email
-                        </label>
-                        <input
-                            type="email"
-                            name="email"
-                            value={values.email}
-                            onChange={handleChange}
-                            id="email"
-                            placeholder="Enter your email"
-                            className={`${errors.email && touched.email && 'border-red-500'} ${styles.input}`}
-                        />
-                    </div>
-                    {errors.email && touched.email && (
-                        <span className="block pt-2 font-semibold text-red-500">
-                            {errors.email}
-                        </span>
-                    )}
-                    {/* password field */}
-                    <div className="relative mb-1 mt-5 w-full">
-                        <label htmlFor="password" className={`${styles.label}`}>
-                            Enter your password
-                        </label>
-                        <input
-                            type={`${!show ? 'password' : 'text'}`}
-                            name="password"
-                            value={values.password}
-                            onChange={handleChange}
-                            id="password"
-                            placeholder="Enter your password"
-                            className={`${errors.password && touched.password && 'border-red-500'} ${styles.input}`}
-                        />
-                        {!show ? (
-                            <AiOutlineEyeInvisible
-                                className="z-1 absolute bottom-3 right-2 cursor-pointer text-black dark:text-white"
-                                size={20}
-                                onClick={() => setShow(!show)}
-                            />
-                        ) : (
-                            <AiOutlineEye
-                                className="z-1 absolute bottom-3 right-2 cursor-pointer text-black dark:text-white"
-                                size={20}
-                                onClick={() => setShow(!show)}
-                            />
-                        )}
-                    </div>
-                    {errors.password && touched.password && (
-                        <span className="block pt-2 font-semibold text-red-500">
-                            {errors.password}
-                        </span>
-                    )}
-                    {/* button submit */}
-                    <div className="mt-5 w-full">
-                        <input
-                            type="submit"
-                            value="Sign Up"
-                            className={`${styles.button}`}
-                        />
-                    </div>
-                    <br />
-                    <h5 className="pt-4 text-center font-Poppins text-[14px] text-black dark:text-white">
-                        Or Join with
-                    </h5>
-                    <div className="flex items-center justify-center">
-                        <FcGoogle
-                            size={30}
-                            className="mr-2 cursor-pointer text-black dark:text-white"
-                        />
-                        <AiFillGithub
-                            size={30}
-                            className="ml-2 cursor-pointer text-black dark:text-white"
-                        />
-                    </div>
-                    <h5 className="cursor-pointer pt-4 text-center font-Poppins text-black dark:text-white">
-                        Already have any account?{' '}
-                        <span
-                            className="cursor-pointer pl-1 text-[#2190ff]"
-                            onClick={() => setRoute('Login')}
-                        >
-                            Sign In
-                        </span>
-                    </h5>
-                </form>
-            </div>
-        </>
+                </div>
+                {errors.password && touched.password && (
+                    <span className="block pt-2 font-semibold text-red-500">
+                        {errors.password}
+                    </span>
+                )}
+                {/* button submit */}
+                <div className="mt-5 w-full">
+                    <input
+                        type="submit"
+                        value="Sign Up"
+                        className={`${styles.button}`}
+                    />
+                </div>
+                <br />
+                <h5 className="pt-4 text-center font-Poppins text-[14px] text-black dark:text-white">
+                    Or Join with
+                </h5>
+                <div className="flex items-center justify-center">
+                    <FcGoogle
+                        size={30}
+                        className="mr-2 cursor-pointer text-black dark:text-white"
+                    />
+                    <AiFillGithub
+                        size={30}
+                        className="ml-2 cursor-pointer text-black dark:text-white"
+                    />
+                </div>
+                <h5 className="cursor-pointer pt-4 text-center font-Poppins text-black dark:text-white">
+                    Already have any account?{' '}
+                    <span
+                        className="cursor-pointer pl-1 text-[#2190ff]"
+                        onClick={() => setRoute('Login')}
+                    >
+                        Sign In
+                    </span>
+                </h5>
+            </form>
+        </div>
     );
 };
 
