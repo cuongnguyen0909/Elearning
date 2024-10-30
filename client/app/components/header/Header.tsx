@@ -14,7 +14,10 @@ import Login from '../auth/Login';
 import SignUp from '../auth/SignUp';
 import Verification from '../auth/Verification';
 import { useSession } from 'next-auth/react';
-import { useSocialLoginMutation } from '../../../redux/features/auth/authApi';
+import {
+    useLogoutQuery,
+    useSocialLoginMutation
+} from '../../../redux/features/auth/authApi';
 import toast from 'react-hot-toast';
 type Props = {
     open: boolean;
@@ -34,6 +37,10 @@ const Header: FC<Props> = (props) => {
     const [active, setActive] = useState(false);
     const [openSidebar, setOpenSidebar] = useState(false);
     const { theme } = useTheme();
+    const [logout, setLogout] = useState(false);
+    const {} = useLogoutQuery(undefined, {
+        skip: !logout ? true : false
+    });
 
     useEffect(() => {
         if (data && !isLoggedIn && !user) {
@@ -42,10 +49,9 @@ const Header: FC<Props> = (props) => {
                 name: data?.user?.name,
                 avatar: data?.user?.image
             });
-        } else {
-            console.log('no data');
         }
-        if (isSuccess) {
+
+        if (isSuccess && data === null) {
             toast.success('User logged in successfully', {
                 duration: 2000
             });
@@ -55,7 +61,11 @@ const Header: FC<Props> = (props) => {
                 duration: 2000
             });
         }
-    }, [data, isLoggedIn, error, isSuccess, user]);
+        if (data === null) {
+            setLogout(true);
+        }
+    }, [data, user]);
+
     if (typeof window !== 'undefined') {
         window.addEventListener('scroll', () => {
             if (window.scrollY > 80) {
