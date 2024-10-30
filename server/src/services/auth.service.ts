@@ -167,8 +167,11 @@ const loginBySoial = async (socialRequest: ISocialAuthRequest) => {
         const { email, name, avatar } = socialRequest as ISocialAuthRequest
         //check user is exist or not
         const existingUser: IUser = (await UserModel.findOne({ email })) as IUser
+        let user: IUser = existingUser
+        //if user is not exist then create new user
+        //if user is exist then return user and allow to login
         if (!existingUser) {
-            const user = await UserModel.create({
+            user = await UserModel.create({
                 email,
                 name,
                 avatar: {
@@ -176,9 +179,10 @@ const loginBySoial = async (socialRequest: ISocialAuthRequest) => {
                     url: avatar
                 }
             })
-            return user
         }
-        throw new ErrorHandler('User is already exist', StatusCodes.BAD_REQUEST)
+        return user
+
+        // throw new ErrorHandler('User is already exist', StatusCodes.BAD_REQUEST)
     } catch (error: any) {
         throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
     }

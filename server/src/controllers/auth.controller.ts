@@ -109,7 +109,7 @@ const socialAuthLogin = catchAsyncError(async (req: Request, res: Response, next
     try {
         //login by social
         const user = await authServices.loginBySoial(socialAuthRequest)
-        const userId: any = user._id as any
+        const userId: any = user?._id as any
         //generate token
         const { accessToken, refreshToken } = await authHelper.generateToken(userId)
         //set cookies in the browser
