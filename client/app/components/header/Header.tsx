@@ -1,24 +1,26 @@
 'use client';
 
+import { useSession } from 'next-auth/react';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FC, useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { HiOutlineMenuAlt3, HiOutlineUserCircle } from 'react-icons/hi';
 import { useSelector } from 'react-redux';
 import CustomModal from '../../../components/modal/CustomModal';
 import NavItems from '../../../components/navigation/NavItems';
 import ThemeSwitcher from '../../../components/theme/ThemeSwitcher';
 import avatar from '../../../public/assets/avatar.png';
-import Login from '../auth/Login';
-import SignUp from '../auth/SignUp';
-import Verification from '../auth/Verification';
-import { useSession } from 'next-auth/react';
 import {
     useLogoutQuery,
     useSocialLoginMutation
 } from '../../../redux/features/auth/authApi';
-import toast from 'react-hot-toast';
+import Login from '../auth/Login';
+import SignUp from '../auth/SignUp';
+import Verification from '../auth/Verification';
+import { useLoadUserQuery } from '../../../redux/features/api/apiSlice';
+import Loading from '../../../components/common/Loading';
 type Props = {
     open: boolean;
     setOpen: (open: boolean) => void;
@@ -32,6 +34,7 @@ const Header: FC<Props> = (props) => {
     const { activeItem, open, setOpen, route, setRoute } = props;
     const { user, isLoggedIn } = useSelector((state: any) => state.auth);
     const { data } = useSession();
+    const { isLoading: loadingProfile } = useLoadUserQuery({});
     const [socialLogin, { isLoading, isSuccess, error }] =
         useSocialLoginMutation();
     const [active, setActive] = useState(false);
@@ -39,11 +42,11 @@ const Header: FC<Props> = (props) => {
     const { theme } = useTheme();
     const [logout, setLogout] = useState(false);
     const {} = useLogoutQuery(undefined, {
-        skip: !logout ? true : false
+        skip: !logout
     });
 
     useEffect(() => {
-        if (data && !isLoggedIn && !user) {
+        if (data && !isLoggedIn) {
             socialLogin({
                 email: data?.user?.email,
                 name: data?.user?.name,
@@ -51,7 +54,7 @@ const Header: FC<Props> = (props) => {
             });
         }
 
-        if (isSuccess && data === null) {
+        if (isSuccess && data === null && isLoggedIn) {
             toast.success('User logged in successfully', {
                 duration: 2000
             });
@@ -61,10 +64,12 @@ const Header: FC<Props> = (props) => {
                 duration: 2000
             });
         }
-        if (data === null) {
+        if (!data && !user && !isLoggedIn) {
             setLogout(true);
+        } else {
+            setLogout(false);
         }
-    }, [data, user]);
+    }, [data, user, isSuccess, error, isLoggedIn, socialLogin]);
 
     if (typeof window !== 'undefined') {
         window.addEventListener('scroll', () => {
@@ -123,6 +128,9 @@ const Header: FC<Props> = (props) => {
                                     onClick={() => setOpenSidebar(!openSidebar)}
                                 />
                             </div>
+                            {loadingProfile && (
+                                <Loading isLoading={loadingProfile} />
+                            )}
                             {user ? (
                                 <Link href={`/profile`}>
                                     <Image
@@ -135,6 +143,12 @@ const Header: FC<Props> = (props) => {
                                         height={30}
                                         alt="avatar"
                                         className="cursor-pointer rounded-full"
+                                        style={{
+                                            border:
+                                                activeItem === 5
+                                                    ? '2px solid #37a39a'
+                                                    : 'none'
+                                        }}
                                     />
                                 </Link>
                             ) : (
