@@ -1,7 +1,8 @@
-'use client';
+// store.ts
 import { configureStore } from '@reduxjs/toolkit';
 import { apiSlice } from './features/api/apiSlice';
 import authSlice from './features/auth/authSlice';
+
 export const store = configureStore({
     reducer: {
         [apiSlice.reducerPath]: apiSlice.reducer,
@@ -12,15 +13,29 @@ export const store = configureStore({
         getDefaultMiddleware().concat(apiSlice.middleware)
 });
 
-//call the refresh tonken function every page load
-const initializeApp = async () => {
-    await store.dispatch(
-        apiSlice.endpoints.refreshToken.initiate({}, { forceRefetch: true })
-    );
+export type RootState = ReturnType<typeof store.getState>;
 
-    await store.dispatch(
-        apiSlice.endpoints.loadUser.initiate({}, { forceRefetch: true })
-    );
+// Initialize app with token refresh logic
+let isRefreshing = false;
+
+const initializeApp = async () => {
+    const state = store.getState();
+    if (state.auth.isLoggedIn && !isRefreshing) {
+        isRefreshing = true;
+        try {
+            await store.dispatch(
+                apiSlice.endpoints.refreshToken.initiate(
+                    {},
+                    { forceRefetch: true }
+                )
+            );
+            await store.dispatch(
+                apiSlice.endpoints.loadUser.initiate({}, { forceRefetch: true })
+            );
+        } finally {
+            isRefreshing = false;
+        }
+    }
 };
 
 initializeApp();
