@@ -84,14 +84,14 @@ const uploadImage = async (userId: any, upadteAvatarRequest: IUpdateAvatarReques
         const { avatar } = upadteAvatarRequest
         const user: IUser = (await UserModel.findById(userId)) as IUser
         if (avatar && user && user?.avatar?.public_id) {
-            await deleteFile(user.avatar.public_id)
-            const myCloud = await uploadFile('avatar', avatar)
+            await deleteFile(user.avatar.public_id.toString())
+            const myCloud = await uploadFile('avatar', avatar.toString())
             user.avatar = {
                 public_id: myCloud.public_id,
                 url: myCloud.secure_url
             }
         } else {
-            const myCloud = await uploadFile('avatar', avatar)
+            const myCloud = await uploadFile('avatar', avatar.toString())
             user.avatar = {
                 public_id: myCloud.public_id,
                 url: myCloud.secure_url
