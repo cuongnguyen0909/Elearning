@@ -1,7 +1,11 @@
 import Image from 'next/image';
-import React, { useState } from 'react';
-import defaultAvatar from '../../../public/assets/avatar.png';
+import React, { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { AiOutlineCamera } from 'react-icons/ai';
+import { useSelector } from 'react-redux';
+import defaultAvatar from '../../../public/assets/avatar.png';
+import { useLoadUserQuery } from '../../../redux/features/api/apiSlice';
+import { useUpdateAvatarMutation } from '../../../redux/features/profile/profileApi';
 import { styles } from '../../utils/style';
 type Props = {
     user: any;
@@ -11,8 +15,35 @@ type Props = {
 const ProfileDetails: React.FC<Props> = (props) => {
     const { user, avatar } = props;
     const [name, setName] = useState(user && user?.name);
+    const { isLoggedIn, token } = useSelector((state: any) => state.auth);
+    const [loadUser, setLoadUser] = useState(false);
+    const [updateAvatar, { isSuccess, isLoading, error }] =
+        useUpdateAvatarMutation();
+    const {} = useLoadUserQuery(undefined, {
+        skip: loadUser ? false : true
+    });
 
-    const imageHandler = async (e: any) => {};
+    const imageHandler = async (e: any) => {
+        const fileReader = new FileReader();
+        fileReader.onload = () => {
+            const avatar = fileReader.result;
+            if (fileReader.readyState === 2) {
+                updateAvatar(avatar);
+            }
+        };
+        fileReader.readAsDataURL(e.target.files[0]);
+    };
+
+    useEffect(() => {
+        if (isSuccess) {
+            setLoadUser(true);
+            toast.success('Avatar updated successfully');
+        }
+        if (error) {
+            toast.error('Failed to update avatar');
+        }
+    }, [isSuccess, error]);
+
     const handleSubmit = async (e: any) => {};
     return (
         <div className="flex w-full flex-col items-center justify-center">
