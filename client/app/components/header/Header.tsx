@@ -128,9 +128,7 @@ const Header: FC<Props> = (props) => {
                                     onClick={() => setOpenSidebar(!openSidebar)}
                                 />
                             </div>
-                            {loadingProfile && (
-                                <Loading isLoading={loadingProfile} />
-                            )}
+                            {/* {loadingProfile && <Loading />} */}
                             {user ? (
                                 <Link href={`/profile`}>
                                     <Image

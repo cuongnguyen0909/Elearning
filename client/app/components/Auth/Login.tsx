@@ -65,7 +65,7 @@ const Login: React.FC<Props> = (props) => {
 
     return (
         <div className="w-full">
-            {isLoading && <Loading isLoading={isLoading} />}
+            {isLoading && <Loading />}
             <h1 className={`${styles.title}`}>Login to ELearning</h1>
             <form onSubmit={handleSubmit}>
                 {/* email field */}

@@ -60,7 +60,7 @@ const SignUp: React.FC<Props> = (props) => {
 
     return (
         <div className="w-full">
-            {isLoading && <Loading isLoading={isLoading} />}
+            {isLoading && <Loading />}
             <h1 className={`${styles.title}`}>Join to ELearning</h1>
             <form onSubmit={handleSubmit}>
                 {/* name field */}

@@ -73,9 +73,7 @@ const Verification: React.FC<Props> = (props) => {
     };
     return (
         <div>
-            <div className="w-full">
-                {isLoading && <Loading isLoading={isLoading} />}
-            </div>
+            <div className="w-full">{isLoading && <Loading />}</div>
             <h1 className={`${styles.title}`}>Verification Code</h1>
             <br />
             <div className="mt-2 flex w-full items-center justify-center">
