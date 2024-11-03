@@ -43,7 +43,6 @@ export interface ISocialAuthRequest {
 
 export interface IUpdateProfileRequest {
     name: string
-    email: string
 }
 
 export interface IUpdatePasswordRequest {

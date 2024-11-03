@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { useLogoutQuery } from '../../../redux/features/auth/authApi';
 import SidebarProfile from './SidebarProfile';
 import ProfileDetails from './ProfileDetails';
+import ChangePassword from './ChangePassword';
 
 type Props = {
     user: any;
@@ -50,6 +51,7 @@ const Profile: React.FC<Props> = (props) => {
             </div>
             <div className="mt-[80px] h-full w-full bg-transparent">
                 {active === 1 && <ProfileDetails user={user} avatar={avatar} />}
+                {active === 2 && <ChangePassword />}
             </div>
         </div>
     );

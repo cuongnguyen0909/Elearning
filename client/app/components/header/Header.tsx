@@ -169,7 +169,7 @@ const Header: FC<Props> = (props) => {
                         onClick={handleClose}
                         id="screen"
                     >
-                        <div className="fixed right-0 top-0 z-[999999999] h-screen w-[70%] bg-white dark:bg-slate-900 dark:bg-opacity-90">
+                        <div className="fixed right-0 top-0 z-[999999] h-screen w-[70%] bg-white dark:bg-slate-900 dark:bg-opacity-90">
                             <NavItems activeItem={activeItem} isMobile={true} />
                             <HiOutlineUserCircle
                                 size={25}

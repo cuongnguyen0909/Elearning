@@ -1,6 +1,4 @@
-import { LinearProgress } from '@mui/material';
-import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
+import { LinearProgress, CircularProgress, Backdrop } from '@mui/material';
 import React from 'react';
 
 type Props = {
@@ -12,7 +10,7 @@ const Loading: React.FC<Props> = (props) => {
         <Backdrop
             sx={(theme) => ({
                 color: '#fff',
-                zIndex: theme.zIndex.drawer + 1
+                zIndex: 9999998
             })}
             open={true}
             // onClick={(event: any) => {
@@ -21,7 +19,7 @@ const Loading: React.FC<Props> = (props) => {
             //     }
             // }}
         >
-            <CircularProgress color="inherit" className="z-9999999999" />
+            <CircularProgress color="inherit" className="z-9999999" />
             {/* <LinearProgress className="z-9999999999" color="inherit" /> */}
         </Backdrop>
     );

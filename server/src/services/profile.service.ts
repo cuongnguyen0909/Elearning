@@ -23,17 +23,17 @@ const getProfileById = async (uid: string) => {
 
 const updateProfile = async (userId: string, userData: any) => {
     try {
-        const { email, name } = userData as IUpdateProfileRequest
+        const { name } = userData as IUpdateProfileRequest
         const user: IUser = (await UserModel.findById(userId).select('-role')) as IUser
 
         //check email is already exist or not
-        if (email && user) {
-            const isEmailExist: IUser = (await UserModel.findOne({ email })) as IUser
-            if (isEmailExist) {
-                throw new ErrorHandler('Email is already exist', StatusCodes.BAD_REQUEST)
-            }
-            user.email = email
-        }
+        // if (email && user) {
+        //     const isEmailExist: IUser = (await UserModel.findOne({ email })) as IUser
+        //     if (isEmailExist) {
+        //         throw new ErrorHandler('Email is already exist', StatusCodes.BAD_REQUEST)
+        //     }
+        //     user.email = email
+        // }
 
         if (name && user) {
             user.name = name
