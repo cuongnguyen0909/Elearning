@@ -95,7 +95,7 @@ const ProfileDetails: React.FC<Props> = (props) => {
     return (
         <>
             {(isLoading || isFetching || isProfileLoading) && <Loading />}
-            <div className="flex w-full flex-col items-center justify-center">
+            <div className="flex w-full flex-col items-center justify-center px-2 pl-7 800px:px-5 800px:pl-0">
                 <div className="relative">
                     <Image
                         key={user?.avatar?.url || avatar}
@@ -131,37 +131,45 @@ const ProfileDetails: React.FC<Props> = (props) => {
                 <br />
                 <div className="w-full text-black dark:text-white">
                     <form onSubmit={handleSubmit}>
-                        <div className="m-auto block border-[#00000027] bg-[#e8f6ffad] pb-4 pl-6 pt-2 font-Poppins shadow-xl dark:border-[#ffffff1d] dark:bg-slate-900 dark:shadow-sm 800px:w-[50%]">
+                        <div className="m-auto block w-full pb-4 pl-6 pt-2 font-Poppins 800px:w-[50%]">
                             <div className="w-[100%]">
-                                <label htmlFor="" className="block pb-2">
+                                <label
+                                    htmlFor=""
+                                    className="block pb-2 font-semibold"
+                                >
                                     Full Name
                                 </label>
                                 <input
                                     type="text"
-                                    className={`${styles.input} mb-4 !w-[95%] border-[#00000027] bg-[#d1e9fb] dark:border-[#ffffff1d] dark:bg-slate-800 800px:mb-0`}
+                                    className={`${styles.input} mb-4 border-[#00000027] bg-[#ffffff3d] dark:border-[#ffffff1d] dark:bg-slate-800 800px:mb-0`}
                                     required
                                     onChange={(e) => setName(e.target.value)}
                                     value={name}
                                 />
                             </div>
                             <div className="w-[100%] pt-2">
-                                <label htmlFor="" className="block pb-2">
+                                <label
+                                    htmlFor=""
+                                    className="block pb-2 font-semibold"
+                                >
                                     Email Address
                                 </label>
                                 <input
                                     type="text"
                                     readOnly
-                                    className={`${styles.input} mb-1 !w-[95%] border-[#00000027] bg-[#d1e9fb] text-black dark:border-[#ffffff1d] 800px:mb-0`}
+                                    className={`${styles.input} mb-1 border-[#00000027] bg-[#ffffff3d] text-black dark:border-[#4027271d] dark:bg-slate-800 800px:mb-0`}
                                     required
                                     value={user?.email}
                                 />
                             </div>
-                            <input
-                                type="submit"
-                                className={`mt-8 h-[40px] w-full cursor-pointer rounded-[3px] border border-[#00000027] bg-[#d1e9fb] text-center dark:border-[#ffffff1d] dark:bg-slate-800 800px:w-[250px]`}
-                                required
-                                value={'Update Profile'}
-                            />
+                            <div className="w-[100%]">
+                                <input
+                                    type="submit"
+                                    className={`mt-8 h-[40px] !w-[100%] cursor-pointer rounded-[3px] border border-[#00000027] bg-[#224c8a16] text-center dark:border-[#ffffff1d] dark:!bg-[#00000015] 800px:w-[250px]`}
+                                    required
+                                    value={'Update Profile'}
+                                />
+                            </div>
                         </div>
                     </form>
                     <br />

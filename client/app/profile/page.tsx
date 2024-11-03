@@ -11,7 +11,7 @@ type Props = {};
 
 const page: React.FC<Props> = (props) => {
     const [open, setOpen] = useState(false);
-    const [activeItem, setActiveItem] = useState(0);
+    const [activeItem, setActiveItem] = useState(5);
     const { theme } = useTheme();
     const [route, setRoute] = useState('Login');
     const [mounted, setMounted] = useState(false);
@@ -43,6 +43,7 @@ const page: React.FC<Props> = (props) => {
                         activeItem={activeItem}
                         setRoute={setRoute}
                         route={route}
+                        setActiveItem={setActiveItem}
                     />
                     <Profile user={user} />
                 </div>

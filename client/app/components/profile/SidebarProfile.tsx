@@ -4,6 +4,9 @@ import avatarDefault from '../../../public/assets/avatar.png';
 import { RiLockPasswordLine } from 'react-icons/ri';
 import { SiCoursera } from 'react-icons/si';
 import { AiOutlineLogout } from 'react-icons/ai';
+import { MdOutlineAdminPanelSettings } from 'react-icons/md';
+import { isAdminAuth } from '../../utils/isAdmin';
+import Link from 'next/link';
 
 type Props = {
     user: any;
@@ -15,6 +18,7 @@ type Props = {
 
 const SidebarProfile: React.FC<Props> = (props) => {
     const { user, active, setActive, avatar, logOutHandler } = props;
+    const isAdmin = isAdminAuth(user);
     return (
         <div className="w-full">
             <div
@@ -57,6 +61,22 @@ const SidebarProfile: React.FC<Props> = (props) => {
                     Enrolled Courses
                 </h5>
             </div>
+            {isAdmin && (
+                <Link
+                    className={`${active === 4 ? 'bg-[#d7ebfa] dark:bg-slate-800' : 'bg-transparent'} flex w-full cursor-pointer items-center px-3 py-4`}
+                    onClick={() => setActive(4)}
+                    href={'/admin'}
+                >
+                    <MdOutlineAdminPanelSettings
+                        size={20}
+                        className="text-black dark:text-white"
+                    />
+                    <h5 className="hidden pl-2 font-Poppins text-black dark:text-white 800px:block">
+                        Admin Dashboard
+                    </h5>
+                </Link>
+            )}
+
             <div
                 className={`${active === 4 ? 'bg-[#d7ebfa] dark:bg-slate-800' : 'bg-transparent'} flex w-full cursor-pointer items-center px-3 py-4`}
                 onClick={() => logOutHandler()}

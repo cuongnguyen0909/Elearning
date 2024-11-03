@@ -7,6 +7,7 @@ import { useLogoutQuery } from '../../../redux/features/auth/authApi';
 import SidebarProfile from './SidebarProfile';
 import ProfileDetails from './ProfileDetails';
 import ChangePassword from './ChangePassword';
+import { isAdminAuth } from '../../utils/isAdmin';
 
 type Props = {
     user: any;
@@ -21,7 +22,6 @@ const Profile: React.FC<Props> = (props) => {
     const {} = useLogoutQuery(undefined, {
         skip: !logout ? true : false
     });
-
     const logOutHandler = async () => {
         setLogout(true);
         await signOut();

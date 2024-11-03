@@ -25,13 +25,14 @@ type Props = {
     open: boolean;
     setOpen: (open: boolean) => void;
     activeItem: number;
+    setActiveItem: (activeItem: number) => void;
     route: string;
     setRoute: (route: string) => void;
 };
 const URL_API = process.env.NEXT_PUBLIC_API_SERVER_URL;
 
 const Header: FC<Props> = (props) => {
-    const { activeItem, open, setOpen, route, setRoute } = props;
+    const { activeItem, open, setOpen, route, setRoute, setActiveItem } = props;
     const { user, isLoggedIn } = useSelector((state: any) => state.auth);
     const { data } = useSession();
     const { isLoading: loadingProfile } = useLoadUserQuery({});
@@ -130,7 +131,10 @@ const Header: FC<Props> = (props) => {
                             </div>
                             {/* {loadingProfile && <Loading />} */}
                             {user ? (
-                                <Link href={`/profile`}>
+                                <Link
+                                    href={`/profile`}
+                                    // onClick={() => setActiveItem(5)}
+                                >
                                     <Image
                                         src={
                                             user.avatar
@@ -144,7 +148,7 @@ const Header: FC<Props> = (props) => {
                                         style={{
                                             border:
                                                 activeItem === 5
-                                                    ? '2px solid #37a39a'
+                                                    ? '2px solid #fff'
                                                     : 'none'
                                         }}
                                     />

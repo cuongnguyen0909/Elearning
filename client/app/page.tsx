@@ -15,6 +15,8 @@ const Page: FC<Props> = (props: Props) => {
     const [route, setRoute] = useState('Login');
     const [mounted, setMounted] = useState(false);
 
+    // console.log(activeItem);
+
     useEffect(() => {
         setMounted(true);
     }, []);
@@ -40,6 +42,7 @@ const Page: FC<Props> = (props: Props) => {
                 activeItem={activeItem}
                 setRoute={setRoute}
                 route={route}
+                setActiveItem={setActiveItem}
             />
             <Hero />
         </div>
