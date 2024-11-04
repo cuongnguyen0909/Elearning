@@ -63,8 +63,7 @@ const SidebarProfile: React.FC<Props> = (props) => {
             </div>
             {isAdmin && (
                 <Link
-                    className={`${active === 4 ? 'bg-[#d7ebfa] dark:bg-slate-800' : 'bg-transparent'} flex w-full cursor-pointer items-center px-3 py-4`}
-                    onClick={() => setActive(4)}
+                    className={`flex w-full cursor-pointer items-center px-3 py-4`}
                     href={'/admin'}
                 >
                     <MdOutlineAdminPanelSettings
