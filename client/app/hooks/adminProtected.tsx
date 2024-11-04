@@ -9,8 +9,9 @@ interface IProtectedProps {
 
 export default function AdminProtected({ children }: IProtectedProps) {
     const { user } = useSelector((state: any) => state.auth);
-
-    const isAdmin = user?.role === '99858';
-
-    return isAdmin ? { children } : redirect('/dashboard');
+    if (user) {
+        const isAdmin = user?.role === '99858';
+        return isAdmin ? children : redirect('/');
+    }
+    return null;
 }
