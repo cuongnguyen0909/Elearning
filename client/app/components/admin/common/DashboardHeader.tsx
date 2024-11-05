@@ -6,7 +6,7 @@ interface IDashboardHeaderProps {}
 const DashboardHeader: FC<IDashboardHeaderProps> = (props) => {
     const [open, setOpen] = useState(false);
     return (
-        <div className="fixed right-0 top-5 flex w-full items-center justify-end p-6">
+        <div className="fixed right-0 top-5 z-20 flex w-full items-center justify-end p-6">
             <ThemeSwitcher />
             <div
                 className="relative m-2 cursor-pointer"
