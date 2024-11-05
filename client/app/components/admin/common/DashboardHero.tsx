@@ -2,9 +2,9 @@
 import React, { FC } from 'react';
 import DashboardHeader from './DashboardHeader';
 
-interface IDashboardHeroProps {}
+interface DashboardHeroProps {}
 
-const DashboardHero: FC<IDashboardHeroProps> = (props) => {
+const DashboardHero: FC<DashboardHeroProps> = (props) => {
     return (
         <div>
             <DashboardHeader />

@@ -4,7 +4,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import toast from 'react-hot-toast';
 
-interface ICourseDataProps {
+interface CourseDataProps {
     benefits: {
         title: string;
     }[];
@@ -15,15 +15,8 @@ interface ICourseDataProps {
     setActive: (active: number) => void;
 }
 
-const CourseData: FC<ICourseDataProps> = (props) => {
-    const {
-        benefits,
-        setBenefits,
-        prerequisites,
-        setPrequisites,
-        active,
-        setActive
-    } = props;
+const CourseData: FC<CourseDataProps> = (props) => {
+    const { benefits, setBenefits, prerequisites, setPrequisites, active, setActive } = props;
 
     const handleChangeBenefit = (e: any, index: number, value: any) => {
         const updatedBenefits = [...benefits];
@@ -70,10 +63,7 @@ const CourseData: FC<ICourseDataProps> = (props) => {
     };
 
     const handleOptions = () => {
-        if (
-            benefits[benefits.length - 1]?.title !== '' &&
-            prerequisites[prerequisites.length - 1]?.title !== ''
-        ) {
+        if (benefits[benefits.length - 1]?.title !== '' && prerequisites[prerequisites.length - 1]?.title !== '') {
             setActive(active + 1);
         } else {
             toast.error('Please fill all the fields');
@@ -94,9 +84,7 @@ const CourseData: FC<ICourseDataProps> = (props) => {
                         placeholder="Benefit"
                         className={`${styles.input} w-full`}
                         value={benefit.title}
-                        onChange={(e) =>
-                            handleChangeBenefit(e, index, e.target.value)
-                        }
+                        onChange={(e) => handleChangeBenefit(e, index, e.target.value)}
                     />
                 ))}
                 <AddCircleIcon
@@ -129,9 +117,7 @@ const CourseData: FC<ICourseDataProps> = (props) => {
                         placeholder="Prerequisite"
                         className={`${styles.input} w-full`}
                         value={prerequiste.title}
-                        onChange={(e) =>
-                            handleChangePrerequisite(e, index, e.target.value)
-                        }
+                        onChange={(e) => handleChangePrerequisite(e, index, e.target.value)}
                     />
                 ))}
                 <AddCircleIcon

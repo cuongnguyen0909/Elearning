@@ -19,16 +19,10 @@ const page: FC<IPageProps> = (props) => {
     return (
         <div
             className={`min-h-screen ${
-                theme === 'light'
-                    ? 'bg-gradient-to-l from-blue-100 to-blue-200'
-                    : 'dark:bg-gray-900'
+                theme === 'light' ? 'bg-gradient-to-l from-blue-100 to-blue-200' : 'dark:bg-gray-900'
             }`}
         >
-            <Heading
-                title="Create Course"
-                description="Create a new course"
-                keywords="Create,Course,ELearning"
-            />
+            <Heading title="Create Course" description="Create a new course" keywords="Create,Course,ELearning" />
             <div className="flex">
                 <div className="w-1/5 1500px:w-[16%]">
                     <AdminSidebar />

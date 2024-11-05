@@ -42,8 +42,4 @@ export const profileApi = apiSlice.injectEndpoints({
     })
 });
 
-export const {
-    useUpdateAvatarMutation,
-    useUpdateProfileMutation,
-    useUpdatePasswordMutation
-} = profileApi;
+export const { useUpdateAvatarMutation, useUpdateProfileMutation, useUpdatePasswordMutation } = profileApi;

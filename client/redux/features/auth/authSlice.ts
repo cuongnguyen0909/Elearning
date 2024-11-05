@@ -7,9 +7,7 @@ const isBrowser = typeof window !== 'undefined';
 const initialState = {
     token: isBrowser ? localStorage.getItem('token') || '' : '',
     user: '',
-    isLoggedIn: isBrowser
-        ? localStorage.getItem('isLoggedIn') === 'true'
-        : false
+    isLoggedIn: isBrowser ? localStorage.getItem('isLoggedIn') === 'true' : false
 };
 
 interface IRegistrationPayload {
@@ -25,10 +23,7 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        userRegistration: (
-            state,
-            action: PayloadAction<IRegistrationPayload>
-        ) => {
+        userRegistration: (state, action: PayloadAction<IRegistrationPayload>) => {
             state.token = action.payload.token;
             if (isBrowser) localStorage.setItem('token', action.payload.token);
         },
@@ -58,6 +53,5 @@ const authSlice = createSlice({
     }
 });
 
-export const { userRegistration, userLoggedIn, userLoggedOut } =
-    authSlice.actions;
+export const { userRegistration, userLoggedIn, userLoggedOut } = authSlice.actions;
 export default authSlice.reducer;

@@ -24,9 +24,7 @@ const page: FC<IPageProps> = (props) => {
         <AdminProtected>
             <div
                 className={`min-h-screen ${
-                    theme === 'light'
-                        ? 'bg-gradient-to-l from-blue-100 to-blue-200'
-                        : 'dark:bg-gray-900'
+                    theme === 'light' ? 'bg-gradient-to-l from-blue-100 to-blue-200' : 'dark:bg-gray-900'
                 }`}
             >
                 <Heading

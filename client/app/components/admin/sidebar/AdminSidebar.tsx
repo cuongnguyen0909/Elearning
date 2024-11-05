@@ -41,14 +41,8 @@ const Item: FC<ItemProps> = (props) => {
     const { title, to, icon, selected, setSelected } = props;
     return (
         <div>
-            <MenuItem
-                active={selected === title}
-                onClick={() => setSelected(title)}
-                icon={icon}
-            >
-                <Typography className="!font-Poppins !text-[16px]">
-                    {title}
-                </Typography>
+            <MenuItem active={selected === title} onClick={() => setSelected(title)} icon={icon}>
+                <Typography className="!font-Poppins !text-[16px]">{title}</Typography>
                 <Link href={to} />
             </MenuItem>
         </div>
@@ -79,11 +73,7 @@ const AdminSidebar: FC = () => {
         <Box
             sx={{
                 '& .pro-sidebar-inner': {
-                    backgroundColor: `${
-                        theme === 'dark'
-                            ? '#111C43 !important'
-                            : '#fff !important'
-                    }`
+                    backgroundColor: `${theme === 'dark' ? '#111C43 !important' : '#fff !important'}`
                 },
                 '& .pro-icon-wrapper': {
                     backgroundColor: 'transparent !important'
@@ -123,12 +113,7 @@ const AdminSidebar: FC = () => {
                         }}
                     >
                         {!isCollapsed && (
-                            <Box
-                                display="flex"
-                                justifyContent="space-between"
-                                alignItems="center"
-                                ml="15px"
-                            >
+                            <Box display="flex" justifyContent="space-between" alignItems="center" ml="15px">
                                 <Link href={'/'}>
                                     <h3 className="font-Poppins text-[25px] uppercase text-black dark:text-white">
                                         ELearning
@@ -151,20 +136,12 @@ const AdminSidebar: FC = () => {
 
                     {!isCollapsed && (
                         <Box mb="25px">
-                            <Box
-                                display={'flex'}
-                                justifyContent={'center'}
-                                alignItems={'center'}
-                            >
+                            <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
                                 <Image
                                     alt="profile-user"
                                     width={100}
                                     height={100}
-                                    src={
-                                        user.avatar
-                                            ? user.avatar.url
-                                            : avatarDefautl
-                                    }
+                                    src={user.avatar ? user.avatar.url : avatarDefautl}
                                     style={{
                                         cursor: 'pointer',
                                         borderRadius: '50%',

@@ -1,14 +1,14 @@
 import React, { FC, useState } from 'react';
 import { styles } from '../../../utils/style';
 
-interface ICourseInfomationProps {
+interface CourseInfomationProps {
     courseInfo: any;
     setCourseInfo: any;
     active: number;
     setActive: any;
 }
 
-const CourseInfomation: FC<ICourseInfomationProps> = (props) => {
+const CourseInfomation: FC<CourseInfomationProps> = (props) => {
     const { courseInfo, setCourseInfo, active, setActive } = props;
     const [dragging, setDragging] = useState(false);
     const handleSubmit = (e: any) => {
@@ -210,13 +210,7 @@ const CourseInfomation: FC<ICourseInfomationProps> = (props) => {
                 </div>
                 <br />
                 <div className="flex w-full flex-col">
-                    <input
-                        type="file"
-                        accept="image/*"
-                        id="file"
-                        className="hidden"
-                        onChange={handleFileChange}
-                    />
+                    <input type="file" accept="image/*" id="file" className="hidden" onChange={handleFileChange} />
                     <label
                         htmlFor="file"
                         className={`flex min-h-[10vh] w-[100%] items-center justify-center border border-[#00000026] p-3 dark:border-white ${dragging ? 'bg-blue-500' : 'bg-transparent'}`}
@@ -232,8 +226,7 @@ const CourseInfomation: FC<ICourseInfomationProps> = (props) => {
                             />
                         ) : (
                             <span className="text-center text-black dark:text-white">
-                                Drag and drop or click to upload course
-                                thumbnail
+                                Drag and drop or click to upload course thumbnail
                             </span>
                         )}
                     </label>

@@ -1,19 +1,14 @@
 import React, { FC, useState, useEffect } from 'react';
 import { IoMdCheckmark } from 'react-icons/io';
 
-interface ICourseOptionProps {
+interface CourseOptionProps {
     active: number;
     setActive: (index: number) => void;
 }
 
-const CourseOption: FC<ICourseOptionProps> = (props) => {
+const CourseOption: FC<CourseOptionProps> = (props) => {
     const { active, setActive } = props;
-    const options = [
-        'Course Information',
-        'Course Options',
-        'Course Content',
-        'Course Preview'
-    ];
+    const options = ['Course Information', 'Course Options', 'Course Content', 'Course Preview'];
     return (
         <div>
             {options.map((option: any, index: number) => (
