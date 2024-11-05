@@ -58,6 +58,15 @@ const CreateCourse: FC<ICreateCourseProps> = (props) => {
                         setActive={setActive}
                     />
                 )}
+            {active === 2 && (
+               <CourseContent
+                  active={active}
+                  setActive={setActive}
+                  courseContent={courseContent}
+                  setCourseContent={setCourseContent}
+                  handleSubmit={handleSubmit}
+               />
+            )}
             </div>
             <div className="top-18 fixed right-0 z-[1] mt-[100px] h-screen w-[20%]">
                 <CourseOption active={active} setActive={setActive} />
