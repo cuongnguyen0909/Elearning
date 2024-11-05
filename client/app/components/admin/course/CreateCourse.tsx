@@ -4,6 +4,7 @@ import CourseInfomation from './CourseInfomation';
 import CourseOption from './CourseOption';
 import CourseData from './CourseData';
 import CourseContent from './CourseContent';
+import CoursePreview from './CoursePreview';
 interface CreateCourseProps {}
 
 const CreateCourse: FC<CreateCourseProps> = (props) => {
@@ -39,7 +40,48 @@ const CreateCourse: FC<CreateCourseProps> = (props) => {
 
    const [courseData, setCourseData] = useState({});
 
-   const handleSubmit = async () => {};
+   const handleSubmit = async () => {
+      //Format benefit array
+      const formatedBenefits = benefits.map((benefit: any) => ({
+         title: benefit.title
+      }));
+      //Format prerequisites array
+      const formatedPrerequisites = prerequisites.map((prerequisite: any) => ({
+         title: prerequisite.title
+      }));
+
+      //Format course content array
+      const formatedCourseContent = courseContent.map((content: any) => ({
+         title: content.title,
+         videoUrl: content.videoUrl,
+         description: content.description,
+         videoSection: content.videoSection,
+         links: content.links.map((link: any) => ({
+            title: link.title,
+            url: link.url
+         })),
+         suggestion: content.suggestion
+      }));
+      //prepare  object to send to server
+      const data = {
+         title: courseInfo.title,
+         description: courseInfo.description,
+         price: courseInfo.price,
+         estimatedPrice: courseInfo.estimatedPrice,
+         tags: courseInfo.tags,
+         level: courseInfo.level,
+         demoUrl: courseInfo.demoUrl,
+         thumbnail: courseInfo.thumbnail,
+         benefits: formatedBenefits,
+         prerequisites: formatedPrerequisites,
+         courseContent: formatedCourseContent
+      };
+      setCourseData(data);
+   };
+
+   const handleCourseCreate = async () => {
+      const data = courseData;
+   };
    return (
       <div className="flex min-h-screen w-full">
          <div className="w-[80%]">
@@ -68,6 +110,14 @@ const CreateCourse: FC<CreateCourseProps> = (props) => {
                   courseContent={courseContent}
                   setCourseContent={setCourseContent}
                   handleSubmit={handleSubmit}
+               />
+            )}
+            {active === 3 && (
+               <CoursePreview
+                  active={active}
+                  setActive={setActive}
+                  courseData={courseData}
+                  handleCourseCreate={handleCourseCreate}
                />
             )}
          </div>

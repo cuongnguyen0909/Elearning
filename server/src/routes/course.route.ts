@@ -7,7 +7,7 @@ const courseRouter: Router = Router() as Router
 
 courseRouter.route('/').get(courseController.getAllCoursesWithoutPurchasing)
 courseRouter.get('/search', courseController.searchCourse)
-courseRouter.route('/get-vdocipher-otp').get(courseController.generateVideoUrl)
+courseRouter.route('/get-vdocipher-otp').post(courseController.generateVideoUrl)
 // <div style="padding-top:41%;position:relative;">
 // <iframe src="https://player.vdocipher.com/v2/?otp={otp}&playbackInfo={playbackInfo}&player={playerId}" style="border:0;max-width:100%;position:absolute;top:0;left:0;height:100%;width:100%;" allowFullScreen="true" allow="encrypted-media"></iframe>
 // </div>
