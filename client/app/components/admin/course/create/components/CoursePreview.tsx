@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import CoursePlayer from './CoursePlayer';
-import { styles } from '../../../utils/style';
-import Rating from '../../../../components/rating/Rating';
+import { styles } from '../../../../../utils/style';
 import { IoCheckmarkDoneOutline } from 'react-icons/io5';
+import CoursePlayer from './CoursePlayer';
+import Rating from '../../../../../../components/rating/Rating';
 
 interface CoursePreviewProps {
    active: number;
@@ -121,7 +121,7 @@ const CoursePreview: FC<CoursePreviewProps> = (props) => {
                   className="mt-8 flex h-[40px] w-full cursor-pointer items-center justify-center rounded bg-[#37a39a] text-center text-[#fff] 800px:w-[180px]"
                   onClick={() => createCourseFinally()}
                >
-                  Next
+                  Complete
                </div>
             </div>
          </div>

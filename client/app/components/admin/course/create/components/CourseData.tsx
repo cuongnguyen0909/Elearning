@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { styles } from '../../../utils/style';
+import { styles } from '../../../../../utils/style';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import toast from 'react-hot-toast';

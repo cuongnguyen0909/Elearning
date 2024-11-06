@@ -1,9 +1,9 @@
 import React, { FC, useState } from 'react';
 import { AiOutlineDelete, AiOutlinePlusCircle } from 'react-icons/ai';
 import { MdOutlineKeyboardArrowUp } from 'react-icons/md';
-import { styles } from '../../../utils/style';
 import { BsLink45Deg, BsPencil } from 'react-icons/bs';
 import toast from 'react-hot-toast';
+import { styles } from '../../../../../utils/style';
 interface CourseContentProps {
    active: number;
    setActive: (value: number) => void;
