@@ -114,7 +114,7 @@ const AdminSidebar: FC = () => {
                >
                   {!isCollapsed && (
                      <Box display="flex" justifyContent="space-between" alignItems="center" ml="15px">
-                        <Link href={'/'}>
+                        <Link href={'/'} onClick={(e) => e.stopPropagation()}>
                            <h3 className="font-Poppins text-[25px] uppercase text-black dark:text-white">ELearning</h3>
                         </Link>
                         <MenuItem
