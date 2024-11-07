@@ -27,7 +27,7 @@ const CreateCourse: FC<CreateCourseProps> = (props) => {
    useEffect(() => {
       if (isSuccess) {
          toast.success('Course created successfully');
-         redirect('/admin/courses');
+         redirect('/admin/course/all');
       }
       if (error) {
          if ('data' in error) {
@@ -97,7 +97,6 @@ const CreateCourse: FC<CreateCourseProps> = (props) => {
 
    const handleCourseCreate = async () => {
       const data = courseData;
-      console.log(data);
       await createCourse(data);
    };
    return (
