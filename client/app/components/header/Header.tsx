@@ -12,10 +12,7 @@ import CustomModal from '../../../components/modal/CustomModal';
 import NavItems from '../../../components/navigation/NavItems';
 import ThemeSwitcher from '../../../components/theme/ThemeSwitcher';
 import avatar from '../../../public/assets/avatar.png';
-import {
-    useLogoutQuery,
-    useSocialLoginMutation
-} from '../../../redux/features/auth/authApi';
+import { useLogoutQuery, useSocialLoginMutation } from '../../../redux/features/auth/authApi';
 import Login from '../auth/Login';
 import SignUp from '../auth/SignUp';
 import Verification from '../auth/Verification';
@@ -36,8 +33,7 @@ const Header: FC<Props> = (props) => {
     const { user, isLoggedIn } = useSelector((state: any) => state.auth);
     const { data } = useSession();
     const { isLoading: loadingProfile } = useLoadUserQuery({});
-    const [socialLogin, { isLoading, isSuccess, error }] =
-        useSocialLoginMutation();
+    const [socialLogin, { isLoading, isSuccess, error }] = useSocialLoginMutation();
     const [active, setActive] = useState(false);
     const [openSidebar, setOpenSidebar] = useState(false);
     const { theme } = useTheme();
@@ -56,12 +52,12 @@ const Header: FC<Props> = (props) => {
         }
 
         if (isSuccess && data === null && isLoggedIn) {
-            toast.success('User logged in successfully', {
+            toast.success('Đăng nhập thành công', {
                 duration: 2000
             });
         }
         if (error) {
-            toast.error('User login failed', {
+            toast.error('Đăng nhập thất baạ', {
                 duration: 2000
             });
         }
@@ -91,9 +87,7 @@ const Header: FC<Props> = (props) => {
     return (
         <div
             className={`relative w-full ${
-                theme === 'light'
-                    ? 'bg-[rgba(232,246,255,0.68)] text-lightText'
-                    : 'dark:bg-gray-900 dark:text-white'
+                theme === 'light' ? 'bg-[rgba(232,246,255,0.68)] text-lightText' : 'dark:bg-gray-900 dark:text-white'
             }`}
         >
             <div
@@ -110,14 +104,12 @@ const Header: FC<Props> = (props) => {
                                 href={'/'}
                                 className={`font-Poppins text-[25px] font-[500] text-black dark:text-white`}
                             >
-                                ELearning
+                                <span className="dark:text-[#2190ff]">E</span>
+                                Learning
                             </Link>
                         </div>
                         <div className="flex items-center">
-                            <NavItems
-                                activeItem={activeItem}
-                                isMobile={false}
-                            />
+                            <NavItems activeItem={activeItem} isMobile={false} />
                         </div>
                         <div className="flex items-center">
                             <ThemeSwitcher />
@@ -136,20 +128,13 @@ const Header: FC<Props> = (props) => {
                                     // onClick={() => setActiveItem(5)}
                                 >
                                     <Image
-                                        src={
-                                            user.avatar
-                                                ? user?.avatar?.url
-                                                : avatar
-                                        }
+                                        src={user.avatar ? user?.avatar?.url : avatar}
                                         width={30}
                                         height={30}
                                         alt="avatar"
                                         className="cursor-pointer rounded-full"
                                         style={{
-                                            border:
-                                                activeItem === 5
-                                                    ? '2px solid #fff'
-                                                    : 'none'
+                                            border: activeItem === 5 ? '2px solid #fff' : 'none'
                                         }}
                                     />
                                 </Link>

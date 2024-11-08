@@ -8,19 +8,19 @@ type Props = {
 
 export const navItemsData = [
     {
-        name: 'Home',
+        name: 'Trang chủ',
         url: '/'
     },
     {
-        name: 'Courses',
+        name: 'Khóa học',
         url: '/courses'
     },
     {
-        name: 'About',
+        name: 'Về chúng tôi',
         url: '/about'
     },
     {
-        name: 'Policy',
+        name: 'Chính sách',
         url: '/policy'
     },
     {
@@ -53,8 +53,8 @@ const NavItems: FC<Props> = (props) => {
                 <div className="mt-5 800px:hidden">
                     <div className="w-full py-6 text-center">
                         <Link href={'/'} passHref>
-                            <span className="font-Poppins text-[25px] font-[500] text-black dark:text-white">
-                                ELearning
+                            <span className="font-Poppins text-[25px] font-bold">
+                                <span className="dark:text-[#37b668]">E</span>Learning
                             </span>
                         </Link>
                     </div>

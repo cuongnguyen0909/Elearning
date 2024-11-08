@@ -4,7 +4,7 @@ import { signOut } from 'next-auth/react';
 import { redirect } from 'next/navigation';
 import React, { useState } from 'react';
 import { useLogoutQuery } from '../../../redux/features/auth/authApi';
-import SidebarProfile from './SidebarProfile';
+import ProfileSidebar from './ProfileSidebar';
 import ProfileDetails from './ProfileDetails';
 import ChangePassword from './ChangePassword';
 import { isAdminAuth } from '../../utils/isAdmin';
@@ -41,7 +41,7 @@ const Profile: React.FC<Props> = (props) => {
             <div
                 className={`${scroll ? 'top-[120px]' : 'top-[30px]'} sticky left-[30px] mb-[80px] mt-[80px] h-[450px] w-[60px] rounded-[5px] border border-[#0000001b] bg-[#d1e9fb] bg-opacity-90 shadow-xl dark:border-[#ffffff1d] dark:bg-slate-900 dark:shadow-sm 800px:w-[310px]`}
             >
-                <SidebarProfile
+                <ProfileSidebar
                     user={user}
                     active={active}
                     avatar={avatar}

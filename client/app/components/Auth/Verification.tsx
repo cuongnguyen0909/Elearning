@@ -20,18 +20,21 @@ type VerifyNumber = {
 const Verification: React.FC<Props> = (props) => {
     const { setRoute } = props;
     const { token } = useSelector((state: any) => state.auth);
-    const [activate, { data, isSuccess, error, isLoading }] =
-        useActivateMutation();
+    const [activate, { data, isSuccess, error, isLoading }] = useActivateMutation();
 
     useEffect(() => {
         if (isSuccess) {
-            const message = data?.message || 'User activated successfully';
-            toast.success(message);
+            const message = 'Xác thực thành công';
+            toast.success(message, {
+                duration: 2000
+            });
             setRoute('Login');
         }
         if (error) {
             const errorData = error as any;
-            toast.error(errorData?.data?.message);
+            toast.error('Xác thực thất bại', {
+                duration: 2000
+            });
         }
     }, [isSuccess, error]);
     const [invalidError, setInvalidError] = useState(false);
@@ -74,14 +77,11 @@ const Verification: React.FC<Props> = (props) => {
     return (
         <div>
             <div className="w-full">{isLoading && <Loading />}</div>
-            <h1 className={`${styles.title}`}>Verification Code</h1>
+            <h1 className={`${styles.title}`}>Nhập mã xác thực</h1>
             <br />
             <div className="mt-2 flex w-full items-center justify-center">
                 <div className="flex h-[80px] w-[80px] items-center justify-center rounded-full bg-[#497DF2]">
-                    <VscWorkspaceTrusted
-                        className="text-5xl text-white"
-                        size={40}
-                    />
+                    <VscWorkspaceTrusted className="text-5xl text-white" size={40} />
                 </div>
             </div>
             <br />
@@ -93,44 +93,31 @@ const Verification: React.FC<Props> = (props) => {
                         key={key}
                         ref={inputRefs[index]}
                         className={`flex h-[65px] w-[65px] items-center justify-center rounded-[10px] border-[3px] bg-transparent text-center font-Poppins text-[18px] text-black outline-none dark:text-white ${
-                            invalidError
-                                ? 'shake border-red-500'
-                                : 'border-[#0000004a] dark:border-white'
+                            invalidError ? 'shake border-red-500' : 'border-[#0000004a] dark:border-white'
                         }`}
                         placeholder=""
                         maxLength={1}
                         onInput={(e) => {
-                            e.currentTarget.value = e.currentTarget.value.slice(
-                                0,
-                                1
-                            );
+                            e.currentTarget.value = e.currentTarget.value.slice(0, 1);
                         }}
                         min={0}
                         value={verifyNumber[key as keyof VerifyNumber]}
-                        onChange={(e) =>
-                            handleInputChange(index, e.target.value)
-                        }
+                        onChange={(e) => handleInputChange(index, e.target.value)}
                     />
                 ))}
             </div>
             <br />
             <br />
             <div className="flex w-full justify-center">
-                <button
-                    className={`${styles.button}`}
-                    onClick={verificationHandler}
-                >
-                    Verify OTP
+                <button className={`${styles.button}`} onClick={verificationHandler}>
+                    Xác thực
                 </button>
             </div>
             <br />
             <h5 className="cursor-pointer pt-4 text-center font-Poppins text-black dark:text-white">
-                Go back to Sign in?
-                <span
-                    className="cursor-pointer pl-1 text-[#2190ff]"
-                    onClick={() => setRoute('Login')}
-                >
-                    Sign In
+                Bạn đã có tài khoản?
+                <span className="cursor-pointer pl-1 text-[#2190ff]" onClick={() => setRoute('Login')}>
+                    Đăng nhập ngay
                 </span>
             </h5>
         </div>

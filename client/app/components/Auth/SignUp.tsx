@@ -2,11 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import {
-    AiOutlineEye,
-    AiOutlineEyeInvisible,
-    AiFillGithub
-} from 'react-icons/ai';
+import { AiOutlineEye, AiOutlineEyeInvisible, AiFillGithub } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
 import { styles } from '../../utils/style';
 import { useRegisterMutation } from '../../../redux/features/auth/authApi';
@@ -17,23 +13,22 @@ type Props = {
 };
 
 const signUpSchema = Yup.object().shape({
-    name: Yup.string().required('Please enter your name'),
+    name: Yup.string().required('Tên người dùng không được để trống. Vui lòng nhập tên người dùng'),
     email: Yup.string()
-        .email('Invalid email')
-        .required('Please enter your email'),
+        .email('Email không hợp lệ. Vui lòng thử lại')
+        .required('Email không được để trống. Vui lòng nhập email'),
     password: Yup.string()
-        .required('Please enter your password')
-        .min(6, 'Password must be at least 6 characters')
+        .required(' Mật khẩu không được để trống. Vui lòng nhập mật khẩu')
+        .min(6, 'Mật khẩu phải chứa ít nhất 6 ký tự')
 });
 
 const SignUp: React.FC<Props> = (props) => {
     const { setRoute } = props;
     const [show, setShow] = useState(false);
-    const [register, { data, isLoading, error, isSuccess }] =
-        useRegisterMutation();
+    const [register, { data, isLoading, error, isSuccess }] = useRegisterMutation();
     useEffect(() => {
         if (isSuccess) {
-            const message = data?.message || 'User registered successfully';
+            const message = 'Đăng ký thành công';
             toast.success(message);
             setRoute('Verification');
         }
@@ -66,7 +61,7 @@ const SignUp: React.FC<Props> = (props) => {
                 {/* name field */}
                 <div>
                     <label htmlFor="name" className={`${styles.label}`}>
-                        Enter your name
+                        Nhập tên của bạn
                     </label>
                     <input
                         type="text"
@@ -74,19 +69,17 @@ const SignUp: React.FC<Props> = (props) => {
                         value={values.name}
                         onChange={handleChange}
                         id="name"
-                        placeholder="Enter your name"
+                        placeholder="Nhập tên của bạn..."
                         className={`${errors.name && touched.name && 'border-red-500'} ${styles.input}`}
                     />
                 </div>
                 {errors.name && touched.name && (
-                    <span className="block pt-2 font-semibold text-red-500">
-                        {errors.name}
-                    </span>
+                    <span className="block pt-2 font-semibold text-red-500">{errors.name}</span>
                 )}
                 {/* email field */}
                 <div className="mt-5">
                     <label htmlFor="email" className={`${styles.label}`}>
-                        Enter your email
+                        Nhập email của bạn
                     </label>
                     <input
                         type="email"
@@ -94,19 +87,17 @@ const SignUp: React.FC<Props> = (props) => {
                         value={values.email}
                         onChange={handleChange}
                         id="email"
-                        placeholder="Enter your email"
+                        placeholder="Nhập email của bạn..."
                         className={`${errors.email && touched.email && 'border-red-500'} ${styles.input}`}
                     />
                 </div>
                 {errors.email && touched.email && (
-                    <span className="block pt-2 font-semibold text-red-500">
-                        {errors.email}
-                    </span>
+                    <span className="block pt-2 font-semibold text-red-500">{errors.email}</span>
                 )}
                 {/* password field */}
                 <div className="relative mb-1 mt-5 w-full">
                     <label htmlFor="password" className={`${styles.label}`}>
-                        Enter your password
+                        Nhập mật khẩu của bạn
                     </label>
                     <input
                         type={`${!show ? 'password' : 'text'}`}
@@ -114,7 +105,7 @@ const SignUp: React.FC<Props> = (props) => {
                         value={values.password}
                         onChange={handleChange}
                         id="password"
-                        placeholder="Enter your password"
+                        placeholder="Nhập mật khẩu của bạn..."
                         className={`${errors.password && touched.password && 'border-red-500'} ${styles.input}`}
                     />
                     {!show ? (
@@ -132,39 +123,24 @@ const SignUp: React.FC<Props> = (props) => {
                     )}
                 </div>
                 {errors.password && touched.password && (
-                    <span className="block pt-2 font-semibold text-red-500">
-                        {errors.password}
-                    </span>
+                    <span className="block pt-2 font-semibold text-red-500">{errors.password}</span>
                 )}
                 {/* button submit */}
                 <div className="mt-5 w-full">
-                    <input
-                        type="submit"
-                        value="Sign Up"
-                        className={`${styles.button}`}
-                    />
+                    <input type="submit" value="Sign Up" className={`${styles.button}`} />
                 </div>
                 <br />
                 <h5 className="pt-4 text-center font-Poppins text-[14px] text-black dark:text-white">
-                    Or Join with
+                    Hoặc đăng nhập với
                 </h5>
                 <div className="flex items-center justify-center">
-                    <FcGoogle
-                        size={30}
-                        className="mr-2 cursor-pointer text-black dark:text-white"
-                    />
-                    <AiFillGithub
-                        size={30}
-                        className="ml-2 cursor-pointer text-black dark:text-white"
-                    />
+                    <FcGoogle size={30} className="mr-2 cursor-pointer text-black dark:text-white" />
+                    <AiFillGithub size={30} className="ml-2 cursor-pointer text-black dark:text-white" />
                 </div>
                 <h5 className="cursor-pointer pt-4 text-center font-Poppins text-black dark:text-white">
-                    Already have any account?{' '}
-                    <span
-                        className="cursor-pointer pl-1 text-[#2190ff]"
-                        onClick={() => setRoute('Login')}
-                    >
-                        Sign In
+                    Nếu bạn đã có tài khoản?{' '}
+                    <span className="cursor-pointer pl-1 text-[#2190ff]" onClick={() => setRoute('Login')}>
+                        Đăng nhập ngay
                     </span>
                 </h5>
             </form>

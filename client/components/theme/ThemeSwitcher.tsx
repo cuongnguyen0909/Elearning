@@ -20,9 +20,15 @@ const ThemeSwitcher: React.FC<Props> = (props) => {
     return (
         <div className="mx-4 flex items-center justify-center">
             {theme === 'light' ? (
-                <BiMoon className="cursor-pointer" fill="black" size={25} onClick={() => setTheme('dark')} />
+                <BiMoon
+                    className="cursor-pointer"
+                    fill="black"
+                    size={25}
+                    onClick={() => setTheme('dark')}
+                    title={'Chế độ tối'}
+                />
             ) : (
-                <BiSun className="cursor-pointer" size={25} onClick={() => setTheme('light')} />
+                <BiSun className="cursor-pointer" size={25} onClick={() => setTheme('light')} title={'Chế độ sáng'} />
             )}
         </div>
     );

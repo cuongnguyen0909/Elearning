@@ -29,6 +29,9 @@ import Image from 'next/image';
 import { useTheme } from 'next-themes';
 import { redirect } from 'next/navigation';
 import { styles } from '../../../utils/style';
+import { useLogoutQuery } from '../../../../redux/features/auth/authApi';
+import { signOut } from 'next-auth/react';
+import toast from 'react-hot-toast';
 
 interface ItemProps {
     title: string;
@@ -63,16 +66,22 @@ const AdminSidebar: FC = () => {
     const [mounted, setMounted] = useState(false);
     const { theme } = useTheme();
     const router = useRouter();
+    const {} = useLogoutQuery(undefined, {
+        skip: !logout ? true : false
+    });
     useEffect(() => {
         setMounted(true);
     }, []);
 
     if (!mounted) return null;
 
-    const logoutHandler = () => {};
-
     const handleRedirect = (to: string) => {
         return router.push(to);
+    };
+    const logOutHandler = async () => {
+        setLogout(true);
+        handleRedirect('/');
+        await signOut();
     };
 
     return (
@@ -294,14 +303,21 @@ const AdminSidebar: FC = () => {
                             selected={selected}
                             setSelected={setSelected}
                         />
-                        <div onClick={logoutHandler}>
-                            <Item
+                        <div onClick={logOutHandler}>
+                            <MenuItem icon={<ExitToAppIcon />} onClick={logOutHandler}>
+                                <Typography
+                                    className={`!font-Poppins !text-[1rem] font-semibold text-black dark:text-white`}
+                                >
+                                    Đăng xuất
+                                </Typography>
+                            </MenuItem>
+                            {/* <Item
                                 title="Đăng xuất"
                                 to="/"
                                 icon={<ExitToAppIcon />}
                                 selected={selected}
                                 setSelected={setSelected}
-                            />
+                            /> */}
                         </div>
                     </Box>
                 </Menu>
