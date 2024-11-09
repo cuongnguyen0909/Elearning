@@ -90,7 +90,7 @@ const CreateCourse: FC<CreateCourseProps> = (props) => {
             thumbnail: courseInfo.thumbnail,
             benefits: formatedBenefits,
             prerequisites: formatedPrerequisites,
-            courseContent: formatedCourseContent
+            contents: formatedCourseContent
         };
         setCourseData(data);
     };
@@ -136,6 +136,8 @@ const CreateCourse: FC<CreateCourseProps> = (props) => {
                         setActive={setActive}
                         courseData={courseData}
                         handleCourseCreate={handleCourseCreate}
+                        isEdit={false}
+                        handleCourseEdit={() => {}}
                     />
                 )}
             </div>
