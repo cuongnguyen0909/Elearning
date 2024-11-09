@@ -83,8 +83,8 @@ const addReview = async (reviewRequest: IReviewRequest, userId: any, courseId: s
         })
         const courseAfterUpdate: ICourse = (await courseHelper.getOneCourseById(courseId)) as unknown as ICourse
         await redis.set(courseId, JSON.stringify(courseAfterUpdate) as any)
-        const allCourses: ICourse[] = (await courseHelper.getAllCourses()) as unknown as ICourse[]
-        await redis.set('allCourses', JSON.stringify(allCourses))
+        // const allCourses: ICourse[] = (await courseHelper.getAllCourses()) as unknown as ICourse[]
+        // await redis.set('allCourses', JSON.stringify(allCourses))
 
         return course
     } catch (error: any) {

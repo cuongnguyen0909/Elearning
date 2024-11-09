@@ -2,10 +2,10 @@
 import { useTheme } from 'next-themes';
 import React, { FC, useEffect } from 'react';
 import Heading from '../../../../components/public/Heading';
-import AdminSidebar from '../../../components/admin/sidebar/AdminSidebar';
 import DashboardHero from '../../../components/admin/common/DashboardHero';
-import AdminProtected from '../../../hooks/adminProtected';
 import AllCourses from '../../../components/admin/course/all/AllCourses';
+import AdminSidebar from '../../../components/admin/sidebar/AdminSidebar';
+import AdminProtected from '../../../hooks/adminProtected';
 interface IPageProps {}
 const page: FC<IPageProps> = (props) => {
    const { theme } = useTheme();

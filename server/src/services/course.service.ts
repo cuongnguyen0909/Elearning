@@ -27,7 +27,7 @@ const createCourse = async (courseDataRequest: ICourse) => {
         const courseAfterUpdate: ICourse = (await courseHelper.getOneCourseById(courseId)) as unknown as ICourse
         await redis.set(courseId, JSON.stringify(courseAfterUpdate) as any)
         const allCourses = await courseHelper.getAllCourses()
-        await redis.set('allCourses', JSON.stringify(allCourses))
+        // await redis.set('allCourses', JSON.stringify(allCourses))
         return course
     } catch (error: any) {
         return new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
@@ -36,35 +36,53 @@ const createCourse = async (courseDataRequest: ICourse) => {
 
 const updateCourse = async (courseId: string, courseDataRequest: ICourse) => {
     try {
-        const existingCourse: ICourse = (await CourseModel.findById(courseId)) as ICourse
-        const thumbnail: any = courseDataRequest?.thumbnail as unknown as any
+        // Kiểm tra courseId và courseDataRequest có hợp lệ không
         if (!courseId) {
             throw new ErrorHandler('Invalid course id', StatusCodes.BAD_REQUEST)
         }
         if (!courseDataRequest) {
             throw new ErrorHandler('Invalid data', StatusCodes.BAD_REQUEST)
         }
+
+        // Lấy thông tin khóa học hiện tại
+        const existingCourse: ICourse = (await CourseModel.findById(courseId)) as ICourse
         if (!existingCourse) {
             throw new ErrorHandler('Course not found', StatusCodes.NOT_FOUND)
         }
-        // if (!thumbnail) {
-        //     throw new ErrorHandler('Thumbnail is required', StatusCodes.BAD_REQUEST)
-        // }
+
+        // Kiểm tra và xử lý thumbnail
+        const thumbnail: any = courseDataRequest?.thumbnail
         if (thumbnail) {
-            await deleteFile(thumbnail?.public_id)
+            // Nếu có thumbnail mới, xóa thumbnail cũ và cập nhật thumbnail mới
+            if (thumbnail?.public_id) {
+                await deleteFile(thumbnail.public_id)
+            }
             const myCloud: any = await uploadFile('courses', thumbnail)
             courseDataRequest.thumbnail = {
                 public_id: myCloud.public_id,
                 url: myCloud.secure_url
             }
         }
-        const updatedCourse: ICourse = (await CourseModel.findByIdAndUpdate(courseId, courseDataRequest, {
-            new: true
+
+        // Loại bỏ các field có giá trị null hoặc undefined khỏi dữ liệu cập nhật
+        const cleanRequestData = (data: ICourse) => {
+            return Object.fromEntries(Object.entries(data).filter(([_, v]) => v !== null && v !== undefined))
+        }
+        const sanitizedData = cleanRequestData(courseDataRequest)
+
+        // Cập nhật khóa học
+        const updatedCourse: ICourse = (await CourseModel.findByIdAndUpdate(courseId, sanitizedData, {
+            new: true,
+            overwrite: false
         })) as ICourse
+
+        // Lấy thông tin khóa học sau khi cập nhật
         const courseAfterUpdate: ICourse = (await courseHelper.getOneCourseById(courseId)) as unknown as ICourse
-        await redis.set(courseId, JSON.stringify(courseAfterUpdate) as any)
-        const allCourses: ICourse[] = (await courseHelper.getAllCourses()) as unknown as ICourse[]
-        await redis.set('allCourses', JSON.stringify(allCourses))
+
+        // Cập nhật khóa học vào Redis
+        await redis.set(courseId, JSON.stringify(courseAfterUpdate))
+
+        // Trả về kết quả
         return updatedCourse
     } catch (error: any) {
         return new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
@@ -90,14 +108,10 @@ const getOneCourseWithoutLogin = async (courseId: string) => {
 
 const getAllCoursesWithoutLogin = async () => {
     try {
-        const isCachedExist: string = (await redis.get('allCourses')) as unknown as string
-        let courses: ICourse[]
-        if (isCachedExist) {
-            courses = JSON.parse(isCachedExist) as ICourse[]
-        } else {
-            courses = (await courseHelper.getAllCourses()) as unknown as ICourse[]
-            await redis.set('allCourses', JSON.stringify(courses) as any)
-        }
+        // const isCachedExist: string = (await redis.get('allCourses')) as unknown as string
+
+        const courses: ICourse[] = (await courseHelper.getAllCourses()) as unknown as ICourse[]
+        // await redis.set('allCourses', JSON.stringify(courses) as any)
         return courses
     } catch (error: any) {
         return new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
@@ -351,8 +365,8 @@ const deleteCourse = async (courseId: string) => {
         await course?.save()
         const deletedCourse: ICourse = (await courseHelper.getOneCourseById(courseId)) as ICourse
         await redis.del(courseId)
-        const allCourses = await courseHelper.getAllCourses()
-        await redis.set('allCourses', JSON.stringify(allCourses))
+        // const allCourses = await courseHelper.getAllCourses()
+        // await redis.set('allCourses', JSON.stringify(allCourses))
         return deletedCourse
     } catch (error: any) {
         throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)

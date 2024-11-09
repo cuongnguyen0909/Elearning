@@ -56,8 +56,8 @@ const addComment = async (commentRequest: ICommentRequest, userId: any) => {
         // console.log('newNotification', newNotification)
         const courseAfterUpdate: ICourse = (await courseHelper.getOneCourseById(courseId)) as unknown as ICourse
         await redis.set(courseId, JSON.stringify(courseAfterUpdate) as any)
-        const allCourses: ICourse[] = (await courseHelper.getAllCourses()) as unknown as ICourse[]
-        await redis.set('allCourses', JSON.stringify(allCourses))
+        // const allCourses: ICourse[] = (await courseHelper.getAllCourses()) as unknown as ICourse[]
+        // await redis.set('allCourses', JSON.stringify(allCourses))
         return newComment
     } catch (error: any) {
         return new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
@@ -118,8 +118,8 @@ const addCommentReply = async (commentRequest: IReplyCommentRequest, userId: any
             )
         }
         await redis.set(comment.course.toString(), JSON.stringify(course) as any)
-        const allCourses = await CourseModel.find().sort({ createdAt: -1 })
-        await redis.set('allCourses', JSON.stringify(allCourses))
+        // const allCourses = await CourseModel.find().sort({ createdAt: -1 })
+        // await redis.set('allCourses', JSON.stringify(allCourses))
         return comment
     } catch (error: any) {
         return new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)

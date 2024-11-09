@@ -33,8 +33,6 @@ const CourseOption: FC<CourseOptionProps> = (props) => {
             active: 3
         }
     ];
-    console.log(courseContent);
-
     const handleChangeActiveOption = async (e: any, index: number) => {
         e.preventDefault();
         e.stopPropagation();
