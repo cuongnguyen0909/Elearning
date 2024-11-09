@@ -28,7 +28,7 @@ const ConfirmationModal: React.FC<Props> = ({ open, title, setOpen, message, onC
                 </p>
                 <div className="mt-4 flex justify-end space-x-2">
                     <Button variant="outlined" onClick={handleClose}>
-                        No
+                        Không
                     </Button>
                     <Button
                         variant="contained"
@@ -38,7 +38,7 @@ const ConfirmationModal: React.FC<Props> = ({ open, title, setOpen, message, onC
                             handleClose();
                         }}
                     >
-                        Agree
+                        Có
                     </Button>
                 </div>
             </Box>

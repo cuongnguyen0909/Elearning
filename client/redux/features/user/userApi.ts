@@ -52,12 +52,13 @@ export const userApi = apiSlice.injectEndpoints({
                 };
             }
         }),
-        unLockuser: builder.mutation({
+        unLockUser: builder.mutation({
             query: (data) => {
-                const { id } = data;
+                const { userId } = data;
                 return {
-                    url: `user/unlock/${id}`,
+                    url: `user/unlock`,
                     method: 'PUT',
+                    body: { userId },
                     credentials: 'include' as const
                 };
             }
@@ -71,5 +72,5 @@ export const {
     useDeleteUserAdminRoleMutation,
     useDeleteUserMutation,
     useBlockUserMutation,
-    useUnLockuserMutation
+    useUnLockUserMutation
 } = userApi;

@@ -10,12 +10,14 @@ import ConfirmationModal from '../../../../../components/modal/ConfimationModal'
 import {
     useBlockUserMutation,
     useDeleteUserAdminRoleMutation,
+    useDeleteUserMutation,
     useGetAllUsersQuery,
-    useUnLockuserMutation,
+    useUnLockUserMutation,
     useUpdateUserRoleMutation
 } from '../../../../../redux/features/user/userApi';
 import { ROLE } from '../../../../constants/enum';
 import { styles } from '../../../../utils/style';
+import { set } from 'date-fns';
 interface AllUsersProps {
     isTeam: boolean;
 }
@@ -31,7 +33,12 @@ const AllUsers: FC<AllUsersProps> = (props) => {
     const [userId, setUserId] = useState('');
     const { theme, setTheme } = useTheme();
     const rows: any[] = [];
-    const { isLoading, data, error } = useGetAllUsersQuery({});
+    const { isLoading, data, error, refetch } = useGetAllUsersQuery(
+        {},
+        {
+            refetchOnMountOrArgChange: true
+        }
+    );
 
     const [
         updateUserRole,
@@ -44,7 +51,7 @@ const AllUsers: FC<AllUsersProps> = (props) => {
     ] = useDeleteUserAdminRoleMutation();
 
     const [deleteUser, { isLoading: isDeleting, isSuccess: isDeleted, isError: deleteError, error: deleteErrorData }] =
-        useDeleteUserAdminRoleMutation();
+        useDeleteUserMutation();
 
     const [blockUser, { isLoading: isBlocking, isSuccess: isBlocked, isError: blockError, error: blockErrorData }] =
         useBlockUserMutation();
@@ -52,7 +59,7 @@ const AllUsers: FC<AllUsersProps> = (props) => {
     const [
         unLockUser,
         { isLoading: isUnLocking, isSuccess: isUnLocked, isError: unLockError, error: unLockErrorData }
-    ] = useUnLockuserMutation();
+    ] = useUnLockUserMutation();
 
     const usersData = data?.users;
     // const [role, setRole] = useState(ROLE.ADMIN);
@@ -95,7 +102,6 @@ const AllUsers: FC<AllUsersProps> = (props) => {
             });
         }
     }
-
     const columns: GridColDef[] = [
         {
             field: 'id',
@@ -162,11 +168,11 @@ const AllUsers: FC<AllUsersProps> = (props) => {
                 <Box className={`mt-2 flex ${isTeam ? '' : 'items-center justify-center'} `}>
                     <Button>
                         {!isTeam &&
-                            (params.row.isBlocked === true ? (
+                            (params.row.isBlocked === 'Có' ? (
                                 <IoIosUnlock
                                     size={20}
                                     className="text-black dark:text-white"
-                                    title="Chặn người dùng"
+                                    title="Mở chặn người dùng"
                                     onClick={() => {
                                         setOpen(!open);
                                         setUnlockStatus(true);
@@ -234,12 +240,14 @@ const AllUsers: FC<AllUsersProps> = (props) => {
     };
 
     const handleUnlockUser = async () => {
-        await unLockUser({ id: userId });
+        await unLockUser({ userId });
     };
 
     useEffect(() => {
         if (isRoleDeleted) {
+            refetch();
             toast.success('Xóa quyền quản trị viên thành công', { duration: 2000 });
+            setEmail('');
         }
         if (deleteRoleErrorData) {
             if ('data' in deleteRoleErrorData) {
@@ -251,9 +259,9 @@ const AllUsers: FC<AllUsersProps> = (props) => {
 
     useEffect(() => {
         if (isUpdated) {
+            refetch();
             setEmail('');
             toast.success('Thêm thành viên thành công', { duration: 2000 });
-            setActive(!active);
         }
         if (updateErrorData) {
             if ('data' in updateErrorData) {
@@ -265,7 +273,9 @@ const AllUsers: FC<AllUsersProps> = (props) => {
 
     useEffect(() => {
         if (isDeleted) {
+            refetch();
             toast.success('Xóa người dùng thành công', { duration: 2000 });
+            setDeleteStatus(false);
         }
         if (deleteErrorData) {
             if ('data' in deleteErrorData) {
@@ -277,7 +287,9 @@ const AllUsers: FC<AllUsersProps> = (props) => {
 
     useEffect(() => {
         if (isBlocked) {
+            refetch();
             toast.success('Chặn người dùng thành công', { duration: 2000 });
+            setBlockStatus(false);
         }
         if (blockErrorData) {
             if ('data' in blockErrorData) {
@@ -289,7 +301,9 @@ const AllUsers: FC<AllUsersProps> = (props) => {
 
     useEffect(() => {
         if (isUnLocked) {
+            refetch();
             toast.success('Mở chặn người dùng thành công', { duration: 2000 });
+            setUnlockStatus(false);
         }
         if (unLockErrorData) {
             if ('data' in unLockErrorData) {
@@ -417,7 +431,7 @@ const AllUsers: FC<AllUsersProps> = (props) => {
                         <ConfirmationModal
                             title="Xác nhận xóa người dùng"
                             open={open}
-                            setOpen={setOpen}
+                            setOpen={setActive}
                             message="Bạn có chắc chắn muốn xóa người dùng này?"
                             onConfirm={deleteUserById}
                         />
