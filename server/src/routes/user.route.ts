@@ -1,7 +1,7 @@
 import { Router } from 'express'
-import { authorizeRoles, isAuthenticated } from '../middlewares/auth.middleware'
 import { UserRole } from '../constants/enums/user.enum'
 import { userController } from '../controllers/user.controller'
+import { authorizeRoles, isAuthenticated } from '../middlewares/auth.middleware'
 
 const userRouter = Router()
 

@@ -4,7 +4,7 @@ import { useTheme } from 'next-themes';
 import { FC, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { AiOutlineDelete } from 'react-icons/ai';
-import { IoIosUnlock, IoIosLock } from 'react-icons/io';
+import { IoIosLock, IoIosUnlock } from 'react-icons/io';
 import Loading from '../../../../../components/common/Loading';
 import ConfirmationModal from '../../../../../components/modal/ConfimationModal';
 import {
@@ -17,7 +17,6 @@ import {
 } from '../../../../../redux/features/user/userApi';
 import { ROLE } from '../../../../constants/enum';
 import { styles } from '../../../../utils/style';
-import { set } from 'date-fns';
 interface AllUsersProps {
     isTeam: boolean;
 }
