@@ -20,9 +20,23 @@ const getAllUser = catchAsyncError(async (req: Request, res: Response, next: Nex
 
 const updateUserRole = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { userId } = req.body as any
+        const { email } = req.body as any
         const currentUserId: string = req?.user?._id as string
-        const updatedUser: IUser = (await userServices.updateUserRole(currentUserId, userId)) as IUser
+        const updatedUser: IUser = (await userServices.updateUserRole(currentUserId, email)) as IUser
+        res.status(StatusCodes.OK).json({
+            success: true,
+            user: updatedUser
+        })
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
+    }
+})
+
+const deleteAdminRole = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { email } = req.body as any
+        const currentUserId: string = req?.user?._id as string
+        const updatedUser: IUser = (await userServices.updateUserRole(currentUserId, email)) as IUser
         res.status(StatusCodes.OK).json({
             success: true,
             user: updatedUser
@@ -78,5 +92,6 @@ export const userController = {
     updateUserRole,
     lockUser,
     unLockUser,
-    deleteUser
+    deleteUser,
+    deleteAdminRole
 }

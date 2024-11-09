@@ -94,11 +94,7 @@ const updateAccessToken = catchAsyncError(async (req: Request, res: Response, ne
         res.cookie('refreshToken', newRefreshToken, refreshTokenOptions)
 
         // await redis.set(user._id, JSON.stringify(user), 'EX', 5) //set user in redis for 5 seconds
-        res.status(StatusCodes.OK).json({
-            success: true,
-            message: 'Access token is updated successfully',
-            newAccessToken
-        })
+        return next()
     } catch (error: any) {
         return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
     }

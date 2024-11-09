@@ -23,16 +23,57 @@ const getAllUser = async () => {
     }
 }
 
-const updateUserRole = async (currentUserId: string, userId: string) => {
+const updateUserRole = async (currentUserId: string, email: string) => {
     try {
-        const user: IUser = (await UserModel.findById(userId)) as IUser
+        if (!email) {
+            throw new ErrorHandler('Email không được bỏ trống', StatusCodes.BAD_REQUEST)
+        }
+        const isUserExist: IUser = (await UserModel.findOne({ email })) as IUser
+        const userId = isUserExist?._id.toString()
         if (currentUserId === userId) {
-            throw new ErrorHandler('You can not update your own role', StatusCodes.BAD_REQUEST)
+            throw new ErrorHandler('Bạn không thể tự cập nhật quyền của mình!', StatusCodes.BAD_REQUEST)
         }
-        if (user.role === UserRole.ADMIN) {
-            throw new ErrorHandler('You can not update admin role', StatusCodes.BAD_REQUEST)
+        // if (user.role === UserRole.ADMIN) {
+        //     throw new ErrorHandler('You can not update admin role', StatusCodes.BAD_REQUEST)
+        // }
+        let updatedUser: IUser | null = null
+        if (!isUserExist) {
+            throw new ErrorHandler('Không tìm thấy người dùng này!', StatusCodes.NOT_FOUND)
+        } else if (isUserExist.role === UserRole.USER) {
+            updatedUser = (await UserModel.findByIdAndUpdate(userId, { role: UserRole.ADMIN }, { new: true })) as IUser
+        } else if (isUserExist.role === UserRole.ADMIN) {
+            updatedUser = (await UserModel.findByIdAndUpdate(userId, { role: UserRole.USER }, { new: true })) as IUser
         }
-        const updatedUser = await UserModel.findByIdAndUpdate(userId, { role: UserRole.ADMIN }, { new: true })
+        if (!updatedUser) {
+            throw new ErrorHandler('Cập nhật quyền người dùng không thành công', StatusCodes.INTERNAL_SERVER_ERROR)
+        }
+        return updatedUser
+    } catch (error: any) {
+        throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
+    }
+}
+
+const deleteUserAdminRole = async (currentUserId: string, email: string) => {
+    try {
+        const isUserExist: IUser = (await UserModel.findOne({ email })) as IUser
+        const userId = isUserExist?._id.toString()
+        if (currentUserId === userId) {
+            throw new ErrorHandler('Bạn không thể tự xoá quyền của mình!', StatusCodes.BAD_REQUEST)
+        }
+        // if (user.role === UserRole.ADMIN) {
+        //     throw new ErrorHandler('You can not update admin role', StatusCodes.BAD_REQUEST)
+        // }
+        let updatedUser: IUser | null = null
+        if (!isUserExist) {
+            throw new ErrorHandler('Không tìm thấy người dùng này!', StatusCodes.NOT_FOUND)
+        } else if (isUserExist.role === UserRole.ADMIN) {
+            updatedUser = (await UserModel.findByIdAndUpdate(userId, { role: UserRole.USER }, { new: true })) as IUser
+        } else if (isUserExist.role === UserRole.USER) {
+            throw new ErrorHandler('Người dùng này không phải là admin!', StatusCodes.BAD_REQUEST)
+        }
+        if (!updatedUser) {
+            throw new ErrorHandler('Cập nhật quyền người dùng không thành công', StatusCodes.INTERNAL_SERVER_ERROR)
+        }
         return updatedUser
     } catch (error: any) {
         throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
@@ -87,6 +128,7 @@ const deleteUser = async (userId: string) => {
 export const userServices = {
     getAllUser,
     updateUserRole,
+    deleteUserAdminRole,
     lockUser,
     unLockUser,
     deleteUser

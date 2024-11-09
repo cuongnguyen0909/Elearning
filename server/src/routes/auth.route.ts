@@ -17,6 +17,6 @@ authRouter.post('/social', authController.socialAuthLogin)
 // Logout user
 authRouter.get('/logout', isAuthenticated, authController.userLogout)
 // Refresh token
-authRouter.get('/refresh-token', authController.updateAccessToken)
+// authRouter.get('/refresh-token', authController.updateAccessToken)
 
 export default authRouter
