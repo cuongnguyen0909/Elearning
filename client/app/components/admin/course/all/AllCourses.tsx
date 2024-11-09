@@ -1,19 +1,23 @@
 import { Box, Button } from '@mui/material';
-import { useTheme } from 'next-themes';
-import React, { FC } from 'react';
-import { AiOutlineDelete } from 'react-icons/ai';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { FiEdit2 } from 'react-icons/fi';
-import { useGetAllCoursesQuery } from '../../../../../redux/features/course/courseApi';
-import Loading from '../../../../../components/common/Loading';
-import { parseISO, format } from 'date-fns';
-import { styles } from '../../../../utils/style';
+import { useTheme } from 'next-themes';
 import Link from 'next/link';
+import { FC, useEffect } from 'react';
+import { AiOutlineDelete } from 'react-icons/ai';
+import { FiEdit2 } from 'react-icons/fi';
+import Loading from '../../../../../components/common/Loading';
+import { useGetAllCoursesQuery } from '../../../../../redux/features/course/courseApi';
+import { styles } from '../../../../utils/style';
 interface AllCoursesProps {}
 
 const AllCourses: FC<AllCoursesProps> = (props) => {
     const { theme, setTheme } = useTheme();
-    const { isLoading, isSuccess, error, data } = useGetAllCoursesQuery({});
+    const { isLoading, isSuccess, error, data, refetch } = useGetAllCoursesQuery(
+        {},
+        {
+            refetchOnMountOrArgChange: true
+        }
+    );
     const rows: any[] = [];
     const courses = data?.courses;
 
@@ -61,9 +65,9 @@ const AllCourses: FC<AllCoursesProps> = (props) => {
             renderCell: (params: any) => {
                 return (
                     <Box className="mt-2 flex items-center justify-center">
-                        <Button>
+                        <Link href={`/admin/course/edit/${params.row.id}`}>
                             <FiEdit2 className="text-black dark:text-white" size={20} />
-                        </Button>
+                        </Link>
                         <Button>
                             <AiOutlineDelete className="text-black dark:text-white" size={20} />
                         </Button>
@@ -86,6 +90,12 @@ const AllCourses: FC<AllCoursesProps> = (props) => {
             });
         });
     }
+
+    useEffect(() => {
+        if (isSuccess) {
+            refetch();
+        }
+    }, [isSuccess]);
 
     return (
         <div className="mt-[120px]">
