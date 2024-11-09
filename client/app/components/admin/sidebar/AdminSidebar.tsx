@@ -32,6 +32,7 @@ import { styles } from '../../../utils/style';
 import { useLogoutQuery } from '../../../../redux/features/auth/authApi';
 import { signOut } from 'next-auth/react';
 import toast from 'react-hot-toast';
+import { ROLE } from '../../../constants/enum';
 
 interface ItemProps {
     title: string;
@@ -178,7 +179,7 @@ const AdminSidebar: FC = () => {
                                     sx={{ m: '10px 0 0 0 ' }}
                                     className={`!text-[16px] font-bold capitalize text-black dark:text-[#fff]`}
                                 >
-                                    {user?.role === '99858' && 'Quản trị viên'}
+                                    {user?.role === ROLE.ADMIN && 'Quản trị viên'}
                                 </Typography>
                             </Box>
                         </Box>
@@ -195,7 +196,7 @@ const AdminSidebar: FC = () => {
                         />
 
                         <Typography variant="h5" sx={{ m: '15px 0 5px 25px' }} className={styles.title_admin_sidebar}>
-                            {!isCollapsed && 'Dữ liệu'}
+                            {!isCollapsed && 'Quản lý'}
                         </Typography>
                         <Item
                             title="Người dùng"
@@ -215,6 +216,13 @@ const AdminSidebar: FC = () => {
                             title="Hóa đơn"
                             to="/admin/invoices"
                             icon={<ReceiptOutlinedIcon />}
+                            selected={selected}
+                            setSelected={setSelected}
+                        />
+                        <Item
+                            title="Quản trị viên"
+                            to="/admin/team"
+                            icon={<ManageHistoryIcon />}
                             selected={selected}
                             setSelected={setSelected}
                         />
@@ -259,16 +267,7 @@ const AdminSidebar: FC = () => {
                             selected={selected}
                             setSelected={setSelected}
                         />
-                        <Typography variant="h5" sx={{ m: '15px 0 5px 20px' }} className={styles.title_admin_sidebar}>
-                            {!isCollapsed && 'Cộng đồng'}
-                        </Typography>
-                        <Item
-                            title="Thảo luận"
-                            to="/admin/team"
-                            icon={<ManageHistoryIcon />}
-                            selected={selected}
-                            setSelected={setSelected}
-                        />
+
                         <Typography variant="h6" sx={{ m: '15px 0 5px 20px' }} className={styles.title_admin_sidebar}>
                             {!isCollapsed && 'Phân tích'}
                         </Typography>
@@ -311,13 +310,6 @@ const AdminSidebar: FC = () => {
                                     Đăng xuất
                                 </Typography>
                             </MenuItem>
-                            {/* <Item
-                                title="Đăng xuất"
-                                to="/"
-                                icon={<ExitToAppIcon />}
-                                selected={selected}
-                                setSelected={setSelected}
-                            /> */}
                         </div>
                     </Box>
                 </Menu>

@@ -1,11 +1,11 @@
 'use client';
 import { useTheme } from 'next-themes';
 import React, { FC, useEffect } from 'react';
-import Heading from '../../../../components/public/Heading';
-import AdminSidebar from '../../../components/admin/sidebar/AdminSidebar';
-import DashboardHero from '../../../components/admin/common/DashboardHero';
-import AdminProtected from '../../../hooks/adminProtected';
-import AllUsers from '../../../components/admin/user/all/AllUsers';
+import AdminProtected from '../../hooks/adminProtected';
+import Heading from '../../../components/public/Heading';
+import AdminSidebar from '../../components/admin/sidebar/AdminSidebar';
+import DashboardHero from '../../components/admin/common/DashboardHero';
+import AllUsers from '../../components/admin/user/all/AllUsers';
 interface IPageProps {}
 const page: FC<IPageProps> = (props) => {
     const { theme } = useTheme();
@@ -29,7 +29,7 @@ const page: FC<IPageProps> = (props) => {
                     </div>
                     <div className="w-[85%]">
                         <DashboardHero />
-                        <AllUsers isTeam={false} />
+                        <AllUsers isTeam={true} />
                     </div>
                 </div>
             </div>
