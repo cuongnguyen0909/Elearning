@@ -7,15 +7,15 @@ export const apiSlice = createApi({
         baseUrl: process.env.NEXT_PUBLIC_API_SERVER_URL
     }),
     endpoints: (builder) => ({
-        refreshToken: builder.query({
-            query: () => {
-                return {
-                    url: 'auth/refresh-token',
-                    method: 'GET',
-                    credentials: 'include' as const
-                };
-            }
-        }),
+        // refreshToken: builder.query({
+        //     query: () => {
+        //         return {
+        //             url: 'auth/refresh-token',
+        //             method: 'GET',
+        //             credentials: 'include' as const
+        //         };
+        //     }
+        // }),
         loadUser: builder.query({
             query: () => {
                 return {
@@ -34,11 +34,11 @@ export const apiSlice = createApi({
                         })
                     );
                 } catch (error: any) {
-                    console.log('hello', error);
+                    console.log(error);
                 }
             }
         })
     })
 });
 
-export const { useRefreshTokenQuery, useLoadUserQuery } = apiSlice;
+export const { useLoadUserQuery } = apiSlice;

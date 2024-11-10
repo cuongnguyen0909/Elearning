@@ -16,7 +16,6 @@ const page: React.FC<Props> = (props) => {
     const [route, setRoute] = useState('Login');
     const [mounted, setMounted] = useState(false);
     const { user } = useSelector((state: any) => state.auth);
-
     useEffect(() => {
         setMounted(true);
     }, []);
@@ -27,9 +26,7 @@ const page: React.FC<Props> = (props) => {
             <Protected>
                 <div
                     className={`min-h-screen ${
-                        theme === 'light'
-                            ? 'bg-gradient-to-l from-blue-100 to-blue-200'
-                            : 'dark:bg-gray-900'
+                        theme === 'light' ? 'bg-gradient-to-l from-blue-100 to-blue-200' : 'dark:bg-gray-900'
                     }`}
                 >
                     <Heading

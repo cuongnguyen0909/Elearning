@@ -98,7 +98,7 @@ const AllCourses: FC<AllCoursesProps> = (props) => {
     }, [isSuccess]);
 
     return (
-        <div className="mt-[120px]">
+        <div className="ml-12 mt-[120px]">
             {isLoading ? (
                 <Loading />
             ) : (
