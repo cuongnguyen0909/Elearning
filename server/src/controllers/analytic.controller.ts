@@ -7,6 +7,7 @@ import { Model } from 'mongoose'
 import { UserModel } from '../models/user.model'
 import { EnrollmentModel } from '../models/enrollment.model'
 import { NotificationModel } from '../models/notification.model'
+import { CourseModel } from '../models/course.model'
 
 const getUsersAnalytics = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -24,10 +25,10 @@ const getUsersAnalytics = catchAsyncError(async (req: Request, res: Response, ne
 const getEnrollmentsAnalytics = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
         const model: Model<any> = EnrollmentModel as Model<any>
-        const enrollmerns: any = await analyticSevices.getEnrollmentsAnalytics(model)
+        const enrollments: any = await analyticSevices.getEnrollmentsAnalytics(model)
         res.status(StatusCodes.OK).json({
             success: true,
-            enrollmerns
+            enrollments
         })
     } catch (error: any) {
         return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
@@ -46,4 +47,22 @@ const getNotificationsAnalytics = catchAsyncError(async (req: Request, res: Resp
     }
 })
 
-export const analyticController = { getUsersAnalytics, getEnrollmentsAnalytics, getNotificationsAnalytics }
+const getCoursesAnalytics = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const model: Model<any> = CourseModel as Model<any>
+        const courses: any = await analyticSevices.getCoursesAnalytics(model)
+        res.status(StatusCodes.OK).json({
+            success: true,
+            courses
+        })
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
+    }
+})
+
+export const analyticController = {
+    getUsersAnalytics,
+    getEnrollmentsAnalytics,
+    getNotificationsAnalytics,
+    getCoursesAnalytics
+}

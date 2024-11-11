@@ -19,4 +19,6 @@ analyticRouter.get(
     analyticController.getEnrollmentsAnalytics
 )
 
+analyticRouter.get('/courses', isAuthenticated, authorizeRoles(UserRole.ADMIN), analyticController.getCoursesAnalytics)
+
 export default analyticRouter

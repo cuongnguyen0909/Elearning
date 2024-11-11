@@ -28,7 +28,7 @@ const page: FC<IPageProps> = (props) => {
                         <AdminSidebar />
                     </div>
                     <div className="w-[85%]">
-                        <DashboardHero />
+                        <DashboardHero isDashboard={false} />
                         <AllUsers isTeam={false} />
                     </div>
                 </div>

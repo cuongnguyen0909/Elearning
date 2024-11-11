@@ -1,15 +1,19 @@
 'use client';
-import React, { FC, useEffect } from 'react';
-import AdminSidebar from '../../../components/admin/sidebar/AdminSidebar';
-import Heading from '../../../../components/public/Heading';
-import DashboardHero from '../../../components/admin/common/DashboardHero';
 import { useTheme } from 'next-themes';
+import React, { FC, useEffect } from 'react';
 import AdminProtected from '../../../hooks/adminProtected';
-import CreateCourse from '../../../components/admin/course/create/CreateCourse';
+import Heading from '../../../../components/public/Heading';
+import AdminSidebar from '../../../components/admin/sidebar/AdminSidebar';
+import DashboardHero from '../../../components/admin/common/DashboardHero';
+import EnrollmentsAnalytics from '../../../components/admin/analytics/EnrollmentsAnalytics';
 
-interface IPageProps {}
+interface IPageProps {
+    params: any;
+}
 
 const page: FC<IPageProps> = (props) => {
+    const { params } = props;
+    const { id } = params;
     const [active, setActive] = React.useState(0);
     const { theme } = useTheme();
     const [mounted, setMounted] = React.useState(false);
@@ -32,7 +36,8 @@ const page: FC<IPageProps> = (props) => {
                     </div>
                     <div className="w-[85%]">
                         <DashboardHero isDashboard={false} />
-                        <CreateCourse />
+                        {/* <CreateCourse /> */}
+                        <EnrollmentsAnalytics isDashboard={false} />
                     </div>
                 </div>
             </div>

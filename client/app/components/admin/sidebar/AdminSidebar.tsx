@@ -221,8 +221,8 @@ const AdminSidebar: FC = () => {
                             setSelected={setSelected}
                         />
                         <Item
-                            title="Hóa đơn"
-                            to="/admin/invoices"
+                            title="Khóa học đã bán"
+                            to="/admin/enrollment/all"
                             icon={<ReceiptOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
@@ -280,22 +280,22 @@ const AdminSidebar: FC = () => {
                             {!isCollapsed && 'Phân tích'}
                         </Typography>
                         <Item
-                            title="Tổng quan"
-                            to="/admin/analytics"
+                            title="Khoá học"
+                            to="/admin/analytics/courses"
                             icon={<BarChartOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
                         />
                         <Item
-                            title="Đơn hàng"
-                            to="/admin/orders-analytics"
+                            title="Lượt đăng ký"
+                            to="/admin/analytics/enrollments"
                             icon={<MapOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
                         />
                         <Item
                             title="Người dùng"
-                            to="/admin/users-analytics"
+                            to="/admin/analytics/users"
                             icon={<ManageHistoryIcon />}
                             selected={selected}
                             setSelected={setSelected}

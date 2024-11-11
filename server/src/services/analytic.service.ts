@@ -31,8 +31,18 @@ const getNotificationsAnalytics = async (model: Model<any>) => {
     }
 }
 
+const getCoursesAnalytics = async (model: Model<any>) => {
+    try {
+        const courses: any = await generateLast12MonthsData(model)
+        return courses
+    } catch (error: any) {
+        throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
+    }
+}
+
 export const analyticSevices = {
     getUsersAnalytics,
     getEnrollmentsAnalytics,
-    getNotificationsAnalytics
+    getNotificationsAnalytics,
+    getCoursesAnalytics
 }

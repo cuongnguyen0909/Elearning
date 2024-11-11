@@ -1,10 +1,13 @@
 import React, { FC, useState } from 'react';
 import ThemeSwitcher from '../../../../components/theme/ThemeSwitcher';
 import { IoMdNotificationsOutline } from 'react-icons/io';
-interface DashboardHeaderProps {}
+interface DashboardHeaderProps {
+    open?: boolean;
+    setOpen?: any;
+}
 
 const DashboardHeader: FC<DashboardHeaderProps> = (props) => {
-    const [open, setOpen] = useState(false);
+    const { open, setOpen } = props;
     return (
         <div className="fixed right-0 top-5 z-20 flex w-full items-center justify-end p-6">
             <ThemeSwitcher />
