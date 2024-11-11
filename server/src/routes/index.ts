@@ -10,6 +10,7 @@ import notificationRouter from './notification.route'
 import profileRouter from './profile.route'
 import reviewRouter from './review.route'
 import userRouter from './user.route'
+import categoryRouter from './category.route'
 
 const initializeRoutes = (app: express.Application) => {
     app.use('/api/v1/auth', authRouter)
@@ -22,6 +23,7 @@ const initializeRoutes = (app: express.Application) => {
     app.use('/api/v1/review', reviewRouter)
     app.use('/api/v1/analytic', analyticRouter)
     app.use('/api/v1/layout', layoutRouter)
+    app.use('/api/v1/category', categoryRouter)
 
     app.use(errorMiddleware)
 }

@@ -1,10 +1,12 @@
 import mongoose, { Document, Schema } from 'mongoose'
 import { contentSchema, IContent } from './content.schema'
 import { IReview, reviewSchema } from './review.schema'
+import { ICategory } from './category.schema'
 
 export interface ICourse extends Document {
     title: string
     description: string
+    category: ICategory
     price: number
     estimatedPrice: number
     thumbnail: object
@@ -29,6 +31,10 @@ export const courseSchema: Schema<ICourse> = new mongoose.Schema(
         description: {
             type: String,
             required: true
+        },
+        category: {
+            type: Schema.Types.ObjectId,
+            ref: 'Category'
         },
         price: {
             type: Number,

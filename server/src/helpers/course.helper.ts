@@ -69,6 +69,10 @@ const getAllCourses = async () => {
                         select: 'name email'
                     }
                 ]
+            })
+            .populate({
+                path: 'category',
+                select: 'title'
             })) as ICourse[]
         return courses
     } catch (error: any) {

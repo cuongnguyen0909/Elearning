@@ -17,7 +17,8 @@ import {
     WysiwygIcon,
     ManageHistoryIcon,
     SettingsIcon,
-    ExitToAppIcon
+    ExitToAppIcon,
+    CategoryOutlinedIcon
 } from './Icon';
 import 'react-pro-sidebar/dist/css/styles.css';
 import { Box, IconButton, TextareaAutosize, Typography } from '@mui/material';
@@ -213,6 +214,13 @@ const AdminSidebar: FC = () => {
                             setSelected={setSelected}
                         />
                         <Item
+                            title="Thể loại"
+                            to="/admin/category/all"
+                            icon={<CategoryOutlinedIcon />}
+                            selected={selected}
+                            setSelected={setSelected}
+                        />
+                        <Item
                             title="Hóa đơn"
                             to="/admin/invoices"
                             icon={<ReceiptOutlinedIcon />}
@@ -246,13 +254,13 @@ const AdminSidebar: FC = () => {
                         <Typography variant="h5" sx={{ m: '15px 0 5px 20px' }} className={styles.title_admin_sidebar}>
                             {!isCollapsed && 'Tuỳ chỉnh'}
                         </Typography>
-                        <Item
+                        {/* <Item
                             title="Trang chủ"
                             to="/admin/hero"
                             icon={<WebIcon />}
                             selected={selected}
                             setSelected={setSelected}
-                        />
+                        /> */}
                         <Item
                             title="FAQ"
                             to="/admin/faq"
@@ -260,13 +268,13 @@ const AdminSidebar: FC = () => {
                             selected={selected}
                             setSelected={setSelected}
                         />
-                        <Item
+                        {/* <Item
                             title="Thể loại"
                             to="/admin/Categories"
                             icon={<WysiwygIcon />}
                             selected={selected}
                             setSelected={setSelected}
-                        />
+                        /> */}
 
                         <Typography variant="h6" sx={{ m: '15px 0 5px 20px' }} className={styles.title_admin_sidebar}>
                             {!isCollapsed && 'Phân tích'}
