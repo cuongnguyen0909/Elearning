@@ -33,13 +33,13 @@ const EditCourse: FC<EditCourseProps> = (props) => {
     const [courseInfo, setCourseInfo] = useState({
         title: '',
         description: '',
+        category: '',
         price: '',
         estimatedPrice: '',
         tags: '',
         level: '',
         demoUrl: '',
-        thumbnail: '',
-        category: ''
+        thumbnail: ''
     });
     const [benefits, setBenefits] = useState([{ title: '' }]);
     const [prerequisites, setPrerequisites] = useState([{ title: '' }]);
@@ -146,6 +146,7 @@ const EditCourse: FC<EditCourseProps> = (props) => {
                         setCourseInfo={setCourseInfo}
                         active={active}
                         setActive={setActive}
+                        isEdit={true}
                     />
                 )}
                 {active === 1 && (

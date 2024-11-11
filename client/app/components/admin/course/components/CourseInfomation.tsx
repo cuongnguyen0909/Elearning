@@ -7,10 +7,11 @@ interface CourseInfomationProps {
     setCourseInfo: any;
     active: number;
     setActive: any;
+    isEdit?: boolean;
 }
 
 const CourseInfomation: FC<CourseInfomationProps> = (props) => {
-    const { courseInfo, setCourseInfo, active, setActive } = props;
+    const { courseInfo, setCourseInfo, active, setActive, isEdit } = props;
     const [dragging, setDragging] = useState(false);
     const handleSubmit = (e: any) => {
         e.preventDefault();
@@ -192,13 +193,54 @@ const CourseInfomation: FC<CourseInfomationProps> = (props) => {
                             placeholder="Nhập tags cho khóa học..."
                             className={`${styles.input}`}
                         /> */}
-                        <select name="" id="" className={`${styles.input} border !bg-slate-900`}>
-                            {categories?.map((category: any, index: number) => (
-                                <option key={index} value={category._id}>
-                                    {category.title}
-                                </option>
-                            ))}
-                        </select>
+                        {isEdit ? (
+                            <select
+                                name=""
+                                id=""
+                                className={`${styles.input} border !bg-slate-900`}
+                                onChange={(e: any) => {
+                                    setCourseInfo({
+                                        ...courseInfo,
+                                        category: e.target.value
+                                    });
+                                }}
+                            >
+                                {categories?.map((category: any, index: number) => (
+                                    <option
+                                        key={index}
+                                        value={category?._id}
+                                        selected={category?._id.toString() === courseInfo.category.toString()}
+                                    >
+                                        {category.title}
+                                    </option>
+                                ))}
+                            </select>
+                        ) : (
+                            <select name="" id="" className={`${styles.input} border !bg-slate-900`}>
+                                {categories?.map((category: any, index: number) => (
+                                    <option key={index} value={category._id}>
+                                        {category.title}
+                                    </option>
+                                ))}
+                            </select>
+                        )}
+                        {/* <select name="" id="" className={`${styles.input} border !bg-slate-900`}>
+                            {categories?.map((category: any, index: number) =>
+                                isEdit ? (
+                                    <option
+                                        key={index}
+                                        value={category._id}
+                                        selected={category._id === courseInfo.category}
+                                    >
+                                        {category.name}
+                                    </option>
+                                ) : (
+                                    <option key={index} value={category._id}>
+                                        {category.name}
+                                    </option>
+                                )
+                            )}
+                        </select> */}
                     </div>
                 </div>
                 <br />

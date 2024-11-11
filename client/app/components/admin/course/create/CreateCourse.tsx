@@ -111,6 +111,7 @@ const CreateCourse: FC<CreateCourseProps> = (props) => {
                         setCourseInfo={setCourseInfo}
                         active={active}
                         setActive={setActive}
+                        isEdit={false}
                     />
                 )}
                 {active === 1 && (
