@@ -1,5 +1,6 @@
 import React, { FC, useState } from 'react';
-import { styles } from '../../../../../utils/style';
+import { styles } from '../../../../utils/style';
+import { useGetAllCategoriesQuery } from '../../../../../redux/features/category/categoryApi';
 
 interface CourseInfomationProps {
     courseInfo: any;
@@ -15,7 +16,13 @@ const CourseInfomation: FC<CourseInfomationProps> = (props) => {
         e.preventDefault();
         setActive(active + 1);
     };
-
+    const { data: categoriesData } = useGetAllCategoriesQuery(
+        {},
+        {
+            refetchOnMountOrArgChange: true
+        }
+    );
+    const categories = categoriesData?.categories;
     const handleFileChange = (e: any) => {
         const file = e.target.files?.[0];
         if (file) {
@@ -145,25 +152,54 @@ const CourseInfomation: FC<CourseInfomationProps> = (props) => {
                     </div>
                 </div>
                 <br />
-                <div>
-                    <label htmlFor="" className={`${styles.label}`}>
-                        Tags
-                    </label>
-                    <input
-                        type="text"
-                        required
-                        name=""
-                        value={courseInfo.tags}
-                        onChange={(e: any) =>
-                            setCourseInfo({
-                                ...courseInfo,
-                                tags: e.target.value
-                            })
-                        }
-                        id="tags"
-                        placeholder="Nhập tags cho khóa học..."
-                        className={`${styles.input}`}
-                    />
+                <div className="flex w-full justify-between">
+                    <div className="w-[45%]">
+                        <label htmlFor="" className={`${styles.label}`}>
+                            Tags
+                        </label>
+                        <input
+                            type="text"
+                            required
+                            name=""
+                            value={courseInfo.tags}
+                            onChange={(e: any) =>
+                                setCourseInfo({
+                                    ...courseInfo,
+                                    tags: e.target.value
+                                })
+                            }
+                            id="tags"
+                            placeholder="Nhập tags cho khóa học..."
+                            className={`${styles.input}`}
+                        />
+                    </div>
+                    <div className="w-[50%]">
+                        <label htmlFor="" className={`${styles.label}`}>
+                            Thể loại
+                        </label>
+                        {/* <input
+                            type="text"
+                            required
+                            name=""
+                            value={courseInfo.tags}
+                            onChange={(e: any) =>
+                                setCourseInfo({
+                                    ...courseInfo,
+                                    tags: e.target.value
+                                })
+                            }
+                            id="tags"
+                            placeholder="Nhập tags cho khóa học..."
+                            className={`${styles.input}`}
+                        /> */}
+                        <select name="" id="" className={`${styles.input} border !bg-slate-900`}>
+                            {categories?.map((category: any, index: number) => (
+                                <option key={index} value={category._id}>
+                                    {category.title}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
                 <br />
                 <div className="flex w-full justify-between">

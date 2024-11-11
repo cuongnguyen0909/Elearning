@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import { styles } from '../../../../../utils/style';
 import { IoCheckmarkDoneOutline } from 'react-icons/io5';
 import CoursePlayer from './CoursePlayer';
-import Rating from '../../../../../../components/rating/Rating';
+import { styles } from '../../../../utils/style';
+import Rating from '../../../../../components/rating/Rating';
 
 interface CoursePreviewProps {
     active: number;

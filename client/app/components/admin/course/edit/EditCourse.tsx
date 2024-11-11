@@ -28,7 +28,6 @@ const EditCourse: FC<EditCourseProps> = (props) => {
     );
     const [editCourse, { isSuccess, error }] = useEditCourseMutation();
     const editCourseData = data?.courses && data?.courses?.find((course: any) => course?._id === id);
-    console.log(editCourseData);
     const [active, setActive] = useState(0);
     const [courseData, setCourseData] = useState({});
     const [courseInfo, setCourseInfo] = useState({
@@ -39,7 +38,8 @@ const EditCourse: FC<EditCourseProps> = (props) => {
         tags: '',
         level: '',
         demoUrl: '',
-        thumbnail: ''
+        thumbnail: '',
+        category: ''
     });
     const [benefits, setBenefits] = useState([{ title: '' }]);
     const [prerequisites, setPrerequisites] = useState([{ title: '' }]);
@@ -75,7 +75,7 @@ const EditCourse: FC<EditCourseProps> = (props) => {
             videoUrl: content.videoUrl,
             description: content.description,
             videoSection: content.videoSection,
-            links: content.links.map((link: any) => ({
+            links: content.links?.map((link: any) => ({
                 title: link.title,
                 url: link.url
             })),
@@ -85,6 +85,7 @@ const EditCourse: FC<EditCourseProps> = (props) => {
         const data = {
             title: courseInfo.title,
             description: courseInfo.description,
+            category: courseInfo.category,
             price: courseInfo.price,
             estimatedPrice: courseInfo.estimatedPrice,
             tags: courseInfo.tags,
@@ -110,6 +111,7 @@ const EditCourse: FC<EditCourseProps> = (props) => {
             setCourseInfo({
                 title: editCourseData?.title,
                 description: editCourseData?.description,
+                category: editCourseData?.category?._id,
                 price: editCourseData?.price,
                 estimatedPrice: editCourseData?.estimatedPrice,
                 tags: editCourseData?.tags,
@@ -122,7 +124,6 @@ const EditCourse: FC<EditCourseProps> = (props) => {
             setCourseContent(editCourseData?.contents);
         }
     }, [editCourseData]);
-
     useEffect(() => {
         if (isSuccess) {
             toast.success('Cập nhật khóa học thành công');

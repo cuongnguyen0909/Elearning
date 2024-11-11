@@ -266,7 +266,7 @@ const CourseContent: FC<CourseContentProps> = (props) => {
                                                                     if (idx === index) {
                                                                         return {
                                                                             ...item,
-                                                                            links: item.links.map(
+                                                                            links: item.links?.map(
                                                                                 (linkItem: any, lIdx: number) => {
                                                                                     if (lIdx === linkIndex) {
                                                                                         return {

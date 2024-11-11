@@ -21,7 +21,8 @@ const CreateCourse: FC<CreateCourseProps> = (props) => {
         tags: '',
         level: '',
         demoUrl: '',
-        thumbnail: ''
+        thumbnail: '',
+        category: ''
     });
     const [createCourse, { isLoading, isSuccess, error }] = useCreateCourseMutation();
     useEffect(() => {
@@ -72,7 +73,7 @@ const CreateCourse: FC<CreateCourseProps> = (props) => {
             videoUrl: content.videoUrl,
             description: content.description,
             videoSection: content.videoSection,
-            links: content.links.map((link: any) => ({
+            links: content.links?.map((link: any) => ({
                 title: link.title,
                 url: link.url
             })),
@@ -82,6 +83,7 @@ const CreateCourse: FC<CreateCourseProps> = (props) => {
         const data = {
             title: courseInfo.title,
             description: courseInfo.description,
+            category: courseInfo.category,
             price: courseInfo.price,
             estimatedPrice: courseInfo.estimatedPrice,
             tags: courseInfo.tags,
