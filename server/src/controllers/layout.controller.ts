@@ -7,16 +7,13 @@ import { ILayout } from '../models/schemas/layout.schema'
 
 const createLayout = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { type, bannerRequest, faq, categories } = req.body
+        const { type, image, title, subtitle, faq, categories } = req.body
         if (!type) {
             throw new ErrorHandler('Type is required', StatusCodes.BAD_REQUEST)
         }
-        if (
-            type === 'Banner' &&
-            (!bannerRequest || !bannerRequest.image || !bannerRequest.title || !bannerRequest.subTitle)
-        ) {
-            throw new ErrorHandler('Banner details are required', StatusCodes.BAD_REQUEST)
-        }
+        // if (type === 'Banner' && (!image || !title || !subtitle)) {
+        //     throw new ErrorHandler('Banner details are required', StatusCodes.BAD_REQUEST)
+        // }
         // if (type === 'FAQ' && !faqRequest?.faq) {
         //     throw new ErrorHandler('FAQ details are required', StatusCodes.BAD_REQUEST)
         // }
@@ -25,7 +22,7 @@ const createLayout = catchAsyncError(async (req: Request, res: Response, next: N
         }
 
         // Create layout
-        await layoutServices.createLayout(type, bannerRequest, faq, categories)
+        await layoutServices.createLayout(type, image, title, subtitle, faq, categories)
         res.status(StatusCodes.CREATED).json({
             success: true,
             message: 'Layout created successfully'
@@ -37,7 +34,7 @@ const createLayout = catchAsyncError(async (req: Request, res: Response, next: N
 
 const editLayout = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { type, bannerRequest, faq, categories } = req.body
+        const { type, image, title, subtitle, faq, categories } = req.body
         if (!type) {
             throw new ErrorHandler('Type is required', StatusCodes.BAD_REQUEST)
         }
@@ -55,7 +52,7 @@ const editLayout = catchAsyncError(async (req: Request, res: Response, next: Nex
         // }
 
         // Edit layout
-        await layoutServices.editLayout(type, bannerRequest, faq, categories)
+        await layoutServices.editLayout(type, image, title, subtitle, faq, categories)
         res.status(StatusCodes.OK).json({
             success: true,
             message: 'Layout updated successfully'
@@ -67,7 +64,7 @@ const editLayout = catchAsyncError(async (req: Request, res: Response, next: Nex
 
 const getLayoutByType = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { type } = req.body
+        const { type } = req.params as { type: string }
         if (!type) {
             throw new ErrorHandler('Type is required', StatusCodes.BAD_REQUEST)
         }

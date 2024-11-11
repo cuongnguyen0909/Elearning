@@ -3,7 +3,7 @@ import toast from 'react-hot-toast';
 import { AiOutlineDelete, AiOutlinePlusCircle } from 'react-icons/ai';
 import { BsLink45Deg, BsPencil } from 'react-icons/bs';
 import { MdOutlineKeyboardArrowUp } from 'react-icons/md';
-import { styles } from '../../../../../utils/style';
+import { styles } from '../../../../utils/style';
 interface CourseContentProps {
     active: number;
     setActive: (value: number) => void;

@@ -8,7 +8,7 @@ const layoutRouter = Router()
 layoutRouter.post('/create', isAuthenticated, authorizeRoles(UserRole.ADMIN), layoutController.createLayout)
 layoutRouter.put('/update', isAuthenticated, authorizeRoles(UserRole.ADMIN), layoutController.editLayout)
 layoutRouter.get(
-    '/',
+    '/:type',
     // isAuthenticated,
     // authorizeRoles(UserRole.ADMIN),
     layoutController.getLayoutByType

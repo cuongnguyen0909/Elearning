@@ -3,12 +3,6 @@ import ErrorHandler from '../utils/handlers/ErrorHandler'
 import { deleteFile, uploadFile } from '../helpers/upload.help'
 import { LayoutModel } from '../models/layout.model'
 
-export interface IBannerRequest {
-    image: string
-    title: string
-    subTitle: string
-}
-
 export interface IFAQRequest {
     faq: [
         {
@@ -18,22 +12,28 @@ export interface IFAQRequest {
     ]
 }
 
-const createLayout = async (type: string, bannerRequest: IBannerRequest, faq: any, categories: any) => {
+const createLayout = async (
+    type: string,
+    image: string,
+    title: string,
+    subtitle: string,
+    faq: any,
+    categories: any
+) => {
     try {
         const isTypeExist = (await LayoutModel.findOne({ type })) as any
         if (isTypeExist) {
             throw new ErrorHandler(`${type} already exist`, StatusCodes.BAD_REQUEST)
         }
         if (type === 'Banner') {
-            const { image, title, subTitle } = bannerRequest
             const myCloud = await uploadFile('layout', image)
             const banner = {
                 image: {
-                    public_id: myCloud.public_id,
-                    url: myCloud.url
+                    public_id: myCloud?.public_id,
+                    url: myCloud?.url
                 },
                 title,
-                subTitle
+                subtitle
             }
             return await LayoutModel.create({ type, banner })
         }
@@ -64,14 +64,13 @@ const createLayout = async (type: string, bannerRequest: IBannerRequest, faq: an
     }
 }
 
-const editLayout = async (type: string, bannerRequest: IBannerRequest, faq: any, categories: any) => {
+const editLayout = async (type: string, image: string, title: string, subtitle: string, faq: any, categories: any) => {
     try {
         if (type === 'Banner') {
             const bannerData: any = await LayoutModel.findOne({ type: 'Banner' })
             if (!bannerData) {
                 throw new ErrorHandler('Banner not found', StatusCodes.NOT_FOUND)
             }
-            const { image, title, subTitle } = bannerRequest
             if (bannerData) {
                 await deleteFile(bannerData?.image?.public_id)
             }
@@ -82,7 +81,7 @@ const editLayout = async (type: string, bannerRequest: IBannerRequest, faq: any,
                     url: myCloud.url
                 },
                 title,
-                subTitle
+                subtitle
             }
             return await LayoutModel.findByIdAndUpdate(bannerData?._id, { banner })
         }

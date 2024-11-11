@@ -10,7 +10,7 @@ export interface ILayout extends Document {
     banner: {
         image: IBanner
         title: string
-        subTitle: string
+        subtitle: string
     }
 }
 
@@ -26,7 +26,7 @@ export const layoutSchema: Schema<ILayout> = new Schema<ILayout>(
             title: {
                 type: String
             },
-            subTitle: {
+            subtitle: {
                 type: String
             }
         }
