@@ -4,6 +4,7 @@ import { AiOutlineDelete, AiOutlinePlusCircle } from 'react-icons/ai';
 import { BsLink45Deg, BsPencil } from 'react-icons/bs';
 import { MdOutlineKeyboardArrowUp } from 'react-icons/md';
 import { styles } from '../../../../utils/style';
+import { MESSAGE } from '../../../../constants/enum';
 interface CourseContentProps {
     active: number;
     setActive: (value: number) => void;
@@ -54,9 +55,10 @@ const CourseContent: FC<CourseContentProps> = (props) => {
             content?.videoUrl === '' ||
             content?.description === '' ||
             content?.links?.[0]?.title === '' ||
-            content?.links?.[0]?.url === ''
+            content?.links?.[0]?.url === '' ||
+            content?.videoDuration === ''
         ) {
-            toast.error('Please fill all the fields');
+            toast.error(MESSAGE.FILL_ALL_FIELDS);
         } else {
             let newVideoSection = '';
             if (courseContent?.length > 0) {
@@ -71,6 +73,7 @@ const CourseContent: FC<CourseContentProps> = (props) => {
                     videoUrl: '',
                     description: '',
                     videoSection: newVideoSection,
+                    videoDuration: '',
                     links: [{ title: '', url: '' }],
                     suggestion: ''
                 };
@@ -86,16 +89,18 @@ const CourseContent: FC<CourseContentProps> = (props) => {
             courseContent[courseContent?.length - 1]?.videoUrl === '' ||
             courseContent[courseContent?.length - 1]?.description === '' ||
             courseContent[courseContent?.length - 1]?.links?.[0]?.title === '' ||
-            courseContent[courseContent?.length - 1]?.links?.[0]?.url === ''
+            courseContent[courseContent?.length - 1]?.links?.[0]?.url === '' ||
+            courseContent[courseContent?.length - 1]?.videoDuration === ''
         ) {
-            toast.error('Please fill all the fields');
+            toast.error(MESSAGE.FILL_ALL_FIELDS);
         } else {
             setActiveSection(activeSection + 1);
             const newContent = {
                 title: '',
                 videoUrl: '',
                 description: '',
-                videoSection: `Untitled Section ${activeSection}`,
+                videoSection: `Chương ${activeSection}`,
+                videoDuration: '',
                 links: [{ title: '', url: '' }],
                 suggestion: ''
             };
@@ -113,9 +118,10 @@ const CourseContent: FC<CourseContentProps> = (props) => {
             courseContent[courseContent?.length - 1]?.videoUrl === '' ||
             courseContent[courseContent?.length - 1]?.description === '' ||
             courseContent[courseContent?.length - 1]?.links?.[0]?.title === '' ||
-            courseContent[courseContent?.length - 1]?.links?.[0]?.url === ''
+            courseContent[courseContent?.length - 1]?.links?.[0]?.url === '' ||
+            courseContent[courseContent?.length - 1]?.videoDuration === ''
         ) {
-            toast.error('Please fill all the fields');
+            toast.error(MESSAGE.FILL_ALL_FIELDS);
         } else {
             setActive(active + 1);
             handleCourseSubmit();
@@ -145,7 +151,14 @@ const CourseContent: FC<CourseContentProps> = (props) => {
                                                 setCourseContent(updatedData);
                                             }}
                                         />
-                                        <BsPencil className="cursor-pointer text-black dark:text-white" />
+                                        <BsPencil
+                                            className="cursor-pointer text-black dark:text-white"
+                                            onClick={() => {
+                                                const updatedData = [...courseContent];
+                                                updatedData[index].videoSection = `Chương ${activeSection}`;
+                                                setCourseContent(updatedData);
+                                            }}
+                                        />
                                         <br />
                                     </div>
                                 )}
@@ -189,11 +202,11 @@ const CourseContent: FC<CourseContentProps> = (props) => {
                                     <>
                                         <div className="my-3">
                                             <label htmlFor="" className={styles.label}>
-                                                Video Title
+                                                Tên bài học
                                             </label>
                                             <input
                                                 type="text"
-                                                placeholder="Enter video title..."
+                                                placeholder="Nhập tên bài học..."
                                                 className={styles.input}
                                                 value={content?.title}
                                                 onChange={(e) => {
@@ -206,11 +219,11 @@ const CourseContent: FC<CourseContentProps> = (props) => {
                                         </div>
                                         <div className="mb-3">
                                             <label htmlFor="" className={styles.label}>
-                                                Video Url
+                                                Đường dẫn video
                                             </label>
                                             <input
                                                 type="text"
-                                                placeholder="Enter video url..."
+                                                placeholder="Nhập url video... (vd: 8976ac72b190486b9a7be40b8673b7cd)"
                                                 className={styles.input}
                                                 value={content?.videoUrl}
                                                 onChange={(e) => {
@@ -223,12 +236,31 @@ const CourseContent: FC<CourseContentProps> = (props) => {
                                         </div>
                                         <div className="mb-3">
                                             <label htmlFor="" className={styles.label}>
-                                                Video Description
+                                                Độ dài video (phút)
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="Nhập độ dài video..."
+                                                className={styles.input}
+                                                value={content?.videoDuration}
+                                                onChange={(e) => {
+                                                    const updatedData = courseContent.map((item: any, idx: number) =>
+                                                        idx === index
+                                                            ? { ...item, videoDuration: e.target.value }
+                                                            : item
+                                                    );
+                                                    setCourseContent(updatedData);
+                                                }}
+                                            />
+                                        </div>
+                                        <div className="mb-3">
+                                            <label htmlFor="" className={styles.label}>
+                                                Mô tả bài học
                                             </label>
                                             <textarea
                                                 rows={8}
                                                 cols={30}
-                                                placeholder="Enter video description..."
+                                                placeholder="Nhập mô tả cho bài học..."
                                                 className={`${styles.input} !h-min py-2`}
                                                 value={content.description}
                                                 onChange={(e) => {
@@ -244,7 +276,7 @@ const CourseContent: FC<CourseContentProps> = (props) => {
                                             <div className="mb-3 block" key={linkIndex}>
                                                 <div className="flex w-full items-center justify-between">
                                                     <label htmlFor="" className={styles.label}>
-                                                        Links {linkIndex + 1}
+                                                        Tài liêụ {linkIndex + 1}
                                                     </label>
                                                     <AiOutlineDelete
                                                         className={`${linkIndex === 0 ? 'cursor-no-drop' : 'cursor-pointer'} text-[20px] text-black dark:text-white`}
@@ -255,7 +287,7 @@ const CourseContent: FC<CourseContentProps> = (props) => {
                                                 </div>
                                                 <input
                                                     type="text"
-                                                    placeholder="Link title"
+                                                    placeholder="Mô tả tài liệu"
                                                     className={styles.input}
                                                     value={link.title}
                                                     onChange={(e) => {
@@ -288,7 +320,7 @@ const CourseContent: FC<CourseContentProps> = (props) => {
                                                 />
                                                 <input
                                                     type="text"
-                                                    placeholder="Link Url"
+                                                    placeholder="Đường dẫn tài liệu"
                                                     className={styles.input}
                                                     value={link.url}
                                                     onChange={(e) => {
@@ -329,7 +361,7 @@ const CourseContent: FC<CourseContentProps> = (props) => {
                                                 onClick={() => handleAddLink(index)}
                                             >
                                                 <BsLink45Deg className="mr-2" />
-                                                Add Link
+                                                Thêm tài liệu mới
                                             </p>
                                         </div>
                                     </>
@@ -343,7 +375,7 @@ const CourseContent: FC<CourseContentProps> = (props) => {
                                             onClick={(e: any) => handleNewCourseContent(content, e)}
                                         >
                                             <AiOutlinePlusCircle className="mr-2" />
-                                            Add New Content
+                                            Thêm bài học mới
                                         </p>
                                     </div>
                                 )}
@@ -357,7 +389,7 @@ const CourseContent: FC<CourseContentProps> = (props) => {
                     onClick={() => addNewSection()}
                 >
                     <AiOutlinePlusCircle className="mr-2" />
-                    Add New Section
+                    Thêm chương mới
                 </div>
             </form>
             <div className="flex w-full items-center justify-between">
@@ -365,13 +397,13 @@ const CourseContent: FC<CourseContentProps> = (props) => {
                     className="mt-8 flex h-[40px] w-full cursor-pointer items-center justify-center rounded bg-[#37a39a] text-center text-[#fff] 800px:w-[180px]"
                     onClick={prevButton}
                 >
-                    Previous
+                    Quay lại
                 </div>
                 <div
                     className="mt-8 flex h-[40px] w-full cursor-pointer items-center justify-center rounded bg-[#37a39a] text-center text-[#fff] 800px:w-[180px]"
                     onClick={() => handleAddCourseContent()}
                 >
-                    Next
+                    Tiếp theo
                 </div>
             </div>
             <br />

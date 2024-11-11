@@ -49,6 +49,7 @@ const EditCourse: FC<EditCourseProps> = (props) => {
             videoUrl: '',
             description: '',
             videoSection: 'Chưa có tiêu đề',
+            videoDuration: '',
             links: [
                 {
                     title: '',
@@ -75,6 +76,7 @@ const EditCourse: FC<EditCourseProps> = (props) => {
             videoUrl: content.videoUrl,
             description: content.description,
             videoSection: content.videoSection,
+            videoDuration: content.videoDuration,
             links: content.links?.map((link: any) => ({
                 title: link.title,
                 url: link.url

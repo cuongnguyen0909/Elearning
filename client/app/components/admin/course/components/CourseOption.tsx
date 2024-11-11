@@ -1,6 +1,7 @@
 import React, { FC, useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { IoMdCheckmark } from 'react-icons/io';
+import { MESSAGE } from '../../../../constants/enum';
 
 interface CourseOptionProps {
     active: number;
@@ -15,6 +16,7 @@ interface CourseOptionProps {
 const CourseOption: FC<CourseOptionProps> = (props) => {
     const { active, setActive, courseInfo, courseContent, benefits, prerequisites, handleSubmit } = props;
     // const options = ['Course Information', 'Course Options', 'Course Content', 'Course Preview'];
+
     const options = [
         {
             value: 'Tổng quan khóa học',
@@ -49,7 +51,7 @@ const CourseOption: FC<CourseOptionProps> = (props) => {
                         courseInfo?.demoUrl === '' ||
                         courseInfo?.thumbnail === ''
                     ) {
-                        return toast.error('Please fill all the fields');
+                        return toast.error(MESSAGE.FILL_ALL_FIELDS);
                     } else {
                         setActive(index);
                     }
@@ -57,7 +59,7 @@ const CourseOption: FC<CourseOptionProps> = (props) => {
                 case 2:
                     for (let i = 0; i < benefits.length; i++) {
                         if (benefits[i]?.title === '') {
-                            return toast.error('Please fill all the fields');
+                            return toast.error(MESSAGE.FILL_ALL_FIELDS);
                         } else {
                             setActive(index);
                         }
@@ -65,7 +67,7 @@ const CourseOption: FC<CourseOptionProps> = (props) => {
 
                     for (let i = 0; i < prerequisites.length; i++) {
                         if (prerequisites[i]?.title === '') {
-                            return toast.error('Please fill all the fields');
+                            return toast.error(MESSAGE.FILL_ALL_FIELDS);
                         } else {
                             //handleSubmit();
                             await handleSubmit();
@@ -82,7 +84,7 @@ const CourseOption: FC<CourseOptionProps> = (props) => {
                             courseContent[i]?.videoUrl === '' ||
                             courseContent[i]?.videoSection === ''
                         ) {
-                            return toast.error('Please fill all the fields');
+                            return toast.error(MESSAGE.FILL_ALL_FIELDS);
                         } else {
                             setActive(index);
                         }
