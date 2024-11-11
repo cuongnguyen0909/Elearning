@@ -8,11 +8,11 @@ import {
     useEditCourseMutation,
     useGetAllCoursesQuery
 } from '../../../../../redux/features/course/courseApi';
-import CourseContent from '../create/components/CourseContent';
-import CourseData from '../create/components/CourseData';
-import CourseInfomation from '../create/components/CourseInfomation';
-import CourseOption from '../create/components/CourseOption';
-import CoursePreview from '../create/components/CoursePreview';
+import CourseInfomation from '../components/CourseInfomation';
+import CourseData from '../components/CourseData';
+import CourseContent from '../components/CourseContent';
+import CoursePreview from '../components/CoursePreview';
+import CourseOption from '../components/CourseOption';
 
 interface EditCourseProps {
     id: string;

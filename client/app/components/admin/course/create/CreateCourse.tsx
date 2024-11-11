@@ -4,11 +4,11 @@ import { useCreateCourseMutation } from '../../../../../redux/features/course/co
 import toast from 'react-hot-toast';
 import { redirect } from 'next/navigation';
 import Loading from '../../../../../components/common/Loading';
-import CourseInfomation from './components/CourseInfomation';
-import CourseData from './components/CourseData';
-import CourseContent from './components/CourseContent';
-import CoursePreview from './components/CoursePreview';
-import CourseOption from './components/CourseOption';
+import CourseInfomation from '../components/CourseInfomation';
+import CourseData from '../components/CourseData';
+import CourseContent from '../components/CourseContent';
+import CoursePreview from '../components/CoursePreview';
+import CourseOption from '../components/CourseOption';
 interface CreateCourseProps {}
 
 const CreateCourse: FC<CreateCourseProps> = (props) => {
