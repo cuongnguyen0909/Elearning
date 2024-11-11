@@ -1,39 +1,33 @@
 'use client';
-import React, { FC, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import {
-    HomeOutlinedIcon,
-    ArrowForwardIosIcon,
-    ArrowBackIosIcon,
-    PeopleOutlinedIcon,
-    ReceiptOutlinedIcon,
-    BarChartOutlinedIcon,
-    MapOutlinedIcon,
-    GroupsIcon,
-    OndemandVideoIcon,
-    VideoCallIcon,
-    WebIcon,
-    QuizIcon,
-    WysiwygIcon,
-    ManageHistoryIcon,
-    SettingsIcon,
-    ExitToAppIcon,
-    CategoryOutlinedIcon
-} from './Icon';
-import 'react-pro-sidebar/dist/css/styles.css';
-import { Box, IconButton, TextareaAutosize, Typography } from '@mui/material';
-import { ProSidebar, Menu, MenuItem } from 'react-pro-sidebar';
-import avatarDefautl from '../../../../public/assets/avatar.png';
-import { useSelector } from 'react-redux';
-import Link from 'next/link';
-import Image from 'next/image';
-import { useTheme } from 'next-themes';
-import { redirect } from 'next/navigation';
-import { styles } from '../../../utils/style';
-import { useLogoutQuery } from '../../../../redux/features/auth/authApi';
+import { Box, Typography } from '@mui/material';
 import { signOut } from 'next-auth/react';
-import toast from 'react-hot-toast';
+import { useTheme } from 'next-themes';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { FC, useEffect, useState } from 'react';
+import { Menu, MenuItem, ProSidebar } from 'react-pro-sidebar';
+import 'react-pro-sidebar/dist/css/styles.css';
+import { useSelector } from 'react-redux';
+import avatarDefautl from '../../../../public/assets/avatar.png';
+import { useLogoutQuery } from '../../../../redux/features/auth/authApi';
 import { ROLE } from '../../../constants/enum';
+import { styles } from '../../../utils/style';
+import {
+    ArrowBackIosIcon,
+    ArrowForwardIosIcon,
+    BarChartOutlinedIcon,
+    CategoryOutlinedIcon,
+    ExitToAppIcon,
+    GroupsIcon,
+    HomeOutlinedIcon,
+    ManageHistoryIcon,
+    MapOutlinedIcon,
+    OndemandVideoIcon,
+    QuizIcon,
+    ReceiptOutlinedIcon,
+    SettingsIcon
+} from './Icon';
 
 interface ItemProps {
     title: string;
@@ -188,7 +182,7 @@ const AdminSidebar: FC = () => {
 
                     <Box paddingLeft={isCollapsed ? undefined : '10%'}>
                         <Item
-                            title="Tổng quát"
+                            title="Dashboard"
                             to="/admin"
                             icon={<HomeOutlinedIcon />}
                             selected={selected}
@@ -200,7 +194,7 @@ const AdminSidebar: FC = () => {
                             {!isCollapsed && 'Quản lý'}
                         </Typography>
                         <Item
-                            title="Người dùng"
+                            title="Học viên"
                             to="/admin/user/all"
                             icon={<GroupsIcon />}
                             selected={selected}
@@ -221,7 +215,7 @@ const AdminSidebar: FC = () => {
                             setSelected={setSelected}
                         />
                         <Item
-                            title="Khóa học đã bán"
+                            title="Đã đăng ký"
                             to="/admin/enrollment/all"
                             icon={<ReceiptOutlinedIcon />}
                             selected={selected}
@@ -251,6 +245,39 @@ const AdminSidebar: FC = () => {
                             selected={selected}
                             setSelected={setSelected}
                         /> */}
+
+                        {/* <Item
+                            title="Thể loại"
+                            to="/admin/Categories"
+                            icon={<WysiwygIcon />}
+                            selected={selected}
+                            setSelected={setSelected}
+                        /> */}
+
+                        <Typography variant="h6" sx={{ m: '15px 0 5px 20px' }} className={styles.title_admin_sidebar}>
+                            {!isCollapsed && 'Thống kê'}
+                        </Typography>
+                        <Item
+                            title="Khoá học"
+                            to="/admin/analytics/courses"
+                            icon={<BarChartOutlinedIcon />}
+                            selected={selected}
+                            setSelected={setSelected}
+                        />
+                        <Item
+                            title="Lượt đăng ký"
+                            to="/admin/analytics/enrollments"
+                            icon={<MapOutlinedIcon />}
+                            selected={selected}
+                            setSelected={setSelected}
+                        />
+                        <Item
+                            title="Học viên"
+                            to="/admin/analytics/users"
+                            icon={<ManageHistoryIcon />}
+                            selected={selected}
+                            setSelected={setSelected}
+                        />
                         <Typography variant="h5" sx={{ m: '15px 0 5px 20px' }} className={styles.title_admin_sidebar}>
                             {!isCollapsed && 'Tuỳ chỉnh'}
                         </Typography>
@@ -268,48 +295,16 @@ const AdminSidebar: FC = () => {
                             selected={selected}
                             setSelected={setSelected}
                         />
+                        <Typography variant="h6" sx={{ m: '15px 0 5px 20px' }} className={styles.title_admin_sidebar}>
+                            {/* {!isCollapsed && 'Mở rộng'} */}
+                        </Typography>
                         {/* <Item
-                            title="Thể loại"
-                            to="/admin/Categories"
-                            icon={<WysiwygIcon />}
-                            selected={selected}
-                            setSelected={setSelected}
-                        /> */}
-
-                        <Typography variant="h6" sx={{ m: '15px 0 5px 20px' }} className={styles.title_admin_sidebar}>
-                            {!isCollapsed && 'Phân tích'}
-                        </Typography>
-                        <Item
-                            title="Khoá học"
-                            to="/admin/analytics/courses"
-                            icon={<BarChartOutlinedIcon />}
-                            selected={selected}
-                            setSelected={setSelected}
-                        />
-                        <Item
-                            title="Lượt đăng ký"
-                            to="/admin/analytics/enrollments"
-                            icon={<MapOutlinedIcon />}
-                            selected={selected}
-                            setSelected={setSelected}
-                        />
-                        <Item
-                            title="Người dùng"
-                            to="/admin/analytics/users"
-                            icon={<ManageHistoryIcon />}
-                            selected={selected}
-                            setSelected={setSelected}
-                        />
-                        <Typography variant="h6" sx={{ m: '15px 0 5px 20px' }} className={styles.title_admin_sidebar}>
-                            {!isCollapsed && 'Mở rộng'}
-                        </Typography>
-                        <Item
                             title="Cài đặt"
                             to="/admin/settings"
                             icon={<SettingsIcon />}
                             selected={selected}
                             setSelected={setSelected}
-                        />
+                        /> */}
                         <div onClick={logOutHandler}>
                             <MenuItem icon={<ExitToAppIcon />} onClick={logOutHandler}>
                                 <Typography

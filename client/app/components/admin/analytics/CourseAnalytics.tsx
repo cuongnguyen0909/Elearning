@@ -24,7 +24,7 @@ const CourseAnalytics: FC<CourseAnalyticsProps> = (props) => {
             ) : (
                 <div className="h-screen">
                     <div className="ml-14 mt-20">
-                        <h1 className={`${styles.title} px-5 !text-start`}>Phân tích khóa học</h1>
+                        <h1 className={`${styles.title} px-5 !text-start`}>Thống kê số khóa học trong hệ thống</h1>
                         <p className={`${styles.label} px-5`}>Dữ liệu được thống kê 12 tháng gần nhất</p>
                     </div>
                     <div className="flex h-[90%] w-full items-center justify-center">

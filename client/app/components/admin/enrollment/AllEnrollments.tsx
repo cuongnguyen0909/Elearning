@@ -71,44 +71,46 @@ const AllEnrollments: FC<AllEnrollmentsProps> = (props) => {
         {
             field: 'id',
             headerName: 'ID',
-            width: 100
+            flex: 1
         },
         {
             field: 'userName',
             headerName: 'Tên học viên',
-            width: 200
+            flex: 1
         },
         {
             field: 'userEmail',
             headerName: 'Email học viên',
-            width: 200
+            flex: 1
         },
         {
             field: 'title',
             headerName: 'Tên khóa học',
-            width: 200
+            flex: 1
         },
         {
             field: 'price',
             headerName: 'Giá tiền',
-            width: 150
+            flex: 0.5
         },
         {
             field: 'createdAt',
             headerName: 'Ngày tạo',
-            width: 150
+            flex: 1
         }
     ];
     const rows: any[] = [];
     if (enrollmentData) {
         enrollmentData.forEach((enrollment: any) => {
+            const createdAt = new Date(enrollment?.createdAt || '');
+            const formattedDate = !isNaN(createdAt.getTime()) ? createdAt.toLocaleDateString('en-US') : 'Invalid Date';
             rows.push({
                 id: enrollment._id,
                 userName: enrollment.userName,
                 userEmail: enrollment.userEmail,
                 title: enrollment.title,
                 price: enrollment.price,
-                createdAt: enrollment.createdAt
+                createdAt: formattedDate
             });
         });
     }
