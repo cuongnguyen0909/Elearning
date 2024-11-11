@@ -31,35 +31,42 @@ const AllCourses: FC<AllCoursesProps> = (props) => {
         },
         {
             field: 'title',
-            headerName: 'Course title',
+            headerName: 'Tên khoá học',
+            headerAlign: 'center',
+            align: 'center',
+            flex: 1
+        },
+        {
+            field: 'category',
+            headerName: 'Thể loại',
             headerAlign: 'center',
             align: 'center',
             flex: 1
         },
         {
             field: 'ratings',
-            headerName: 'Ratings',
+            headerName: 'Đánh giá',
             headerAlign: 'center',
             align: 'center',
             flex: 0.5
         },
         {
             field: 'purchased',
-            headerName: 'Purchased',
+            headerName: 'Đã bán',
             headerAlign: 'center',
             align: 'center',
             flex: 0.5
         },
         {
             field: 'created_at',
-            headerName: 'Created at',
+            headerName: 'Ngày tạo',
             headerAlign: 'center',
             align: 'center',
             flex: 1
         },
         {
             field: 'actions',
-            headerName: 'Actions',
+            headerName: 'Hành động',
             headerAlign: 'center',
             flex: 1,
             renderCell: (params: any) => {
@@ -76,7 +83,6 @@ const AllCourses: FC<AllCoursesProps> = (props) => {
             }
         }
     ];
-
     if (Array.isArray(courses)) {
         courses?.forEach((course: any) => {
             const createdAt = new Date(course?.createdAt || '');
@@ -84,6 +90,7 @@ const AllCourses: FC<AllCoursesProps> = (props) => {
             rows.push({
                 id: course?._id,
                 title: course?.title,
+                category: course?.category?.title,
                 ratings: course?.rating,
                 purchased: course?.purchased,
                 created_at: formattedDate

@@ -337,7 +337,7 @@ const getAccessibleCourses = async (courseList: [], courseId: string) => {
 
 const getAllCoursesByAdmin = async () => {
     try {
-        const courses: ICourse[] = (await CourseModel.find().sort({ createdAt: -1 })) as ICourse[]
+        const courses: ICourse[] = (await courseHelper.getAllCourses()) as unknown as ICourse[]
         return courses
     } catch (error: any) {
         throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
