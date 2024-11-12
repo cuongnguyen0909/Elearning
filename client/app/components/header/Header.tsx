@@ -32,7 +32,12 @@ const Header: FC<Props> = (props) => {
     const { activeItem, open, setOpen, route, setRoute, setActiveItem } = props;
     const { user, isLoggedIn } = useSelector((state: any) => state.auth);
     const { data } = useSession();
-    const { isLoading: loadingProfile } = useLoadUserQuery({});
+    const { isLoading: loadingProfile } = useLoadUserQuery(
+        {},
+        {
+            refetchOnMountOrArgChange: true
+        }
+    );
     const [socialLogin, { isLoading, isSuccess, error }] = useSocialLoginMutation();
     const [active, setActive] = useState(false);
     const [openSidebar, setOpenSidebar] = useState(false);

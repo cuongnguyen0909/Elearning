@@ -1,9 +1,21 @@
 import Link from 'next/link';
 import React, { FC } from 'react';
+import { BsLink45Deg } from 'react-icons/bs';
+import CustomModal from '../../../components/modal/CustomModal';
+import SignUp from '../auth/SignUp';
+import { useSelector } from 'react-redux';
 
-interface FooterProps {}
+interface FooterProps {
+    route: string;
+    setRoute: (route: string) => void;
+    open: boolean;
+    setOpen: (open: boolean) => void;
+}
 
 const Footer: FC<FooterProps> = (props) => {
+    const { route, setRoute, open, setOpen } = props;
+    const { isLoggedIn } = useSelector((state: any) => state.auth);
+    console.log(route, open);
     return (
         <footer className="pb-10">
             <div className="border border-[#0000000e] dark:border-[#ffffff1e]" />
@@ -50,14 +62,19 @@ const Footer: FC<FooterProps> = (props) => {
                                     FAQ
                                 </Link>
                             </li>
-                            <li>
-                                <Link
-                                    href={'/profile'}
-                                    className="text-base text-black dark:text-gray-300 dark:hover:text-white"
-                                >
-                                    Đăng ký
-                                </Link>
-                            </li>
+                            {!isLoggedIn && (
+                                <li>
+                                    <span
+                                        className="cursor-pointer text-base text-black dark:text-gray-300 dark:hover:text-white"
+                                        onClick={() => {
+                                            setRoute && setRoute('Signup');
+                                            setOpen && setOpen(true);
+                                        }}
+                                    >
+                                        Đăng ký ngay
+                                    </span>
+                                </li>
+                            )}
                         </ul>
                     </div>
                     <div className="space-y-3">
@@ -92,9 +109,21 @@ const Footer: FC<FooterProps> = (props) => {
                         <p className="pb-2 text-base text-black dark:text-gray-300 dark:hover:text-white">
                             Email: edemy@edu.com
                         </p>
+
+                        {/* copyright */}
+                        <p className="text-base text-black dark:text-gray-300 dark:hover:text-white">
+                            © 2021 Edemy. All rights reserved.
+                        </p>
                     </div>
                 </div>
             </div>
+            {route === 'Signup' && (
+                <>
+                    {open && setOpen && (
+                        <CustomModal open={open} setOpen={setOpen} setRoute={setRoute} component={SignUp} />
+                    )}
+                </>
+            )}
         </footer>
     );
 };

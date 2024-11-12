@@ -32,7 +32,7 @@ const CourseDetailPage: FC<CourseDetailPageProps> = (props) => {
                     />
                     <Header route={route} setRoute={setRoute} open={open} setOpen={setOpen} activeItem={1} />
                     <CourseDetail data={data} />
-                    <Footer />
+                    <Footer route={route} open={open} setRoute={setRoute} setOpen={setOpen} />
                 </div>
             )}
         </>

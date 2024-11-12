@@ -19,12 +19,17 @@ const signUpSchema = Yup.object().shape({
         .required('Email không được để trống. Vui lòng nhập email'),
     password: Yup.string()
         .required(' Mật khẩu không được để trống. Vui lòng nhập mật khẩu')
+        .min(6, 'Mật khẩu phải chứa ít nhất 6 ký tự'),
+    confirmPassword: Yup.string()
+        .required(' Mật khẩu không được để trống. Vui lòng nhập mật khẩu')
         .min(6, 'Mật khẩu phải chứa ít nhất 6 ký tự')
+        .oneOf([Yup.ref('password'), ''], 'Mật khẩu không khớp')
 });
 
 const SignUp: React.FC<Props> = (props) => {
     const { setRoute } = props;
-    const [show, setShow] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [register, { data, isLoading, error, isSuccess }] = useRegisterMutation();
     useEffect(() => {
         if (isSuccess) {
@@ -39,7 +44,7 @@ const SignUp: React.FC<Props> = (props) => {
     }, [isSuccess, error]);
 
     const formik = useFormik({
-        initialValues: { name: '', email: '', password: '' },
+        initialValues: { name: '', email: '', password: '', confirmPassword: '' },
         validationSchema: signUpSchema,
         onSubmit: async ({ name, email, password }) => {
             const data: any = {
@@ -48,6 +53,7 @@ const SignUp: React.FC<Props> = (props) => {
                 password
             };
             await register(data);
+            // redirect to verification page
         }
     });
 
@@ -56,12 +62,15 @@ const SignUp: React.FC<Props> = (props) => {
     return (
         <div className="w-full">
             {isLoading && <Loading />}
-            <h1 className={`${styles.title}`}>Join to ELearning</h1>
+            <h1 className={`${styles.title}`}>
+                Đăng ký tài khoản
+                <span className="text-[#2190ff]"> Edemy</span>
+            </h1>
             <form onSubmit={handleSubmit}>
                 {/* name field */}
                 <div>
                     <label htmlFor="name" className={`${styles.label}`}>
-                        Nhập tên của bạn
+                        Tên
                     </label>
                     <input
                         type="text"
@@ -79,7 +88,7 @@ const SignUp: React.FC<Props> = (props) => {
                 {/* email field */}
                 <div className="mt-5">
                     <label htmlFor="email" className={`${styles.label}`}>
-                        Nhập email của bạn
+                        Email
                     </label>
                     <input
                         type="email"
@@ -97,37 +106,68 @@ const SignUp: React.FC<Props> = (props) => {
                 {/* password field */}
                 <div className="relative mb-1 mt-5 w-full">
                     <label htmlFor="password" className={`${styles.label}`}>
-                        Nhập mật khẩu của bạn
+                        Mật khẩu
                     </label>
                     <input
-                        type={`${!show ? 'password' : 'text'}`}
+                        type={`${!showPassword ? 'password' : 'text'}`}
                         name="password"
                         value={values.password}
                         onChange={handleChange}
                         id="password"
-                        placeholder="Nhập mật khẩu của bạn..."
+                        placeholder="Mật khẩu phải chứa ít nhất 6 ký tự..."
                         className={`${errors.password && touched.password && 'border-red-500'} ${styles.input}`}
                     />
-                    {!show ? (
+                    {!showPassword ? (
                         <AiOutlineEyeInvisible
                             className="z-1 absolute bottom-3 right-2 cursor-pointer text-black dark:text-white"
                             size={20}
-                            onClick={() => setShow(!show)}
+                            onClick={() => setShowPassword(!showPassword)}
                         />
                     ) : (
                         <AiOutlineEye
                             className="z-1 absolute bottom-3 right-2 cursor-pointer text-black dark:text-white"
                             size={20}
-                            onClick={() => setShow(!show)}
+                            onClick={() => setShowPassword(!showPassword)}
                         />
                     )}
                 </div>
                 {errors.password && touched.password && (
                     <span className="block pt-2 font-semibold text-red-500">{errors.password}</span>
                 )}
+                {/* password field */}
+                <div className="relative mb-1 mt-5 w-full">
+                    <label htmlFor="confirmPassword" className={`${styles.label}`}>
+                        Xác nhận mật khẩu
+                    </label>
+                    <input
+                        type={`${!showConfirmPassword ? 'password' : 'text'}`}
+                        name="confirmPassword"
+                        value={values.confirmPassword}
+                        onChange={handleChange}
+                        id="confirmPassword"
+                        placeholder="Mật khẩu phải chứa ít nhất 6 ký tự..."
+                        className={`${errors.password && touched.password && 'border-red-500'} ${styles.input}`}
+                    />
+                    {!showConfirmPassword ? (
+                        <AiOutlineEyeInvisible
+                            className="z-1 absolute bottom-3 right-2 cursor-pointer text-black dark:text-white"
+                            size={20}
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        />
+                    ) : (
+                        <AiOutlineEye
+                            className="z-1 absolute bottom-3 right-2 cursor-pointer text-black dark:text-white"
+                            size={20}
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        />
+                    )}
+                </div>
+                {errors.confirmPassword && touched.confirmPassword && (
+                    <span className="block pt-2 font-semibold text-red-500">{errors.confirmPassword}</span>
+                )}
                 {/* button submit */}
                 <div className="mt-5 w-full">
-                    <input type="submit" value="Sign Up" className={`${styles.button}`} />
+                    <input type="submit" value="Đăng ký" className={`${styles.button}`} />
                 </div>
                 <br />
                 <h5 className="pt-4 text-center font-Poppins text-[14px] text-black dark:text-white">

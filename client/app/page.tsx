@@ -50,7 +50,7 @@ const Page: FC<Props> = (props: Props) => {
             <Courses />
             <Review />
             <FAQ />
-            <Footer />
+            <Footer route={route} open={open} setRoute={setRoute} setOpen={setOpen} />
         </div>
     );
 };
