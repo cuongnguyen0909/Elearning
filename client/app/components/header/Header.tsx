@@ -105,7 +105,7 @@ const Header: FC<Props> = (props) => {
                                 className={`font-Poppins text-[25px] font-[500] text-black dark:text-white`}
                             >
                                 <span className="dark:text-[#2190ff]">E</span>
-                                Learning
+                                demy
                             </Link>
                         </div>
                         <div className="flex items-center">

@@ -3,8 +3,11 @@
 import { useTheme } from 'next-themes';
 import { FC, useEffect, useState } from 'react';
 import Heading from '../components/public/Heading';
-import Hero from '../components/public/Hero';
+import Home from '../components/public/Home';
 import Header from './components/header/Header';
+import Courses from './components/home/Courses';
+import Review from './components/home/Review';
+import FAQ from './components/home/FAQ';
 
 type Props = {};
 
@@ -26,9 +29,7 @@ const Page: FC<Props> = (props: Props) => {
     return (
         <div
             className={`min-h-screen ${
-                theme === 'light'
-                    ? 'bg-gradient-to-l from-blue-100 to-blue-200'
-                    : 'dark:bg-gray-900'
+                theme === 'light' ? 'bg-gradient-to-l from-blue-100 to-blue-200' : 'dark:bg-gray-900'
             }`}
         >
             <Heading
@@ -44,7 +45,10 @@ const Page: FC<Props> = (props: Props) => {
                 route={route}
                 setActiveItem={setActiveItem}
             />
-            <Hero />
+            <Home />
+            <Courses />
+            <Review />
+            <FAQ />
         </div>
     );
 };

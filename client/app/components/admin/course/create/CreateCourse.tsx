@@ -102,6 +102,7 @@ const CreateCourse: FC<CreateCourseProps> = (props) => {
     const handleCourseCreate = async () => {
         const data = courseData;
         await createCourse(data);
+        console.log(data);
     };
     return (
         <div className="flex min-h-screen w-full">

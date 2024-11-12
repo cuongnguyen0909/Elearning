@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { styles } from '../../../../utils/style';
 import { useGetAllCategoriesQuery } from '../../../../../redux/features/category/categoryApi';
 
@@ -67,6 +67,15 @@ const CourseInfomation: FC<CourseInfomationProps> = (props) => {
             reader.readAsDataURL(file);
         }
     };
+
+    useEffect(() => {
+        if (categories && categories.length > 0 && !courseInfo.category) {
+            setCourseInfo({
+                ...courseInfo,
+                category: categories[0]._id
+            });
+        }
+    }, [categories, courseInfo, setCourseInfo]);
     return (
         <div className="m-auto mt-24 w-[80%]">
             <form onSubmit={handleSubmit} className={`${styles.label}`}>
@@ -216,7 +225,17 @@ const CourseInfomation: FC<CourseInfomationProps> = (props) => {
                                 ))}
                             </select>
                         ) : (
-                            <select name="" id="" className={`${styles.input} border !bg-slate-900`}>
+                            <select
+                                name=""
+                                id=""
+                                className={`${styles.input} border !bg-slate-900`}
+                                onChange={(e: any) => {
+                                    setCourseInfo({
+                                        ...courseInfo,
+                                        category: e.target.value
+                                    });
+                                }}
+                            >
                                 {categories?.map((category: any, index: number) => (
                                     <option key={index} value={category._id}>
                                         {category.title}
