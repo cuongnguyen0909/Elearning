@@ -5,6 +5,7 @@ import { FC, useEffect, useState } from 'react';
 import Heading from '../components/public/Heading';
 import Home from '../components/public/Home';
 import Header from './components/header/Header';
+import Footer from './components/footer/Footer';
 import Courses from './components/home/Courses';
 import Review from './components/home/Review';
 import FAQ from './components/home/FAQ';
@@ -49,6 +50,7 @@ const Page: FC<Props> = (props: Props) => {
             <Courses />
             <Review />
             <FAQ />
+            <Footer />
         </div>
     );
 };

@@ -6,6 +6,7 @@ import { authorizeRoles, isAuthenticated } from '../middlewares/auth.middleware'
 const courseRouter: Router = Router() as Router
 
 courseRouter.route('/').get(courseController.getAllCoursesWithoutPurchasing)
+courseRouter.route('/:id').get(courseController.getSingleCourseWhithoutPurchasing)
 courseRouter.get('/search', courseController.searchCourse)
 courseRouter.route('/get-vdocipher-otp').post(courseController.generateVideoUrl)
 // <div style="padding-top:41%;position:relative;">

@@ -39,7 +39,7 @@ const CoursePreview: FC<CoursePreviewProps> = (props) => {
                     </h3>
                     <h5 className="mt-2 pl-3 text-[20px] line-through opacity-80">${courseData?.estimatedPrice}</h5>
                     <h4 className="pl-5 pt-4 text-[22px]">
-                        <i>({discountPercentagePrice}% Off)</i>
+                        <i>Giảm ( {discountPercentagePrice}%)</i>
                     </h4>
                 </div>
                 <div className="flex items-center">

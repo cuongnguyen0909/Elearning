@@ -22,7 +22,7 @@ type Props = {
     open: boolean;
     setOpen: (open: boolean) => void;
     activeItem: number;
-    setActiveItem: (activeItem: number) => void;
+    setActiveItem?: (activeItem: number) => void;
     route: string;
     setRoute: (route: string) => void;
 };

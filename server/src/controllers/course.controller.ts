@@ -36,9 +36,9 @@ const updateCourse = catchAsyncError(async (req: Request, res: Response, next: N
 })
 
 const getSingleCourseWhithoutPurchasing = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const courseId: string = req?.params?.id as string
+    const id: string = req?.params?.id as string
     try {
-        const courseDetails: ICourse = (await courseServices.getOneCourseWithoutLogin(courseId)) as unknown as ICourse
+        const courseDetails: ICourse = (await courseServices.getOneCourseWithoutLogin(id)) as unknown as ICourse
         res.status(StatusCodes.OK).json({
             success: true,
             course: courseDetails
