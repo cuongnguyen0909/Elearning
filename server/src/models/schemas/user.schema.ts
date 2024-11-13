@@ -20,6 +20,7 @@ export interface IUser extends Document {
     isBlocked: boolean
     isDeleted: boolean
     courses: mongoose.Schema.Types.ObjectId[]
+    completedVideos: object[]
     isModified: (password: string) => boolean
     comparePassword: (password: string) => Promise<boolean>
     signAccessToken: () => string
@@ -72,6 +73,14 @@ export const userSchema: Schema<IUser> = new mongoose.Schema(
             {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Course'
+            }
+        ],
+        completedVideos: [
+            {
+                videoId: {
+                    type: mongoose.Schema.Types.ObjectId
+                },
+                isCompleted: Boolean
             }
         ]
     },
