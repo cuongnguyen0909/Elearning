@@ -1,6 +1,6 @@
 export interface IEnrollRequest {
     courseId: string
-    payment_method: string
+    payment_info: any
 }
 
 export interface IEnrollMailData {

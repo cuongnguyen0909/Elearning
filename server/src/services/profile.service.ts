@@ -24,7 +24,9 @@ const getProfileById = async (uid: string) => {
 const updateProfile = async (userId: string, userData: any) => {
     try {
         const { name } = userData as IUpdateProfileRequest
-        const user: IUser = (await UserModel.findById(userId).select('-role')) as IUser
+        const user: IUser = (await UserModel.findById(userId).select('-role')?.populate({
+            path: 'courses'
+        })) as IUser
 
         //check email is already exist or not
         // if (email && user) {

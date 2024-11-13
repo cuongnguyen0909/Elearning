@@ -12,12 +12,29 @@ import ErrorHandler from '../utils/handlers/ErrorHandler'
 import sendMail from '../utils/mails/send-mail'
 import { INotification } from './../models/schemas/notification.schema'
 import { StatusCodes } from 'http-status-codes'
+import { redis } from '../configs/connect.redis.config'
 
-const createNewEnrollment = async (enrollRequest: IEnrollRequest, userId: string) => {
+require('dotenv').config()
+
+const stripe = require('stripe')(`${process.env.STRIPE_SECRET_KEY}`)
+
+const createNewEnrollment = async (enrollRequest: any, userId: string) => {
     try {
-        const { courseId, payment_method } = enrollRequest as IEnrollRequest
+        const { course: courseId, payment_info } = enrollRequest as any
         const user: IUser = (await UserModel.findById(userId)) as IUser
-        if (!courseId || !payment_method) {
+
+        if (payment_info) {
+            if ('id' in payment_info) {
+                const paymentIntentId = payment_info?.id
+                const paymentIntent = await stripe?.paymentIntents?.retrieve(paymentIntentId)
+
+                if (paymentIntent?.status !== 'succeeded') {
+                    throw new ErrorHandler('Thanh toán không thành công, vui lòng thử lại!', StatusCodes.BAD_REQUEST)
+                }
+            }
+        }
+
+        if (!courseId || !payment_info) {
             throw new ErrorHandler('Missing required fields', StatusCodes.BAD_REQUEST)
         }
         //check course is already enrolled or not
@@ -36,7 +53,7 @@ const createNewEnrollment = async (enrollRequest: IEnrollRequest, userId: string
         const newEnroll: IEnroll = (await EnrollmentModel.create({
             user: userId,
             course: courseId,
-            payment_method
+            payment_info
         })) as IEnroll
         //increase course quantity purchased
         course.purchased = (course.purchased || 0) + 1
@@ -65,6 +82,7 @@ const createNewEnrollment = async (enrollRequest: IEnrollRequest, userId: string
             )
             user.courses?.push(courseId as unknown as ObjectId)
         }
+        await redis?.set(userId, JSON.stringify(user), 'EX', 60 * 60 * 24)
         await user?.save()
 
         const notification: INotification = (await NotificationModel.create({

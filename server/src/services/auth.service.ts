@@ -95,7 +95,9 @@ const loginUser = async (loginRequest: ILoginRequest) => {
 
         //check user is exist or not
         //check user with isBlocked and isDeleted is false
-        const user: IUser = (await UserModel.findOne({ email }).select('+password')) as IUser
+        const user: IUser = (await UserModel.findOne({ email }).select('+password').populate({
+            path: 'courses'
+        })) as IUser
         if (!user) {
             throw new ErrorHandler('Invalid email or password', StatusCodes.UNAUTHORIZED)
         }
