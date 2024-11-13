@@ -20,7 +20,9 @@ const generateActivationToken = (user: IRegistrationRequest): IActivationToken =
 }
 
 const generateToken = async (userId: string) => {
-    const user: IUser = (await UserModel.findById(userId)) as IUser
+    const user: IUser = (await UserModel.findById(userId).populate({
+        path: 'courses'
+    })) as IUser
     const accessToken: string = user.signAccessToken()
     const refreshToken: string = user.signRefreshToken()
 

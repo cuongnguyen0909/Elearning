@@ -4,6 +4,7 @@ import { useCreateEnrollmentMutation } from '../../../redux/features/enrollment/
 import { useLoadUserQuery } from '../../../redux/features/api/apiSlice';
 import { styles } from '../../utils/style';
 import toast from 'react-hot-toast';
+import { redirect } from 'next/navigation';
 
 interface CheckoutFormProps {
   setOpen: any;
@@ -19,7 +20,12 @@ const CheckoutForm: FC<CheckoutFormProps> = (props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [
     createEnrollment,
-    { data: dataCreateEnrollment, error: errorCreateEnrollment, isLoading: isLoadingCreateEnrollment }
+    {
+      data: dataCreateEnrollment,
+      error: errorCreateEnrollment,
+      isLoading: isLoadingCreateEnrollment,
+      isSuccess: isSuccessCreateEnrollment
+    }
   ] = useCreateEnrollmentMutation();
   const {} = useLoadUserQuery(
     {},
@@ -57,6 +63,10 @@ const CheckoutForm: FC<CheckoutFormProps> = (props) => {
   useEffect(() => {
     if (errorCreateEnrollment) {
       setLoadUser(true);
+    }
+    if (isSuccessCreateEnrollment) {
+      toast.success('Payment success');
+      window.location.reload();
     }
     if (errorCreateEnrollment) {
       if ('data' in errorCreateEnrollment) {

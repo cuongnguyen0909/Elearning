@@ -8,6 +8,10 @@ import { styles } from '../../utils/style';
 import CourseContentList from './CourseContentList';
 import { Elements } from '@stripe/react-stripe-js';
 import CheckoutForm from '../checkout/CheckoutForm';
+import { useLoadUserQuery } from '../../../redux/features/api/apiSlice';
+import CustomModal from '../../../components/modal/CustomModal';
+import Login from '../auth/Login';
+import toast from 'react-hot-toast';
 interface CourseDetailProps {
   data: any;
   stripePromise: any;
@@ -15,21 +19,25 @@ interface CourseDetailProps {
 }
 
 const CourseDetail: FC<CourseDetailProps> = (props) => {
+  const { data: userData } = useLoadUserQuery({});
   const { data, stripePromise, clientSecret } = props;
   const [courseData, setCourseData] = useState<any>(null);
-  const [open, setOpen] = useState(false);
-  const { user } = useSelector((state: any) => state.auth);
+  const [openPayment, setOpenPayment] = useState(false);
+  const [openLogin, setOpenLogin] = useState(false);
+  const [route, setRoute] = useState<string>('Login');
   const discountPercentage = ((courseData?.estimatedPrice - courseData?.price) / courseData?.estimatedPrice) * 100;
   const discountPercentagePrice = discountPercentage.toFixed(0);
-
-  const isPurchased =
-    user && user?.courses?.find((course: any) => course?._id?.toString() === courseData?._id.toString());
-
-  console.log('courseData', courseData);
-  console.log('isPurchased', isPurchased);
-  console.log('user', user);
+  const { isLoggedIn } = useSelector((state: any) => state.auth);
   const handleOrder = () => {
-    setOpen(true);
+    if (!isLoggedIn) {
+      setOpenLogin(true);
+      //display toast waring login to order
+      toast.error('Vui lòng đăng nhập để mua khóa học', {
+        duration: 2000
+      });
+      return;
+    }
+    setOpenPayment(true);
   };
 
   useEffect(() => {
@@ -37,6 +45,7 @@ const CourseDetail: FC<CourseDetailProps> = (props) => {
       setCourseData(data?.course);
     }
   }, [data]);
+  const isPurchased = userData?.user?.courses?.find((course: any) => course?._id === courseData?._id);
 
   return (
     <div>
@@ -154,7 +163,7 @@ const CourseDetail: FC<CourseDetailProps> = (props) => {
                 {isPurchased ? (
                   <Link
                     className={`${styles.button} my-3 !w-[180px] cursor-pointer !bg-[crimson] font-Poppins`}
-                    href={`/course-access/${courseData?._id}`}
+                    href={`/course/access/${courseData?._id}`}
                   >
                     Học ngay
                   </Link>
@@ -184,11 +193,11 @@ const CourseDetail: FC<CourseDetailProps> = (props) => {
           </div>
         </div>
       </div>
-      {open && (
+      {openPayment && (
         <div className="fixed left-0 top-0 z-50 flex h-screen w-full items-center justify-center bg-[#00000036]">
           <div className="min-h-[500px] w-[500px] rounded-xl bg-white p-3 shadow">
             <div className="flex w-full justify-end">
-              <IoCloseOutline size={40} className="cursor-pointer text-black" onClick={() => setOpen(false)} />
+              <IoCloseOutline size={40} className="cursor-pointer text-black" onClick={() => setOpenPayment(false)} />
             </div>
             {stripePromise && clientSecret && (
               <Elements
@@ -197,11 +206,18 @@ const CourseDetail: FC<CourseDetailProps> = (props) => {
                   clientSecret
                 }}
               >
-                <CheckoutForm setOpen={setOpen} data={courseData} />
+                <CheckoutForm setOpen={setOpenPayment} data={courseData} />
               </Elements>
             )}
           </div>
         </div>
+      )}
+      {route === 'Login' && (
+        <>
+          {openLogin && setOpenLogin && (
+            <CustomModal open={openLogin} setOpen={setOpenLogin} setRoute={setRoute} component={Login} />
+          )}
+        </>
       )}
     </div>
   );

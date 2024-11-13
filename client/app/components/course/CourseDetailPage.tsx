@@ -30,7 +30,6 @@ const CourseDetailPage: FC<CourseDetailPageProps> = (props) => {
 
   const [createPayment, { data: dataCreatePayment, error: errorCreatePayment, isLoading: isLoadingCreatePayment }] =
     useCreatePaymentMutation();
-  console.log('dataCreatePayment', dataCreatePayment);
   const [stripePromise, setStripePromise] = useState<any>(null);
   const [clientSecret, setClientSecret] = useState<string>('');
 
