@@ -111,7 +111,7 @@ const Login: React.FC<Props> = (props) => {
           <input type="submit" value="Đăng nhập" className={`${styles.button}`} />
         </div>
         <br />
-        <h5 className="pt-4 text-center font-Poppins text-[14px] text-black dark:text-white">Hoặc đăng nhập bằng</h5>
+        <h5 className="font-Arimo pt-4 text-center text-[14px] text-black dark:text-white">Hoặc đăng nhập bằng</h5>
         <div className="flex items-center justify-center">
           <FcGoogle
             size={30}
@@ -124,7 +124,7 @@ const Login: React.FC<Props> = (props) => {
             onClick={() => signIn('github')}
           />
         </div>
-        <h5 className="cursor-pointer pt-4 text-center font-Poppins text-black dark:text-white">
+        <h5 className="font-Arimo cursor-pointer pt-4 text-center text-black dark:text-white">
           Bạn chưa có tài khoản?{' '}
           <span className="cursor-pointer pl-1 text-[#2190ff]" onClick={() => setRoute('Signup')}>
             Đăng ký ngay

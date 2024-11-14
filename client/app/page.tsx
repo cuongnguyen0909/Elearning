@@ -13,46 +13,42 @@ import FAQ from './components/home/FAQ';
 type Props = {};
 
 const Page: FC<Props> = (props: Props) => {
-    const [open, setOpen] = useState(false);
-    const [activeItem, setActiveItem] = useState(0);
-    const { theme } = useTheme();
-    const [route, setRoute] = useState('Login');
-    const [mounted, setMounted] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [activeItem, setActiveItem] = useState(0);
+  const { theme } = useTheme();
+  const [route, setRoute] = useState('Login');
+  const [mounted, setMounted] = useState(false);
 
-    // console.log(activeItem);
+  // console.log(activeItem);
 
-    useEffect(() => {
-        setMounted(true);
-    }, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-    if (!mounted) return null;
+  if (!mounted) return null;
 
-    return (
-        <div
-            className={`min-h-screen ${
-                theme === 'light' ? 'bg-gradient-to-l from-blue-100 to-blue-200' : 'dark:bg-gray-900'
-            }`}
-        >
-            <Heading
-                title="ELearning"
-                description="ELearning is a platform for learning."
-                keywords="ELearning,Programming,MERN,Redux,Science"
-            />
-            <Header
-                open={open}
-                setOpen={setOpen}
-                activeItem={activeItem}
-                setRoute={setRoute}
-                route={route}
-                setActiveItem={setActiveItem}
-            />
-            <Home />
-            <Courses />
-            <Review />
-            <FAQ />
-            <Footer route={route} open={open} setRoute={setRoute} setOpen={setOpen} />
-        </div>
-    );
+  return (
+    <div className={`'dark:bg-gray-900 min-h-screen`}>
+      <Heading
+        title="ELearning"
+        description="ELearning is a platform for learning."
+        keywords="ELearning,Programming,MERN,Redux,Science"
+      />
+      <Header
+        open={open}
+        setOpen={setOpen}
+        activeItem={activeItem}
+        setRoute={setRoute}
+        route={route}
+        setActiveItem={setActiveItem}
+      />
+      <Home />
+      <Courses />
+      <Review />
+      <FAQ />
+      <Footer route={route} open={open} setRoute={setRoute} setOpen={setOpen} />
+    </div>
+  );
 };
 
 export default Page;

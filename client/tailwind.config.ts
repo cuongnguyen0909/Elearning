@@ -1,4 +1,4 @@
-import type { Config } from 'tailwindcss'
+import type { Config } from 'tailwindcss';
 
 const config: Config = {
   content: [
@@ -10,19 +10,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        lightBg: 'rgb(232,246,255)', // light blue pastel
-        lightText: '#333333', // dark text
-        lightAccent: '#00bcd4', // accent color for buttons, etc.
-        lightButton: '#0288d1' // button color
+        lightBg: 'rgb(232,246,255)',
+        lightTextPrimary: '#3e4143',
+        lightTextSecondary: '#3e4143',
+        lightAccent: '#00bcd4',
+        lightButton: '#0288d1'
       },
       fontFamily: {
         Poppins: ['var(--font-Poppins)'],
-        Josefin: ['var(--font-Josefin)']
+        Josefin: ['var(--font-Josefin)'],
+        Arimo: ['var(--font-Arimo)']
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))'
+        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))'
       },
       screens: {
         '1000px': '1000px',
@@ -36,5 +37,5 @@ const config: Config = {
     }
   },
   plugins: []
-}
-export default config
+};
+export default config;

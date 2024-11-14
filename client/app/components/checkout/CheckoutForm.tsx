@@ -86,7 +86,7 @@ const CheckoutForm: FC<CheckoutFormProps> = (props) => {
       </button>
       {/* show any error or success message */}
       {message && (
-        <div id="payment-message" className="pt-2 font-Poppins text-[red]">
+        <div id="payment-message" className="font-Arimo pt-2 text-[red]">
           {message}
         </div>
       )}

@@ -8,40 +8,36 @@ import DashboardHero from '../../../components/admin/common/DashboardHero';
 import CourseAnalytics from '../../../components/admin/analytics/CourseAnalytics';
 
 interface IPageProps {
-    params: any;
+  params: any;
 }
 
 const page: FC<IPageProps> = (props) => {
-    const { params } = props;
-    const { id } = params;
-    const [active, setActive] = React.useState(0);
-    const { theme } = useTheme();
-    const [mounted, setMounted] = React.useState(false);
-    useEffect(() => {
-        setMounted(true);
-    }, []);
+  const { params } = props;
+  const { id } = params;
+  const [active, setActive] = React.useState(0);
+  const { theme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-    if (!mounted) return null;
-    return (
-        <AdminProtected>
-            <div
-                className={`min-h-screen ${
-                    theme === 'light' ? 'bg-gradient-to-l from-blue-100 to-blue-200' : 'dark:bg-gray-900'
-                }`}
-            >
-                <Heading title="Create Course" description="Create a new course" keywords="Create,Course,ELearning" />
-                <div className="flex">
-                    <div className="w-1/5 1500px:w-[16%]">
-                        <AdminSidebar />
-                    </div>
-                    <div className="w-[85%]">
-                        <DashboardHero isDashboard={false} />
-                        <CourseAnalytics />
-                    </div>
-                </div>
-            </div>
-        </AdminProtected>
-    );
+  if (!mounted) return null;
+  return (
+    <AdminProtected>
+      <div className={`'dark:bg-gray-900 min-h-screen`}>
+        <Heading title="Create Course" description="Create a new course" keywords="Create,Course,ELearning" />
+        <div className="flex">
+          <div className="w-1/5 1500px:w-[16%]">
+            <AdminSidebar />
+          </div>
+          <div className="w-[85%]">
+            <DashboardHero isDashboard={false} />
+            <CourseAnalytics />
+          </div>
+        </div>
+      </div>
+    </AdminProtected>
+  );
 };
 
 export default page;

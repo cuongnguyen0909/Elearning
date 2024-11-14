@@ -16,7 +16,7 @@ const Courses: FC<CoursesProps> = (props) => {
     setCourses(data?.courses || []);
   }, [data]);
   return (
-    <div className="pl-28 text-center font-Poppins text-[25px] font-[700] leading-[35px] tracking-tight text-[#000] dark:text-white sm:text-3xl 800px:!leading-[60px] lg:text-4xl">
+    <div className="font-Arimo pl-28 text-center text-[25px] font-[700] leading-[35px] tracking-tight text-[#000] dark:text-white sm:text-3xl 800px:!leading-[60px] lg:text-4xl">
       <h1>
         Mở rộng cơ hội tìm kiếm việc làm{' '}
         <span className="text-gradient">

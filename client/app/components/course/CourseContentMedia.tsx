@@ -89,7 +89,7 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
               id=""
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
-              className="ml-3 rounded border border-[#ffffff57] bg-transparent p-2 font-Poppins outline-none 800px:w-full 800px:text-[18px]"
+              className="font-Arimo ml-3 rounded border border-[#ffffff57] bg-transparent p-2 outline-none 800px:w-full 800px:text-[18px]"
               cols={30}
               rows={3}
               placeholder="Nhập bình luận của bạn..."
@@ -144,7 +144,7 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
                     id=""
                     value={review}
                     onChange={(e) => setReview(e.target.value)}
-                    className="rounded border border-[#ffffff57] bg-transparent p-2 font-Poppins outline-none 800px:w-full 800px:text-[18px]"
+                    className="font-Arimo rounded border border-[#ffffff57] bg-transparent p-2 outline-none 800px:w-full 800px:text-[18px]"
                     cols={30}
                     rows={3}
                     placeholder=" Nhập đánh giá của bạn..."
