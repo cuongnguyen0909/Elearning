@@ -13,7 +13,7 @@ const page: FC<IPageProps> = (props) => {
    useEffect(() => {
       setMounted(true);
    }, []);
-
+   
    if (!mounted) return null;
    return (
       <AdminProtected>
