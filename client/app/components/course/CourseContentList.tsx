@@ -1,6 +1,8 @@
 import React, { FC, useState } from 'react';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import { MdOutlineOndemandVideo } from 'react-icons/md';
+import { formatTime } from '../../utils/formatHelper';
+import { IoPlayCircleOutline } from 'react-icons/io5';
 
 interface CourseContentListProps {
   data: any;
@@ -29,7 +31,7 @@ const CourseContentList: FC<CourseContentListProps> = (props) => {
   };
   return (
     <div className={`${!isDemo && 'sticky left-0 top-24 z-30 ml-[-30px]'} mt-[15px] w-full`}>
-      {videoSections?.map((section: string, index: number) => {
+      {videoSections?.map((section: string, indexOfSection: number) => {
         const isSectionVisible = visibleSection.has(section);
 
         // filter video by section
@@ -43,60 +45,79 @@ const CourseContentList: FC<CourseContentListProps> = (props) => {
         const sectionStartIndex: number = totalCount;
         totalCount += sectionVideoCount;
 
-        const sectionContentHours: number = sectionVideoLength / 60;
         return (
           <div
-            className={` ${!isDemo && 'border-b border-[#ffffff8e] pb-2'} className-section ${isDemo && 'border border-[#ffffff0a] shadow-lg'}`}
+            className={` ${!isDemo && 'border border-[#00000022] bg-[#f7f9fa] shadow-md dark:border-b dark:border-[#ffffff8e]'} className-section ${isDemo && 'border-[#00000022] shadow-md dark:border dark:border-[#ffffff8e]'} `}
           >
-            <div className="flex w-full">
-              {/* Render video section */}
-              <div
-                className="flex w-full cursor-pointer items-center justify-between"
-                onClick={() => toggleSection(section)}
-              >
-                <h2 className="text-[20px] text-black dark:text-white">{section}</h2>
-                <button className="mr-4 cursor-pointer text-black dark:text-white">
-                  {isSectionVisible ? <BsChevronUp size={20} /> : <BsChevronDown size={20} />}
-                </button>
+            <div className={'hover:bg-[#fff]'}>
+              <div className="flex w-full gap-2">
+                <div className="h-2 w-2"></div>
+                {/* Render video section */}
+                <div
+                  className="flex h-12 w-full cursor-pointer items-center justify-between gap-1"
+                  onClick={() => toggleSection(section)}
+                >
+                  <h2 className="text-[18px] font-[600] text-black dark:text-white">
+                    {indexOfSection + 1}. {section}
+                  </h2>
+                  <button className="mr-4 cursor-pointer text-black dark:text-white">
+                    {isSectionVisible ? <BsChevronUp size={20} /> : <BsChevronDown size={20} />}
+                  </button>
+                </div>
+              </div>
+              <div className="flex w-full">
+                <div className="h-2 w-4"></div>
+                <div>
+                  <h5 className="!text-[16px] font-thin text-black dark:text-white">
+                    {sectionVideoCount} bài giảng • {formatTime(sectionVideoLength)}
+                  </h5>
+                  <div className="h-2"></div>
+                </div>
               </div>
             </div>
-            <h5 className="text-black dark:text-white">
-              {sectionVideoCount} Bài học •{' '}
-              {sectionVideoLength < 60 ? sectionVideoLength : sectionContentHours.toFixed(2)}{' '}
-              {sectionVideoLength > 60 ? 'giờ' : 'phút'}
-            </h5>
-            <br />
             {isSectionVisible && (
-              <div className="w-full">
-                {sectionVideos?.map((item: any, index: number) => {
-                  const videoIndex: number = sectionStartIndex + index; // Calculate the video index within the one
-                  const contentLength: number = Number(item?.videoDuration) / 60;
+              <div className="w-full gap-2">
+                {sectionVideos?.map((item: any, indexOfLesson: number) => {
+                  const videoIndex: number = sectionStartIndex + indexOfLesson;
                   return (
-                    <div
-                      className={`w-full ${
-                        videoIndex === activeVideo ? 'bg-slate-800' : ''
-                      } cursor-pointer p-2 transition-all`}
-                      key={item?._id}
-                      onClick={() => {
-                        if (isDemo) {
-                          return;
-                        }
-                        setActiveVideo && setActiveVideo(videoIndex);
-                      }}
-                    >
-                      <div className="flex items-start">
-                        <div>
-                          <MdOutlineOndemandVideo size={25} className="mr-2" color="#1cdada" />
+                    <>
+                      <div
+                        className={`h-14 w-full gap-2 ${
+                          videoIndex === activeVideo
+                            ? 'bg-[#0093fc] hover:bg-[#0093fc] dark:bg-slate-800 dark:text-white'
+                            : ''
+                        } cursor-pointer border-t transition-all hover:bg-[#fff]`}
+                        key={item?._id}
+                        onClick={() => {
+                          if (isDemo) {
+                            return;
+                          }
+                          setActiveVideo && setActiveVideo(videoIndex);
+                        }}
+                      >
+                        <div className="border-top flex items-center gap-2">
+                          <div className="w-2"></div>
+                          <div className="">
+                            <IoPlayCircleOutline
+                              size={20}
+                              className={`mr-2 text-black dark:text-white ${videoIndex === activeVideo && 'bg-[#0093fc] text-white dark:bg-slate-800 dark:text-white'}`}
+                            />
+                          </div>
+                          <div className="font-thin">
+                            <h1
+                              className={`text-[16px] text-black dark:text-white ${videoIndex === activeVideo && 'bg-[#0093fc] text-white dark:bg-slate-800 dark:text-white'}`}
+                            >
+                              {indexOfSection + 1}.{indexOfLesson + 1}. {item?.title}
+                            </h1>
+                            <h5
+                              className={`text-black dark:text-white ${videoIndex === activeVideo && 'bg-[#0093fc] text-white dark:bg-slate-800 dark:text-white'}`}
+                            >
+                              {formatTime(Number(item?.videoDuration))}
+                            </h5>
+                          </div>
                         </div>
-                        <h1 className="inline-block break-words text-[18px] text-black dark:text-white">
-                          {item?.title}
-                        </h1>
                       </div>
-                      <h5 className="pl-8 text-black dark:text-white">
-                        {Number(item?.videoDuration) > 60 ? contentLength.toFixed(2) : Number(item?.videoDuration)}{' '}
-                        {Number(item?.videoDuration) > 60 ? 'giờ' : 'phút'}
-                      </h5>
-                    </div>
+                    </>
                   );
                 })}
               </div>

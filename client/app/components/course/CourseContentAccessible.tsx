@@ -13,7 +13,9 @@ interface CourseContentAccessibleProps {
 
 const CourseContentAccessible: FC<CourseContentAccessibleProps> = (props) => {
   const { id, user } = props;
-  const { data, isSuccess, isLoading, error } = useGetCourseContentAccessibleQuery(id);
+  const { data, isSuccess, isLoading, error, refetch } = useGetCourseContentAccessibleQuery(id, {
+    refetchOnMountOrArgChange: true
+  });
   const [route, setRoute] = useState<string>('Login');
   const [open, setOpen] = useState<boolean>(false);
   const [activeVideo, setActiveVideo] = useState<number>(0);
@@ -40,6 +42,7 @@ const CourseContentAccessible: FC<CourseContentAccessibleProps> = (props) => {
                 activeVideo={activeVideo}
                 setActiveVideo={setActiveVideo}
                 user={user}
+                refetch={refetch}
               />
             </div>
             <div className="col-span-3 800px:col-span-3 800px:block">

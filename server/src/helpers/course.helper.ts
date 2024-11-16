@@ -12,11 +12,11 @@ const getOneCourseById = async (courseId: string) => {
                 populate: [
                     {
                         path: 'user',
-                        select: 'name email'
+                        select: 'name email avatar'
                     },
                     {
                         path: 'reviewReplies.user',
-                        select: 'name email'
+                        select: 'name email avatar'
                     }
                 ]
             })
@@ -25,11 +25,11 @@ const getOneCourseById = async (courseId: string) => {
                 populate: [
                     {
                         path: 'user',
-                        select: 'name email'
+                        select: 'name email avatar'
                     },
                     {
                         path: 'commentReplies.user',
-                        select: 'name email'
+                        select: 'name email avatar'
                     }
                 ]
             })) as ICourse
@@ -49,11 +49,11 @@ const getAllCourses = async () => {
                 populate: [
                     {
                         path: 'user', // Populate thông tin người dùng của review
-                        select: 'name email' // Chọn các thông tin cần thiết của user
+                        select: 'name email avatar' // Chọn các thông tin cần thiết của user
                     },
                     {
                         path: 'reviewReplies.user', // Populate thông tin người dùng của review reply
-                        select: 'name email' // Chọn các thông tin cần thiết của user
+                        select: 'name email avatar' // Chọn các thông tin cần thiết của user
                     }
                 ]
             })
@@ -62,11 +62,11 @@ const getAllCourses = async () => {
                 populate: [
                     {
                         path: 'user',
-                        select: 'name email'
+                        select: 'name email avatar'
                     },
                     {
                         path: 'commentReplies.user',
-                        select: 'name email'
+                        select: 'name email avatar'
                     }
                 ]
             })

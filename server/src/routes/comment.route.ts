@@ -8,5 +8,6 @@ const commentRouter = Router()
 commentRouter.post('/add', isAuthenticated, commentController.addComment)
 commentRouter.put('/reply', isAuthenticated, commentController.addCommentReply)
 commentRouter.get('/all', isAuthenticated, authorizeRoles(UserRole.ADMIN), commentController.getAllComments)
+commentRouter.delete('/delete', isAuthenticated, commentController.deleteComment)
 
 export default commentRouter

@@ -12,7 +12,7 @@ import { useLoadUserQuery } from '../../../redux/features/api/apiSlice';
 import CustomModal from '../../../components/modal/CustomModal';
 import Login from '../auth/Login';
 import toast from 'react-hot-toast';
-import { formatDate } from '../../utils/formatDate';
+import { formatDate } from '../../utils/formatHelper';
 interface CourseDetailProps {
   data: any;
   stripePromise: any;

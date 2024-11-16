@@ -5,11 +5,16 @@ import { commentServices } from '../services/comment.service'
 import { StatusCodes } from 'http-status-codes'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
 import { IComment } from '../models/schemas/comment.schema'
+import { UserRole } from '../constants/enums/user.enum'
 
 const addComment = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const commentData: ICommentRequest = req.body as ICommentRequest
     const userId: any = req?.user?._id as any
+    const role = req?.user?.role as any
+    const commentData: ICommentRequest = req.body as ICommentRequest
     try {
+        if (role === UserRole.ADMIN) {
+            throw new ErrorHandler('Admin cannot add comment', StatusCodes.BAD_REQUEST)
+        }
         const comment = (await commentServices.addComment(commentData, userId)) as any
         res.status(StatusCodes.OK).json({
             success: true,
@@ -48,4 +53,20 @@ const getAllComments = catchAsyncError(async (req: Request, res: Response, next:
     }
 })
 
-export const commentController = { addComment, addCommentReply, getAllComments }
+const deleteComment = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    const { commentId, courseId, contentId }: any = req.body
+    try {
+        if (!commentId || !courseId || !contentId) {
+            throw new ErrorHandler('Invalid request', StatusCodes.BAD_REQUEST)
+        }
+        ;(await commentServices.deleteComment(commentId, courseId, contentId)) as any
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: 'Comment is deleted successfully'
+        })
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
+    }
+})
+
+export const commentController = { addComment, addCommentReply, getAllComments, deleteComment }

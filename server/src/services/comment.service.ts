@@ -14,6 +14,7 @@ import { ICommentRequest, IReplyCommentRequest } from '../interfaces/comment.int
 import sendMail from '../utils/mails/send-mail'
 import { TypeOfEmail } from '../constants/user.constant'
 import { courseHelper } from '../helpers/course.helper'
+import { UserRole } from '../constants/enums/user.enum'
 
 const addComment = async (commentRequest: ICommentRequest, userId: any) => {
     try {
@@ -117,7 +118,10 @@ const addCommentReply = async (commentRequest: IReplyCommentRequest, userId: any
                 TypeOfEmail.NOTIFICATION
             )
         }
-        await redis.set(comment.course.toString(), JSON.stringify(course) as any)
+        const courseAfterReplyComment: ICourse = (await courseHelper.getOneCourseById(
+            comment.course as unknown as string
+        )) as unknown as ICourse
+        await redis.set(comment.course.toString(), JSON.stringify(courseAfterReplyComment) as any)
         // const allCourses = await CourseModel.find().sort({ createdAt: -1 })
         // await redis.set('allCourses', JSON.stringify(allCourses))
         return comment
@@ -164,4 +168,27 @@ const getOneCommentById = async (commentId: any) => {
     }
 }
 
-export const commentServices = { addComment, addCommentReply, getAllComments, getOneCommentById }
+const deleteComment = async (commentId: any, courseId: any, contentId: any) => {
+    try {
+        const course: ICourse = (await CourseModel.findById(courseId)) as ICourse
+        if (!course) {
+            throw new ErrorHandler('Course not found', StatusCodes.NOT_FOUND)
+        }
+        const content: IContent = course?.contents?.find(
+            (content: any) => content?._id.toString() === contentId.toString()
+        ) as IContent
+        if (!content) {
+            throw new ErrorHandler('Content not found', StatusCodes.NOT_FOUND)
+        }
+        content.comments = content.comments?.filter((comment: any) => comment.toString() !== commentId.toString())
+        ;(await CommentModel.findByIdAndDelete(commentId)) as any
+        await course?.save()
+        const courseAfterDeleteComment: ICourse = (await courseHelper.getOneCourseById(courseId)) as unknown as ICourse
+        await redis.set(courseId, JSON.stringify(courseAfterDeleteComment) as any)
+        return 'Comment is deleted successfully'
+    } catch (error: any) {
+        return new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
+    }
+}
+
+export const commentServices = { addComment, addCommentReply, getAllComments, getOneCommentById, deleteComment }

@@ -94,7 +94,7 @@ const Header: FC<Props> = (props) => {
       <div
         className={`${
           active
-            ? 'sticky z-[80] h-[80px] w-full border-b shadow-xl transition duration-500 dark:border-[#ffffff1c] dark:bg-opacity-50 dark:bg-gradient-to-b dark:from-gray-900 dark:to-black'
+            ? 'fixed left-0 top-0 z-[80] h-[80px] w-full border-b bg-white shadow-xl dark:border-[#ffffff1c] dark:bg-slate-950'
             : 'z-[80] h-[80px] w-full border-b dark:border-[#ffffff1c] dark:shadow'
         }`}
       >

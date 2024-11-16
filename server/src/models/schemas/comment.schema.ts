@@ -31,6 +31,9 @@ export const commentSchema: Schema<IComment> = new mongoose.Schema(
                 reply: {
                     type: String
                 }
+            },
+            {
+                timestamps: true
             }
         ],
         course: {
