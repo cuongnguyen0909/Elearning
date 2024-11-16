@@ -44,7 +44,7 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type="number"] {
+input[type='number'] {
   -moz-appearance: textfield;
 }
 
@@ -58,7 +58,6 @@ body {
 }
 
 @keyframes changeBackroundColor {
-
   0%,
   100% {
     opacity: 1;
@@ -83,7 +82,6 @@ body {
   83.33% {
     opacity: 0.4;
   }
-
 }
 
 @keyframes shake {
@@ -110,7 +108,6 @@ body {
   100% {
     transform: translate(0);
   }
-
 }
 
 .shake {

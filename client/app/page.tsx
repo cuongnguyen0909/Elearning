@@ -19,8 +19,6 @@ const Page: FC<Props> = (props: Props) => {
   const [route, setRoute] = useState('Login');
   const [mounted, setMounted] = useState(false);
 
-  // console.log(activeItem);
-
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -28,7 +26,7 @@ const Page: FC<Props> = (props: Props) => {
   if (!mounted) return null;
 
   return (
-    <div className={`'dark:bg-gray-900 min-h-screen`}>
+    <div className={`min-h-screen dark:bg-gray-900`}>
       <Heading
         title="ELearning"
         description="ELearning is a platform for learning."

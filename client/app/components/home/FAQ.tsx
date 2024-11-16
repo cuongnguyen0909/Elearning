@@ -22,7 +22,7 @@ const FAQ: FC<FAQProps> = (props) => {
   };
   return (
     <div>
-      <div className="font-Arimo p-24 text-center text-[25px] font-[700] leading-[35px] tracking-tight text-[#000] dark:text-white sm:text-3xl 800px:!leading-[60px] lg:text-4xl">
+      <div className="px-24 pb-24 pt-12 text-center font-Arimo text-[25px] font-[700] leading-[35px] tracking-tight text-[#000] dark:text-white sm:text-3xl 800px:!leading-[60px] lg:text-4xl">
         <h1>Những câu hỏi thường gặp </h1>
         <div className="mt-12">
           <dl className="space-y-10">
@@ -45,7 +45,7 @@ const FAQ: FC<FAQProps> = (props) => {
                 </dt>
                 {activeQuestion === q?._id && (
                   <dd className="mt-2 pr-12">
-                    <p className="font-Arimo !text-start text-base font-normal text-black dark:text-white">
+                    <p className="!text-start font-Arimo text-base font-normal text-black dark:text-white">
                       {q?.answer}
                     </p>
                   </dd>

@@ -90,18 +90,18 @@ const Header: FC<Props> = (props) => {
   };
 
   return (
-    <div className={`relative w-full bg-[rgba(232,246,255,0.68)] text-lightText dark:bg-gray-900 dark:text-white`}>
+    <div className={`text-lightText relative w-full shadow-md dark:bg-gray-900 dark:text-white`}>
       <div
         className={`${
           active
-            ? 'fixed left-0 top-0 z-[80] h-[80px] w-full border-b shadow-xl transition duration-500 dark:border-[#ffffff1c] dark:bg-opacity-50 dark:bg-gradient-to-b dark:from-gray-900 dark:to-black'
+            ? 'sticky z-[80] h-[80px] w-full border-b shadow-xl transition duration-500 dark:border-[#ffffff1c] dark:bg-opacity-50 dark:bg-gradient-to-b dark:from-gray-900 dark:to-black'
             : 'z-[80] h-[80px] w-full border-b dark:border-[#ffffff1c] dark:shadow'
         }`}
       >
         <div className="m-auto h-full w-[95%] py-2 800px:w-[92%]">
           <div className="flex h-[80px] w-full items-center justify-between p-3">
             <div>
-              <Link href={'/'} className={`text-lightTextPrimary font-Arimo text-[25px] font-bold dark:text-white`}>
+              <Link href={'/'} className={`font-Arimo text-[25px] font-bold text-lightTextPrimary dark:text-white`}>
                 <span className="text-[#2190ff] dark:text-[#2190ff]">E</span>
                 demy
               </Link>

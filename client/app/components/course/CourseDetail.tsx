@@ -12,6 +12,7 @@ import { useLoadUserQuery } from '../../../redux/features/api/apiSlice';
 import CustomModal from '../../../components/modal/CustomModal';
 import Login from '../auth/Login';
 import toast from 'react-hot-toast';
+import { formatDate } from '../../utils/formatDate';
 interface CourseDetailProps {
   data: any;
   stripePromise: any;
@@ -46,21 +47,35 @@ const CourseDetail: FC<CourseDetailProps> = (props) => {
     }
   }, [data]);
   const isPurchased = userData?.user?.courses?.find((course: any) => course?._id === courseData?._id);
-
+  console.log(courseData);
   return (
     <div>
       <div className="m-auto min-h-screen w-[90%] py-5 pb-20 800px:w-[90%]">
         <div className="flex w-full flex-col-reverse 800px:flex-row">
           <div className="w-full pr-4 800px:w-[65%] 800px:pr-[5]">
-            <h1 className="font-Arimo text-[26px] font-[600] text-black dark:text-white">{courseData?.title}</h1>
-            <div className="flex items-center justify-between pt-3">
-              <div className="flex break-inside-avoid-column items-center gap-6">
-                <Rating rating={courseData?.rating} />
-                <h5 className="text-black dark:text-white">{courseData?.reviews?.length} Đánh giá</h5>
-                <h5 className="text-black dark:text-white">{courseData?.purchased} Học viên</h5>
+            <div className="border px-10 pb-20">
+              <h1 className="font-Arimo text-[26px] font-[600] text-black dark:text-white">{courseData?.title}</h1>
+              <div className="flex items-center justify-between pt-3">
+                <div className="flex break-inside-avoid-column flex-col justify-start gap-6">
+                  <p className="mt-[20px] overflow-hidden whitespace-pre-line text-[18px] text-black dark:text-white">
+                    {courseData?.description}
+                  </p>
+                  <div className="flex items-center gap-4">
+                    <h6 className={`!text-[16px] text-[#b19b38] dark:text-white`}>{courseData?.rating}</h6>
+                    <div className="mt-[2px]">
+                      <Rating rating={courseData?.rating} />
+                    </div>
+                    <h5 className="text-black dark:text-white">{courseData?.reviews?.length} Đánh giá</h5>
+                    <h5 className="text-black dark:text-white">{courseData?.purchased} Học viên</h5>
+                  </div>
+                  <div>
+                    <h5 className="text-black dark:text-white">
+                      Lần cập nhật gần nhất từ ngày: {formatDate(courseData?.updatedAt)}
+                    </h5>
+                  </div>
+                </div>
               </div>
             </div>
-            <br />
             <h2 className="font-Arimo text-[22px] font-[600] text-black dark:text-white">
               Bạn sẽ học được gì từ khóa học này?
             </h2>
@@ -162,14 +177,14 @@ const CourseDetail: FC<CourseDetailProps> = (props) => {
               <div className="flex items-center">
                 {isPurchased ? (
                   <Link
-                    className={`${styles.button} font-Arimo my-3 !w-[180px] cursor-pointer !bg-[crimson]`}
+                    className={`${styles.button} my-3 !w-[180px] cursor-pointer !bg-[crimson] font-Arimo`}
                     href={`/course/access/${courseData?._id}`}
                   >
                     Học ngay
                   </Link>
                 ) : (
                   <div
-                    className={`${styles.button} font-Arimo my-3 !w-[180px] cursor-pointer !bg-[crimson]`}
+                    className={`${styles.button} my-3 !w-[180px] cursor-pointer !bg-[crimson] font-Arimo`}
                     onClick={handleOrder}
                   >
                     Mua ngay {courseData?.price}$

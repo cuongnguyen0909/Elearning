@@ -1,22 +1,22 @@
 /* globals.css */
 .home-container {
-    @apply w-full 1000px:flex;
+    @apply w-full 1000px:flex pb-28 pt-8 border-b;
   }
   
   .home-heading {
-    @apply dark:text-white text-[#000000c7] text-[30px] px-3 w-full 1000px:text-[50px] font-[600] font-Josefin py-2 1100px:leading-[65px] 1500px:w-[90%] 1000px:ps-[80px] 1000px:mt-[150px];
+    @apply dark:text-white text-[#000000c7] text-[30px] px-3 w-full 1000px:text-[50px] font-[600] font-Arimo py-2 1100px:leading-[65px] 1500px:w-[90%] 1000px:ps-[80px] 1000px:mt-[150px];
   }
   
   .home-subheading {
-    @apply dark:text-white text-[#000000c7] text-[24px] px-3 w-full 1000px:text-[24px] font-[400] font-Josefin py-2 1100px:leading-[25px] 1500px:w-[90%] 1000px:ps-[80px];
+    @apply dark:text-white text-[#000000c7] text-[24px] px-3 w-full 1000px:text-[24px] font-[400] font-Arimo py-2 1100px:leading-[25px] 1500px:w-[90%] 1000px:ps-[80px];
   }
   
   .home-text-container {
-    @apply 1000px:w-[60%] flex flex-col items-center 1000px:mt-[0px] text-center 1000px:text-left mt-[150px];
+    @apply 1000px:w-[60%] flex flex-col items-center 1000px:mt-[0px] text-center 1000px:text-left;
   }
   
   .home-image-container {
-    @apply 1000px:w-[65%] 1000px:min-h-screen justify-end mt-[60px] ml-[30px] 1000px:pt-[0] z-10;
+    @apply 1000px:w-[65%] 1000px:min-h-[auto] justify-end mt-[60px] ml-[30px] 1000px:pt-[0] z-10;
   }
   
   .home-image {

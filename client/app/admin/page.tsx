@@ -16,7 +16,7 @@ const page: FC<IPageProps> = (props) => {
   if (!mounted) return null;
   return (
     <AdminProtected>
-      <div className={`'dark:bg-gray-900 min-h-screen`}>
+      <div className={`min-h-screen bg-white dark:bg-gray-900`}>
         <Heading title="All Course" description="All courses" keywords="All,Course,ELearning" />
         <div className="flex h-screen">
           <div className="w-1/5 1500px:w-[16%]">

@@ -17,11 +17,7 @@ const page: FC<PageProps> = (props) => {
     setMounted(true);
   }, []);
   return (
-    <div
-      className={`min-h-screen ${
-        theme === 'light' ? 'bg-gradient-to-l from-blue-100 to-blue-200' : 'dark:bg-gray-900'
-      }`}
-    >
+    <div className={`min-h-screen dark:bg-gray-900`}>
       <Heading title="Course Detail" description="Course detail" keywords="Detail,Course,Edemy" />
 
       <CourseDetailPage id={params?.id} />
