@@ -18,6 +18,7 @@ import SignUp from '../auth/SignUp';
 import Verification from '../auth/Verification';
 import { useLoadUserQuery } from '../../../redux/features/api/apiSlice';
 import Loading from '../../../components/common/Loading';
+import { useRouter, usePathname } from 'next/navigation';
 type Props = {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -32,17 +33,32 @@ const Header: FC<Props> = (props) => {
   const { activeItem, open, setOpen, route, setRoute, setActiveItem } = props;
   const { user, isLoggedIn } = useSelector((state: any) => state.auth);
   const { data } = useSession();
+  const [isLoading, setIsLoading] = useState(false);
   const { isLoading: loadingProfile } = useLoadUserQuery(
     {},
     {
       refetchOnMountOrArgChange: true
     }
   );
-  const [socialLogin, { isLoading, isSuccess, error }] = useSocialLoginMutation();
+  const [socialLogin, { isSuccess, error }] = useSocialLoginMutation();
   const [active, setActive] = useState(false);
   const [openSidebar, setOpenSidebar] = useState(false);
   const { theme } = useTheme();
   const [logout, setLogout] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  // useEffect(() => {
+  //   if (pathname === '/profile') {
+  //     setIsLoading(false);
+  //   }
+  // }, [pathname]);
+
+  const handleProfileClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (pathname === '/profile') return;
+    setIsLoading(true);
+    router.push('/profile');
+  };
   const {} = useLogoutQuery(undefined, {
     skip: !logout
   });
@@ -120,10 +136,12 @@ const Header: FC<Props> = (props) => {
                 />
               </div>
               {/* {loadingProfile && <Loading />} */}
+              {isLoading && <Loading />} {/* Hiển thị loading khi cần */}
               {user ? (
                 <Link
                   href={`/profile`}
                   // onClick={() => setActiveItem(5)}
+                  onClick={handleProfileClick}
                 >
                   <Image
                     src={user.avatar ? user?.avatar?.url : avatar}

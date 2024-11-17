@@ -5,6 +5,7 @@ import { useLoadUserQuery } from '../../../redux/features/api/apiSlice';
 import { styles } from '../../utils/style';
 import toast from 'react-hot-toast';
 import { redirect } from 'next/navigation';
+import Loading from '../../../components/common/Loading';
 
 interface CheckoutFormProps {
   setOpen: any;
@@ -57,6 +58,7 @@ const CheckoutForm: FC<CheckoutFormProps> = (props) => {
       await createEnrollment(enrollmentData);
       setIsLoading(false);
       setOpen(false);
+      window.location.reload();
     }
   };
 
@@ -66,7 +68,6 @@ const CheckoutForm: FC<CheckoutFormProps> = (props) => {
     }
     if (isSuccessCreateEnrollment) {
       toast.success('Payment success');
-      window.location.reload();
     }
     if (errorCreateEnrollment) {
       if ('data' in errorCreateEnrollment) {
@@ -76,21 +77,24 @@ const CheckoutForm: FC<CheckoutFormProps> = (props) => {
     }
   }, [errorCreateEnrollment, errorCreateEnrollment]);
   return (
-    <form id="payment-form" onSubmit={handleSubmit}>
-      <LinkAuthenticationElement id="link-authentication-element" />
-      <PaymentElement id="payment-element" />
-      <button disabled={isLoading || !stripe || !elements} id="submit">
-        <span id="button-text" className={`${styles.button} mt-2 !h-[35px]`}>
-          {isLoading ? 'Paying...' : 'Pay now'}
-        </span>
-      </button>
-      {/* show any error or success message */}
-      {message && (
-        <div id="payment-message" className="font-Arimo pt-2 text-[red]">
-          {message}
-        </div>
-      )}
-    </form>
+    <>
+      {isLoading && <Loading />}
+      <form id="payment-form" onSubmit={handleSubmit}>
+        <LinkAuthenticationElement id="link-authentication-element" />
+        <PaymentElement id="payment-element" />
+        <button disabled={isLoading || !stripe || !elements} id="submit">
+          <span id="button-text" className={`${styles.button} mt-2 !h-[35px]`}>
+            {isLoading ? 'Paying...' : 'Pay now'}
+          </span>
+        </button>
+        {/* show any error or success message */}
+        {message && (
+          <div id="payment-message" className="pt-2 font-Arimo text-[red]">
+            {message}
+          </div>
+        )}
+      </form>
+    </>
   );
 };
 

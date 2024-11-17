@@ -194,49 +194,49 @@ const deleteCourse = catchAsyncError(async (req: Request, res: Response, next: N
     }
 })
 
-const apiKeys = [
-    process.env.VDOCIPHER_API_KEY_SECRET_1,
-    process.env.VDOCIPHER_API_KEY_SECRET_2,
-    process.env.VDOCIPHER_API_KEY_SECRET_3
-]
-let currentKeyIndex = 0
+// const apiKeys = [
+//     process.env.VDOCIPHER_API_KEY_SECRET_1,
+//     process.env.VDOCIPHER_API_KEY_SECRET_2,
+//     process.env.VDOCIPHER_API_KEY_SECRET_3
+// ]
+// let currentKeyIndex = 0
 
-function getNextApiKey() {
-    const apiKey = apiKeys[currentKeyIndex]
-    currentKeyIndex = (currentKeyIndex + 1) % apiKeys.length
-    return apiKey
-}
+// function getNextApiKey() {
+//     const apiKey = apiKeys[currentKeyIndex]
+//     currentKeyIndex = (currentKeyIndex + 1) % apiKeys.length
+//     return apiKey
+// }
 
 const generateVideoUrl = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const { videoId } = req.body as any
 
-    for (let attempt = 0; attempt < apiKeys.length; attempt++) {
-        const apiKey = getNextApiKey()
+    // for (let attempt = 0; attempt < apiKeys.length; attempt++) {
+    // const apiKey = getNextApiKey()
+    const apiKey = `${process.env.VDOCIPHER_API_KEY_SECRET_1}`
 
-        try {
-            const response = await axios.post(
-                `https://dev.vdocipher.com/api/videos/${videoId}/otp`,
-                { ttl: 300 },
-                {
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                        Authorization: `Apisecret ${apiKey}`
-                    }
+    try {
+        const response = await axios.post(
+            `https://dev.vdocipher.com/api/videos/${videoId}/otp`,
+            { ttl: 300 },
+            {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Apisecret ${apiKey}`
                 }
-            )
-
-            // Trả về kết quả nếu gọi thành công
-            return res.json(response.data)
-        } catch (error: any) {
-            console.error(`Failed with API key ${apiKey}: ${error.message}`)
-
-            // Chỉ chuyển sang key khác nếu gặp lỗi, thử lại
-            if (attempt === apiKeys.length - 1) {
-                // Nếu tất cả keys đều thất bại
-                return next(new ErrorHandler('All API keys failed', StatusCodes.BAD_REQUEST))
             }
-        }
+        )
+        // Trả về kết quả nếu gọi thành công
+        return res.json(response.data)
+    } catch (error: any) {
+        // console.error(`Failed with API key ${apiKey}: ${error.message}`)
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
+        // Chỉ chuyển sang key khác nếu gặp lỗi, thử lại
+        // if (attempt === apiKeys.length - 1) {
+        //     // Nếu tất cả keys đều thất bại
+        //     return next(new ErrorHandler('All API keys failed', StatusCodes.BAD_REQUEST))
+        // }
+        // }
     }
 })
 

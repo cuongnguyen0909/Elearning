@@ -33,6 +33,7 @@ const page: FC<PageProps> = (props) => {
       }
     }
   }, [data, error]);
+  
   return (
     // <div
     //   className={`min-h-screen ${

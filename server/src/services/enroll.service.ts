@@ -13,6 +13,8 @@ import sendMail from '../utils/mails/send-mail'
 import { INotification } from './../models/schemas/notification.schema'
 import { StatusCodes } from 'http-status-codes'
 import { redis } from '../configs/connect.redis.config'
+import { profile } from 'console'
+import { profileHelpers } from '../helpers/profile.helper'
 
 require('dotenv').config()
 
@@ -82,8 +84,9 @@ const createNewEnrollment = async (enrollRequest: any, userId: string) => {
             )
             user.courses?.push(courseId as unknown as ObjectId)
         }
-        await redis?.set(userId, JSON.stringify(user), 'EX', 60 * 60 * 24)
         await user?.save()
+        const updatedUser: IUser = (await profileHelpers.getProfileById(userId)) as IUser
+        await redis?.set(userId, JSON.stringify(updatedUser), 'EX', 60 * 60 * 24)
 
         const notification: INotification = (await NotificationModel.create({
             user: user?._id,

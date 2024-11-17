@@ -121,8 +121,6 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
     }
   };
 
-  console.log('commentId', commentId);
-
   useEffect(() => {
     if (deleteCommentSuccess) {
       toast.success('Xóa bình luận thành công', {

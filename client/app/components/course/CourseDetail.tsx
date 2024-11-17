@@ -20,7 +20,12 @@ interface CourseDetailProps {
 }
 
 const CourseDetail: FC<CourseDetailProps> = (props) => {
-  const { data: userData } = useLoadUserQuery({});
+  const { data: userData, refetch } = useLoadUserQuery(
+    {},
+    {
+      refetchOnMountOrArgChange: true
+    }
+  );
   const { data, stripePromise, clientSecret } = props;
   const [courseData, setCourseData] = useState<any>(null);
   const [openPayment, setOpenPayment] = useState(false);
@@ -28,9 +33,10 @@ const CourseDetail: FC<CourseDetailProps> = (props) => {
   const [route, setRoute] = useState<string>('Login');
   const discountPercentage = ((courseData?.estimatedPrice - courseData?.price) / courseData?.estimatedPrice) * 100;
   const discountPercentagePrice = discountPercentage.toFixed(0);
-  const { isLoggedIn } = useSelector((state: any) => state.auth);
+  const { isLoggedIn, user } = useSelector((state: any) => state.auth);
+
   const handleOrder = () => {
-    if (!isLoggedIn) {
+    if (!isLoggedIn || !user) {
       setOpenLogin(true);
       //display toast waring login to order
       toast.error('Vui lòng đăng nhập để mua khóa học', {
@@ -47,7 +53,6 @@ const CourseDetail: FC<CourseDetailProps> = (props) => {
     }
   }, [data]);
   const isPurchased = userData?.user?.courses?.find((course: any) => course?._id === courseData?._id);
-  console.log(courseData);
   return (
     <div>
       <div className="m-auto min-h-screen w-[90%] py-5 pb-20 800px:w-[90%]">
@@ -229,9 +234,7 @@ const CourseDetail: FC<CourseDetailProps> = (props) => {
       )}
       {route === 'Login' && (
         <>
-          {openLogin && setOpenLogin && (
-            <CustomModal open={openLogin} setOpen={setOpenLogin} setRoute={setRoute} component={Login} />
-          )}
+          {openLogin && <CustomModal open={openLogin} setOpen={setOpenLogin} setRoute={setRoute} component={Login} />}
         </>
       )}
     </div>
