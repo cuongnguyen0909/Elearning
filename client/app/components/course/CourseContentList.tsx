@@ -54,7 +54,7 @@ const CourseContentList: FC<CourseContentListProps> = (props) => {
                 <div className="h-2 w-2"></div>
                 {/* Render video section */}
                 <div
-                  className="flex h-12 w-full cursor-pointer items-center justify-between gap-1"
+                  className="flex h-10 w-full cursor-pointer items-center justify-between gap-1"
                   onClick={() => toggleSection(section)}
                 >
                   <h2 className="text-[18px] font-[600] text-black dark:text-white">
@@ -68,7 +68,7 @@ const CourseContentList: FC<CourseContentListProps> = (props) => {
               <div className="flex w-full">
                 <div className="h-2 w-4"></div>
                 <div>
-                  <h5 className="!text-[16px] font-thin text-black dark:text-white">
+                  <h5 className="!text-[14px] font-thin text-black dark:text-white">
                     {sectionVideoCount} bài giảng • {formatTime(sectionVideoLength)}
                   </h5>
                   <div className="h-2"></div>
@@ -76,48 +76,46 @@ const CourseContentList: FC<CourseContentListProps> = (props) => {
               </div>
             </div>
             {isSectionVisible && (
-              <div className="w-full gap-2">
+              <div className="w-full gap-2 bg-[#ffffff4c]">
                 {sectionVideos?.map((item: any, indexOfLesson: number) => {
                   const videoIndex: number = sectionStartIndex + indexOfLesson;
                   return (
-                    <>
-                      <div
-                        className={`h-14 w-full gap-2 ${
-                          videoIndex === activeVideo
-                            ? 'bg-[#0093fc] hover:bg-[#0093fc] dark:bg-slate-800 dark:text-white'
-                            : ''
-                        } cursor-pointer border-t transition-all hover:bg-[#fff]`}
-                        key={item?._id}
-                        onClick={() => {
-                          if (isDemo) {
-                            return;
-                          }
-                          setActiveVideo && setActiveVideo(videoIndex);
-                        }}
-                      >
-                        <div className="border-top flex items-center gap-2">
-                          <div className="w-2"></div>
-                          <div className="">
-                            <IoPlayCircleOutline
-                              size={20}
-                              className={`mr-2 text-black dark:text-white ${videoIndex === activeVideo && 'bg-[#0093fc] text-white dark:bg-slate-800 dark:text-white'}`}
-                            />
-                          </div>
-                          <div className="font-thin">
-                            <h1
-                              className={`text-[16px] text-black dark:text-white ${videoIndex === activeVideo && 'bg-[#0093fc] text-white dark:bg-slate-800 dark:text-white'}`}
-                            >
-                              {indexOfSection + 1}.{indexOfLesson + 1}. {item?.title}
-                            </h1>
-                            <h5
-                              className={`text-black dark:text-white ${videoIndex === activeVideo && 'bg-[#0093fc] text-white dark:bg-slate-800 dark:text-white'}`}
-                            >
-                              {formatTime(Number(item?.videoDuration))}
-                            </h5>
-                          </div>
+                    <div
+                      className={`h-14 w-full gap-2 ${
+                        videoIndex === activeVideo
+                          ? 'w-full bg-[#0093fc] dark:bg-slate-800 dark:text-white'
+                          : 'hover:bg-[#fff]'
+                      } cursor-pointer border-t transition-all`}
+                      key={item?._id}
+                      onClick={() => {
+                        if (isDemo) {
+                          return;
+                        }
+                        setActiveVideo && setActiveVideo(videoIndex);
+                      }}
+                    >
+                      <div className="border-top flex items-center gap-2">
+                        <div className="w-2"></div>
+                        <div className="">
+                          <IoPlayCircleOutline
+                            size={20}
+                            className={`mr-2 text-black dark:text-white ${videoIndex === activeVideo && 'bg-[#0093fc] text-white dark:bg-slate-800 dark:text-white'}`}
+                          />
+                        </div>
+                        <div className="font-thin">
+                          <h1
+                            className={`text-[16px] text-black dark:text-white ${videoIndex === activeVideo && 'bg-[#0093fc] text-white dark:bg-slate-800 dark:text-white'}`}
+                          >
+                            {indexOfSection + 1}.{indexOfLesson + 1}. {item?.title}
+                          </h1>
+                          <h5
+                            className={`text-black dark:text-white ${videoIndex === activeVideo && 'bg-[#0093fc] text-white dark:bg-slate-800 dark:text-white'}`}
+                          >
+                            {formatTime(Number(item?.videoDuration))}
+                          </h5>
                         </div>
                       </div>
-                    </>
+                    </div>
                   );
                 })}
               </div>
