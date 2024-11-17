@@ -32,9 +32,9 @@ const ProfileSidebar: React.FC<Props> = (props) => {
   return (
     <>
       {isLoading && <Loading />}
-      <div className="w-full">
+      <div className="w-full font-[500]">
         <div
-          className={`${active === 1 ? 'bg-[#d7ebfa] dark:bg-slate-800' : 'bg-transparent'} flex w-full cursor-pointer items-center px-3 py-4`}
+          className={`${active === 1 ? 'bg-[#f7f9fa] dark:bg-slate-800' : 'bg-transparent'} flex w-full cursor-pointer items-center px-3 py-4`}
           onClick={() => setActive(1)}
         >
           <Image
@@ -47,32 +47,37 @@ const ProfileSidebar: React.FC<Props> = (props) => {
           <h5 className="hidden pl-2 font-Arimo text-black dark:text-white 800px:block">Thông tin cá nhân</h5>
         </div>
         <div
-          className={`${active === 2 ? 'bg-[#d7ebfa] dark:bg-slate-800' : 'bg-transparent'} flex w-full cursor-pointer items-center px-3 py-4`}
+          className={`${active === 2 ? 'bg-[#f7f9fa] dark:bg-slate-800' : 'bg-transparent'} flex w-full cursor-pointer items-center px-3 py-4`}
           onClick={() => setActive(2)}
         >
           <RiLockPasswordLine size={20} className="text-black dark:text-white" />
           <h5 className="hidden pl-2 font-Arimo text-black dark:text-white 800px:block">Thay đổi mật khẩu</h5>
         </div>
         <div
-          className={`${active === 3 ? 'bg-[#d7ebfa] dark:bg-slate-800' : 'bg-transparent'} flex w-full cursor-pointer items-center px-3 py-4`}
+          className={`${active === 3 ? 'bg-[#f7f9fa] dark:bg-slate-800' : 'bg-transparent'} flex w-full cursor-pointer items-center px-3 py-4`}
           onClick={() => setActive(3)}
         >
           <SiCoursera size={20} className="text-black dark:text-white" />
           <h5 className="hidden pl-2 font-Arimo text-black dark:text-white 800px:block">Khóa học của tôi</h5>
         </div>
         {isAdmin && (
-          <Link
-            className={`flex w-full cursor-pointer items-center px-3 py-4`}
-            href={'/admin'}
-            onClick={(e) => handleRedirectToAdmin(e)}
+          <div
+            className={`${active === 4 ? 'bg-[#f7f9fa] dark:bg-slate-800' : 'bg-transparent'}`}
+            onClick={() => setActive(4)}
           >
-            <MdOutlineAdminPanelSettings size={20} className="text-black dark:text-white" />
-            <h5 className="hidden pl-2 font-Arimo text-black dark:text-white 800px:block">Trang quản trị</h5>
-          </Link>
+            <Link
+              className={`flex w-full cursor-pointer items-center px-3 py-4`}
+              href={'/admin'}
+              onClick={(e) => handleRedirectToAdmin(e)}
+            >
+              <MdOutlineAdminPanelSettings size={20} className="text-black dark:text-white" />
+              <h5 className="hidden pl-2 font-Arimo text-black dark:text-white 800px:block">Trang quản trị</h5>
+            </Link>
+          </div>
         )}
 
         <div
-          className={`${active === 4 ? 'bg-[#d7ebfa] dark:bg-slate-800' : 'bg-transparent'} flex w-full cursor-pointer items-center px-3 py-4`}
+          className={`${active === 4 ? 'dark:bg-slate-800' : 'bg-transparent'} flex w-full cursor-pointer items-center px-3 py-4`}
           onClick={() => logOutHandler()}
         >
           <AiOutlineLogout size={20} className="text-black dark:text-white" />

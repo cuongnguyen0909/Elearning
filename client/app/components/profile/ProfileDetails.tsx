@@ -117,14 +117,14 @@ const ProfileDetails: React.FC<Props> = (props) => {
         <br />
         <div className="w-full text-black dark:text-white">
           <form onSubmit={handleSubmit}>
-            <div className="font-Arimo m-auto block w-full pb-4 pl-6 pt-2 800px:w-[50%]">
+            <div className="m-auto block w-full pb-4 pl-6 pt-2 font-Arimo 800px:w-[50%]">
               <div className="w-[100%]">
                 <label htmlFor="" className="block pb-2 font-semibold">
                   Tên
                 </label>
                 <input
                   type="text"
-                  className={`${styles.input} mb-4 border-[#00000027] bg-[#ffffff3d] dark:border-[#ffffff1d] dark:bg-slate-800 800px:mb-0`}
+                  className={`${styles.input} mb-4 border-[#00000027] bg-[#ffffff3d] shadow-md dark:border-[#ffffff1d] dark:bg-slate-800 800px:mb-0`}
                   required
                   onChange={(e) => setName(e.target.value)}
                   value={name}
@@ -137,7 +137,7 @@ const ProfileDetails: React.FC<Props> = (props) => {
                 <input
                   type="text"
                   readOnly
-                  className={`${styles.input} mb-1 border-[#00000027] bg-[#ffffff3d] text-black dark:border-[#4027271d] dark:bg-slate-800 800px:mb-0`}
+                  className={`${styles.input} mb-1 border-[#00000027] bg-[#ffffff3d] text-black shadow-md dark:border-[#4027271d] dark:bg-slate-800 800px:mb-0`}
                   required
                   value={user?.email}
                 />
@@ -145,7 +145,7 @@ const ProfileDetails: React.FC<Props> = (props) => {
               <div className="w-[100%]">
                 <input
                   type="submit"
-                  className={`mt-8 h-[40px] !w-[100%] cursor-pointer rounded-[3px] border border-[#00000027] bg-[#224c8a16] text-center font-semibold dark:border-[#ffffff1d] dark:!bg-[#00000015] 800px:w-[250px]`}
+                  className={`mt-8 h-[40px] !w-[100%] cursor-pointer rounded-[3px] border border-[#00000027] bg-[#224c8a16] text-center font-semibold shadow-md dark:border-[#ffffff1d] dark:!bg-[#00000015] 800px:w-[250px]`}
                   required
                   value="Cập nhật thông tin"
                 />

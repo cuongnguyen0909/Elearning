@@ -10,43 +10,39 @@ import { useSelector } from 'react-redux';
 type Props = {};
 
 const page: React.FC<Props> = (props) => {
-    const [open, setOpen] = useState(false);
-    const [activeItem, setActiveItem] = useState(5);
-    const { theme } = useTheme();
-    const [route, setRoute] = useState('Login');
-    const [mounted, setMounted] = useState(false);
-    const { user } = useSelector((state: any) => state.auth);
-    useEffect(() => {
-        setMounted(true);
-    }, []);
+  const [open, setOpen] = useState(false);
+  const [activeItem, setActiveItem] = useState(5);
+  const { theme } = useTheme();
+  const [route, setRoute] = useState('Login');
+  const [mounted, setMounted] = useState(false);
+  const { user } = useSelector((state: any) => state.auth);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-    if (!mounted) return null;
-    return (
-        <div>
-            <Protected>
-                <div
-                    className={`min-h-screen ${
-                        theme === 'light' ? 'bg-gradient-to-l from-blue-100 to-blue-200' : 'dark:bg-gray-900'
-                    }`}
-                >
-                    <Heading
-                        title={`${user?.name} Profile`}
-                        description="ELearning is a platform for learning."
-                        keywords="ELearning,Programming,MERN,Redux,Science"
-                    />
-                    <Header
-                        open={open}
-                        setOpen={setOpen}
-                        activeItem={activeItem}
-                        setRoute={setRoute}
-                        route={route}
-                        setActiveItem={setActiveItem}
-                    />
-                    <Profile user={user} />
-                </div>
-            </Protected>
+  if (!mounted) return null;
+  return (
+    <div>
+      <Protected>
+        <div className={`min-h-screen dark:bg-gray-900`}>
+          <Heading
+            title={`${user?.name} Profile`}
+            description="ELearning is a platform for learning."
+            keywords="ELearning,Programming,MERN,Redux,Science"
+          />
+          <Header
+            open={open}
+            setOpen={setOpen}
+            activeItem={activeItem}
+            setRoute={setRoute}
+            route={route}
+            setActiveItem={setActiveItem}
+          />
+          <Profile user={user} />
         </div>
-    );
+      </Protected>
+    </div>
+  );
 };
 
 export default page;

@@ -50,7 +50,7 @@ const ChangePassword: React.FC<Props> = (props) => {
   return (
     <>
       {isChangePasswordLoading && <Loading />}
-      <div className="font-Arimo flex w-full flex-col items-center justify-center px-2 pl-7 text-black dark:text-white 800px:px-5 800px:pl-0">
+      <div className="flex w-full flex-col items-center justify-center px-2 pl-7 font-Arimo text-black dark:text-white 800px:px-5 800px:pl-0">
         <h1 className="block pb-2 text-center text-[25px] font-semibold 800px:text-[30px]">Change Password</h1>
         <div className="w-full">
           <form className="flex flex-col items-center" aria-required onSubmit={passwordChangeHandler}>
@@ -60,7 +60,7 @@ const ChangePassword: React.FC<Props> = (props) => {
               </label>
               <input
                 type="password"
-                className={`${styles.input} mb-4 !w-[95%] border-[#00000027] bg-[#ffffff3d] dark:border-[#ffffff1d] dark:bg-slate-800 800px:mb-0`}
+                className={`${styles.input} mb-4 !w-[95%] border-[#00000027] bg-[#ffffff3d] shadow-md dark:border-[#ffffff1d] dark:bg-slate-800 800px:mb-0`}
                 required
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
@@ -72,7 +72,7 @@ const ChangePassword: React.FC<Props> = (props) => {
               </label>
               <input
                 type="password"
-                className={`${styles.input} mb-4 !w-[95%] border-[#00000027] bg-[#ffffff3d] dark:border-[#ffffff1d] dark:bg-slate-800 800px:mb-0`}
+                className={`${styles.input} mb-4 !w-[95%] border-[#00000027] bg-[#ffffff3d] shadow-md dark:border-[#ffffff1d] dark:bg-slate-800 800px:mb-0`}
                 required
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
@@ -84,7 +84,7 @@ const ChangePassword: React.FC<Props> = (props) => {
               </label>
               <input
                 type="password"
-                className={`${styles.input} mb-4 !w-[95%] border-[#00000027] bg-[#ffffff3d] dark:border-[#ffffff1d] dark:bg-slate-800 800px:mb-0`}
+                className={`${styles.input} mb-4 !w-[95%] border-[#00000027] bg-[#ffffff3d] shadow-md dark:border-[#ffffff1d] dark:bg-slate-800 800px:mb-0`}
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
@@ -92,7 +92,7 @@ const ChangePassword: React.FC<Props> = (props) => {
             </div>
             <div className="mt-2 w-[100%] 800px:w-[60%]">
               <input
-                className="mb-5 mt-8 h-[40px] !w-[95%] cursor-pointer rounded-[3px] border border-[#00000027] bg-[#224c8a16] text-center font-semibold dark:border-[#ffffff1d] dark:bg-slate-900"
+                className="mb-5 mt-8 h-[40px] !w-[95%] cursor-pointer rounded-[3px] border border-[#00000027] bg-[#224c8a16] text-center font-semibold shadow-md dark:border-[#ffffff1d] dark:bg-slate-900"
                 type="submit"
                 required
                 value="Update"
