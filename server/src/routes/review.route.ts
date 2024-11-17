@@ -6,7 +6,7 @@ import { UserRole } from '../constants/enums/user.enum'
 const reviewRouter = Router()
 
 reviewRouter.put('/reply', isAuthenticated, authorizeRoles(UserRole.ADMIN), reviewController.addReviewReply)
-reviewRouter.post('/add/:id', isAuthenticated, reviewController.addReview)
 reviewRouter.get('/all', isAuthenticated, authorizeRoles(UserRole.ADMIN), reviewController.getAllReviews)
-
+reviewRouter.delete('/reply', isAuthenticated, authorizeRoles(UserRole.ADMIN), reviewController.deleteReviewReply)
+reviewRouter.post('/add/:id', isAuthenticated, reviewController.addReview)
 export default reviewRouter

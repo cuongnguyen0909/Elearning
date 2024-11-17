@@ -59,7 +59,8 @@ const addComment = async (commentRequest: ICommentRequest, userId: any) => {
         await redis.set(courseId, JSON.stringify(courseAfterUpdate) as any)
         // const allCourses: ICourse[] = (await courseHelper.getAllCourses()) as unknown as ICourse[]
         // await redis.set('allCourses', JSON.stringify(allCourses))
-        return newComment
+        const newCommentPopulated: IComment = (await getOneCommentById(newComment?._id)) as unknown as IComment
+        return newCommentPopulated
     } catch (error: any) {
         return new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
     }
@@ -87,7 +88,9 @@ const addCommentReply = async (commentRequest: IReplyCommentRequest, userId: any
         }
         const newReply: any = {
             user: userId,
-            reply
+            reply,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
         }
         comment.commentReplies?.push(newReply)
         await comment?.save()

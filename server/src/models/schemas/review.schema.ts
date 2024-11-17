@@ -39,6 +39,14 @@ export const reviewSchema: Schema<IReview> = new mongoose.Schema(
                 reply: {
                     type: String,
                     required: true
+                },
+                createdAt: {
+                    type: Date,
+                    default: Date.now
+                },
+                updatedAt: {
+                    type: Date,
+                    default: Date.now
                 }
             }
         ],

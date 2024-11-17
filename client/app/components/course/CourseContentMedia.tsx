@@ -11,6 +11,17 @@ import {
   useReplyCommentMutation
 } from '../../../redux/features/comment/commentApi';
 import CommentReply from './CommentReply';
+import {
+  useAddReviewMutation,
+  useDeleteReviewReplyMutation,
+  useReplyToReviewMutation
+} from '../../../redux/features/review/reviewApi';
+import { useGetCoursesByIdQuery } from '../../../redux/features/course/courseApi';
+import Rating from '../../../components/rating/Rating';
+import { formatRelativeTime } from '../../utils/formatHelper';
+import { ROLE } from '../../constants/enum';
+import ConfirmationModal from '../../../components/modal/ConfimationModal';
+import Loading from '../../../components/common/Loading';
 
 interface CourseContentMediaProps {
   data: any;
@@ -24,14 +35,29 @@ interface CourseContentMediaProps {
 const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
   const { data, id, activeVideo, setActiveVideo, user, refetch } = props;
   const [activeBar, setActiveBar] = useState<number>(0);
-  // const [question, setQuestion] = useState<string>('');
   const [comment, setComment] = useState<string>('');
   const [commentId, setCommentId] = useState<string>('');
   const [replyCommentContent, setReplyCommentContent] = useState<string>('');
   const [replyId, setReplyId] = useState<string>('');
+  const [reviewId, setReviewId] = useState<string>('');
   const [rating, setRating] = useState<number>(0);
   const [review, setReview] = useState<string>('');
   const [replyReview, setReplyReview] = useState<string>('');
+  const [isReplyReview, setIsReplyReview] = useState<boolean>(false);
+  const [replyReviewId, setReplyReviewId] = useState<string>('');
+  const [isDeleteReviewReply, setIsDeleteReviewReply] = useState<boolean>(false);
+  const [showReplies, setShowReplies] = useState<{ [key: string]: boolean }>({});
+
+  const toggleReplies = (reviewId: string) => {
+    setShowReplies((prev) => ({
+      ...prev,
+      [reviewId]: !prev[reviewId]
+    }));
+  };
+
+  const { data: courseData, refetch: refectCourse } = useGetCoursesByIdQuery(id, {
+    refetchOnMountOrArgChange: true
+  });
   const [addComment, { data: commentData, isLoading: commentLoading, isSuccess: commentSuccess, error: commentError }] =
     useAddCommentMutation();
   const [
@@ -48,8 +74,33 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
     replyComment,
     { data: replyCommentData, isLoading: replyCommentLoading, isSuccess: replyCommentSuccess, error: replyCommentError }
   ] = useReplyCommentMutation();
-  const isReviewExist = data?.reviews?.find((review: any) => review?.user?._id === user?._id);
 
+  const [addReview, { data: reviewData, isLoading: reviewLoading, isSuccess: reviewSuccess, error: reviewError }] =
+    useAddReviewMutation();
+
+  const [
+    replyToReview,
+    { data: replyReviewData, isLoading: replyReviewLoading, isSuccess: replyReviewSuccess, error: replyReviewError }
+  ] = useReplyToReviewMutation();
+
+  const [
+    deleteReviewReply,
+    {
+      data: deleteReviewReplyData,
+      isLoading: deleteReviewReplyLoading,
+      isSuccess: deleteReviewReplySuccess,
+      error: deleteReviewReplyError
+    }
+  ] = useDeleteReviewReplyMutation();
+  const isReviewExist = courseData?.course?.reviews?.find((review: any) => review?.user?._id === user?._id);
+  const isReviewReplyExist = courseData?.course?.reviews?.find((review: any) =>
+    // review?.reviewReplies?.find((reply: any) => reply?.user?._id === user?._id)
+    {
+      if (review?.reviewReplies) {
+        return review?.reviewReplies?.find((reply: any) => reply?.user?._id === user?._id);
+      }
+    }
+  );
   const handleComment = () => {
     if (comment.length === 0) {
       toast.error('Bình luận không được để trống', {
@@ -82,18 +133,16 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
     }
   }, [commentSuccess, commentError]);
 
-  const handleReplyComment = () => {
+  const handleReplyComment = async () => {
     if (replyCommentContent.length === 0) {
       toast.error('Phản hồi không được để trống', {
         duration: 2000
       });
     } else {
-      replyComment({
+      await replyComment({
         reply: replyCommentContent,
         commentId: commentId
       });
-      // console.log('replyCommentContent', replyCommentContent);
-      // console.log('commentId', commentId);
     }
   };
 
@@ -115,9 +164,27 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
     }
   }, [replyCommentSuccess, replyCommentError]);
 
-  const handleDeleteSubmit = () => {
+  const handleDeleteSubmit = async () => {
     if (commentId) {
-      deleteComment({ commentId, courseId: id, contentId: data[activeVideo]?._id });
+      await deleteComment({ commentId, courseId: id, contentId: data[activeVideo]?._id });
+    }
+  };
+
+  const handleReviewSubmit = async () => {
+    if (review.length === 0) {
+      toast.error('Đánh giá không được để trống', {
+        duration: 2000
+      });
+    } else if (rating === 0) {
+      toast.error('Vui lòng chọn số sao', {
+        duration: 2000
+      });
+    } else {
+      await addReview({
+        review,
+        rating: rating.toString(),
+        courseId: id
+      });
     }
   };
 
@@ -137,168 +204,389 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
       }
     }
   }, [deleteCommentSuccess, deleteCommentError]);
+
+  useEffect(() => {
+    if (reviewSuccess) {
+      toast.success('Đánh giá thành công', {
+        duration: 2000
+      });
+      setReview('');
+      setRating(0);
+      refectCourse();
+    }
+    if (reviewError) {
+      if ('data' in reviewError) {
+        const errorData = reviewError.data as any;
+        toast.error(errorData.message, {
+          duration: 2000
+        });
+      }
+    }
+  }, [reviewSuccess, reviewError]);
+
+  const handleReplyReviewSubmit = async () => {
+    if (replyReview.length === 0) {
+      toast.error('Phản hồi không được để trống', {
+        duration: 2000
+      });
+    } else {
+      await replyToReview({
+        reply: replyReview,
+        reviewId: replyId,
+        courseId: id
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (replyReviewSuccess) {
+      toast.success('Phản hồi thành công', {
+        duration: 2000
+      });
+      setReplyReview('');
+      setIsReplyReview(false);
+      setReplyReviewId('');
+      setReviewId('');
+      setReplyId('');
+      setShowReplies({});
+      refectCourse();
+    }
+    if (replyReviewError) {
+      if ('data' in replyReviewError) {
+        const errorData = replyReviewError.data as any;
+        toast.error(errorData.message, {
+          duration: 2000
+        });
+      }
+    }
+  }, [replyReviewSuccess, replyReviewError]);
+
+  const handleDeleteReviewReplySubmit = async () => {
+    if (replyReviewId) {
+      await deleteReviewReply({ reviewId, replyId: replyReviewId });
+    }
+  };
+
+  useEffect(() => {
+    if (deleteReviewReplySuccess) {
+      toast.success('Xóa phản hồi thành công', {
+        duration: 2000
+      });
+      refectCourse();
+    }
+    if (deleteReviewReplyError) {
+      if ('data' in deleteReviewReplyError) {
+        const errorData = deleteReviewReplyError.data as any;
+        toast.error(errorData.message, {
+          duration: 2000
+        });
+      }
+    }
+  }, [deleteReviewReplySuccess, deleteReviewReplyError]);
   return (
-    <div className="m-auto min-h-screen w-[95%] py-4 text-black dark:text-white 800px:w-[86%]">
-      <div className="w-full border border-[#0002] shadow-lg dark:border-[#ffffff57]">
-        <CoursePlayer videoUrl={data?.[activeVideo]?.videoUrl} title={data?.[activeVideo]?.title} />
-      </div>
-      <div className="my-3 flex w-full items-center justify-between">
-        <div
-          className={`${styles.button} !min-h-[40px] !w-[unset] !py-[unset] !text-white ${activeVideo === 0 ? '!cursor-no-drop opacity-[.8]' : ''}`}
-          onClick={() => setActiveVideo(activeVideo === 0 ? activeVideo : activeVideo - 1)}
-        >
-          <AiOutlineArrowLeft className="mr-2 text-white" />
-          Bài học trước
-        </div>
-        <div
-          className={`${styles.button} !min-h-[40px] !w-[unset] !py-[unset] !text-white ${activeVideo === data?.length - 1 ? '!cursor-no-drop opacity-[.8]' : ''}`}
-          onClick={() => setActiveVideo(activeVideo === data?.length - 1 ? activeVideo : activeVideo + 1)}
-        >
-          <AiOutlineArrowRight className="mr-2 text-white" />
-          Bài học tiếp theo
-        </div>
-      </div>
-      <div className="h-16">
-        <h1 className="pt-2 text-[25px] font-[600]">{data?.[activeVideo]?.title}</h1>
-      </div>
-      <div className="flex w-full items-center justify-between rounded border border-[#00000020] bg-slate-500 bg-opacity-20 p-4 shadow-inner shadow-[bg-slate-700] backdrop-blur">
-        {['Tổng quan', 'Tài liệu', 'Q&A', 'Đánh giá'].map((item: any, index: number) => (
-          <h5
-            key={index}
-            className={`cursor-pointer font-[500] 800px:text-[18px] ${activeBar === index && 'text-[#9c4aa0]'}`}
-            onClick={() => setActiveBar(index)}
-          >
-            {item}
-          </h5>
-        ))}
-      </div>
-      {activeBar === 0 && (
-        <div className="min-h-[300px] border border-[#ffffff16] bg-white pb-24 shadow-md dark:bg-slate-950">
-          <p className="mb-3 whitespace-pre-line pl-4 pr-2 pt-4 text-[18x]">{data?.[activeVideo]?.description}</p>
-        </div>
+    <>
+      {(reviewLoading || commentLoading || replyCommentLoading || replyReviewLoading || deleteReviewReplyLoading) && (
+        <Loading />
       )}
-      {activeBar === 1 && (
-        <div className="min-h-[300px] min-w-[450px] border border-[#ffffff16] bg-white pb-24 shadow-md dark:bg-slate-950">
-          {data[activeVideo]?.links?.map((link: any, index: number) => (
-            <div className="mb-5 pl-4 pr-2 pt-4">
-              <h2 className="text-black dark:text-white 800px:inline-block 800px:text-[20px]">
-                {link?.title && link?.title}
-              </h2>
-              <a href={link?.url} className="inline-block text-[#4395c4] 800px:pl-2 800px:text-[20px]">
-                {link?.url}
-              </a>
-            </div>
+      <div className="m-auto min-h-screen w-[95%] py-4 text-black dark:text-white 800px:w-[86%]">
+        <div className="w-full border border-[#0002] shadow-lg dark:border-[#ffffff57]">
+          <CoursePlayer videoUrl={data?.[activeVideo]?.videoUrl} title={data?.[activeVideo]?.title} />
+        </div>
+        <div className="my-3 flex w-full items-center justify-between">
+          <div
+            className={`${styles.button} !min-h-[40px] !w-[unset] !py-[unset] !text-white ${activeVideo === 0 ? '!cursor-no-drop opacity-[.8]' : ''}`}
+            onClick={() => setActiveVideo(activeVideo === 0 ? activeVideo : activeVideo - 1)}
+          >
+            <AiOutlineArrowLeft className="mr-2 text-white" />
+            Bài học trước
+          </div>
+          <div
+            className={`${styles.button} !min-h-[40px] !w-[unset] !py-[unset] !text-white ${activeVideo === data?.length - 1 ? '!cursor-no-drop opacity-[.8]' : ''}`}
+            onClick={() => setActiveVideo(activeVideo === data?.length - 1 ? activeVideo : activeVideo + 1)}
+          >
+            <AiOutlineArrowRight className="mr-2 text-white" />
+            Bài học tiếp theo
+          </div>
+        </div>
+        <div className="h-16">
+          <h1 className="pt-2 text-[25px] font-[600]">{data?.[activeVideo]?.title}</h1>
+        </div>
+        <div className="flex w-full items-center justify-between rounded border border-[#00000020] bg-slate-500 bg-opacity-20 p-4 shadow-inner shadow-[bg-slate-700] backdrop-blur">
+          {['Tổng quan', 'Tài liệu', 'Q&A', 'Đánh giá'].map((item: any, index: number) => (
+            <h5
+              key={index}
+              className={`cursor-pointer font-[500] 800px:text-[18px] ${activeBar === index && 'text-[#9c4aa0]'}`}
+              onClick={() => setActiveBar(index)}
+            >
+              {item}
+            </h5>
           ))}
         </div>
-      )}
-      {activeBar === 2 && (
-        <div className="min-h-[300px] min-w-[450px] border border-[#ffffff16] bg-white pb-24 shadow-md dark:bg-slate-950">
-          <div className="flex w-full pl-4 pr-2 pt-4">
-            <Image
-              src={user?.avatar ? user?.avatar?.url : defaultAvatar}
-              alt={'avatar'}
-              width={50}
-              height={50}
-              className="h-[50px] w-[50px] rounded-full object-cover"
-            />
-            <textarea
-              name=""
-              id=""
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              className="shadowm-sm ml-3 rounded border border-[#00000031] bg-transparent p-2 font-Arimo outline-none 800px:w-full 800px:text-[18px]"
-              cols={30}
-              rows={3}
-              placeholder="Nhập bình luận của bạn..."
-            ></textarea>
+
+        {/* description */}
+        {activeBar === 0 && (
+          <div className="min-h-[300px] border border-[#ffffff16] bg-white pb-24 shadow-md dark:bg-slate-950">
+            <p className="mb-3 whitespace-pre-line pl-4 pr-2 pt-4 text-[18x]">{data?.[activeVideo]?.description}</p>
           </div>
-          <div className="flex w-full justify-end">
-            <div
-              className={`${styles.button} mt-5 !h-[40px] !w-[unset] text-[14px] !text-white ${commentLoading && 'cursor-not-allowed opacity-50'} `}
-              onClick={
-                commentLoading
-                  ? () => {}
-                  : () => {
-                      handleComment();
-                    }
-              }
-            >
-              Gửi bình luận
+        )}
+
+        {/* document */}
+        {activeBar === 1 && (
+          <div className="min-h-[300px] min-w-[450px] border border-[#ffffff16] bg-white pb-24 shadow-md dark:bg-slate-950">
+            {data[activeVideo]?.links?.map((link: any, index: number) => (
+              <div className="mb-5 pl-4 pr-2 pt-4">
+                <h2 className="text-black dark:text-white 800px:inline-block 800px:text-[20px]">
+                  {link?.title && link?.title}
+                </h2>
+                <a href={link?.url} className="inline-block text-[#4395c4] 800px:pl-2 800px:text-[20px]">
+                  {link?.url}
+                </a>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* comment */}
+        {activeBar === 2 && (
+          <div className="min-h-[300px] min-w-[450px] border border-[#ffffff16] bg-white pb-24 shadow-md dark:bg-slate-950">
+            <div className="flex w-full pl-4 pr-2 pt-4">
+              <Image
+                src={user?.avatar ? user?.avatar?.url : defaultAvatar}
+                alt={'avatar'}
+                width={50}
+                height={50}
+                className="h-[50px] w-[50px] rounded-full object-cover"
+              />
+              <textarea
+                name=""
+                id=""
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                className="shadowm-sm ml-3 rounded border border-[#00000031] bg-transparent p-2 font-Arimo outline-none 800px:w-full 800px:text-[18px]"
+                cols={30}
+                rows={3}
+                placeholder="Nhập bình luận của bạn..."
+              ></textarea>
+            </div>
+            <div className="flex w-full justify-end">
+              <div
+                className={`${styles.button} mt-5 !h-[40px] !w-[unset] text-[14px] !text-white ${commentLoading && 'cursor-not-allowed opacity-50'} `}
+                onClick={
+                  commentLoading
+                    ? () => {}
+                    : () => {
+                        handleComment();
+                      }
+                }
+              >
+                Gửi bình luận
+              </div>
+            </div>
+            <div className="h-10 w-full border-b bg-[#ffffff3b]"></div>
+            <div>
+              <CommentReply
+                data={data}
+                activeVideo={activeVideo}
+                reply={replyCommentContent}
+                setReply={setReplyCommentContent}
+                handleReply={handleReplyComment}
+                user={user}
+                setCommentId={setCommentId}
+                commentId={commentId}
+                handleDeleteSubmit={handleDeleteSubmit}
+              />
             </div>
           </div>
-          <div className="h-10 w-full border-b bg-[#ffffff3b]"></div>
-          <div>
-            <CommentReply
-              data={data}
-              activeVideo={activeVideo}
-              reply={replyCommentContent}
-              setReply={setReplyCommentContent}
-              handleReply={handleReplyComment}
-              user={user}
-              setCommentId={setCommentId}
-              commentId={commentId}
-              handleDeleteSubmit={handleDeleteSubmit}
-            />
-          </div>
-        </div>
-      )}
-      {activeBar === 3 && (
-        <div className="min-h-[300px] min-w-[450px] border border-[#ffffff16] bg-white pb-24 shadow-lg dark:bg-slate-950">
-          <>
-            {!isReviewExist && (
-              <div className="flex w-full pl-4 pr-2 pt-4">
-                <Image
-                  src={user?.avatar ? user?.avatar?.url : defaultAvatar}
-                  alt={'avatar'}
-                  width={50}
-                  height={50}
-                  className="h-[50px] w-[50px] rounded-full object-cover"
-                />
-                <div className="w-full">
-                  <h5 className="pl-3 text-[20px] font-[500] text-black dark:text-white">
-                    Hãy để lại đánh giá của bạn về khóa học này <span className="text-red-500">*</span>
-                  </h5>
-                  <div className="ml-2 flex w-full pb-3">
-                    {[1, 2, 3, 4, 5].map((item: any, index: number) =>
-                      rating >= item ? (
-                        <AiFillStar
-                          key={index}
-                          className="cursor-pointer text-yellow-400"
-                          onClick={() => setRating(item)}
-                          size={25}
-                        />
-                      ) : (
-                        <AiOutlineStar
-                          key={index}
-                          className="cursor-pointer text-yellow-400"
-                          onClick={() => setRating(item)}
-                          size={25}
-                        />
-                      )
-                    )}
+        )}
+
+        {/* review */}
+        {activeBar === 3 && (
+          <div className="min-h-[300px] min-w-[450px] border border-[#ffffff16] bg-white pb-24 shadow-lg dark:bg-slate-950">
+            <>
+              {!isReviewExist && (
+                <div className="flex w-full pl-4 pr-2 pt-4">
+                  <Image
+                    src={user?.avatar ? user?.avatar?.url : defaultAvatar}
+                    alt={'avatar'}
+                    width={50}
+                    height={50}
+                    className="h-[50px] w-[50px] rounded-full object-cover"
+                  />
+                  <div className="w-full">
+                    <h5 className="pl-3 text-[18px] font-[500] text-black dark:text-white">
+                      Hãy để lại đánh giá của bạn về khóa học này <span className="text-red-500">*</span>
+                    </h5>
+                    <div className="ml-2 flex w-full pb-3">
+                      {[1, 2, 3, 4, 5].map((item: any, index: number) =>
+                        rating >= item ? (
+                          <AiFillStar
+                            key={index}
+                            className="cursor-pointer text-yellow-400"
+                            onClick={() => setRating(item)}
+                            size={30}
+                          />
+                        ) : (
+                          <AiOutlineStar
+                            key={index}
+                            className="cursor-pointer text-yellow-400"
+                            onClick={() => setRating(item)}
+                            size={30}
+                          />
+                        )
+                      )}
+                    </div>
+                    <textarea
+                      name=""
+                      id=""
+                      value={review}
+                      onChange={(e) => setReview(e.target.value)}
+                      className="rounded border border-[#00000027] bg-transparent p-2 font-Arimo outline-none placeholder:text-[18px] dark:border-[#ffffff57] 800px:w-full 800px:text-[18px]"
+                      cols={30}
+                      rows={3}
+                      placeholder=" Nhập đánh giá của bạn..."
+                    ></textarea>
                   </div>
-                  <textarea
-                    name=""
-                    id=""
-                    value={review}
-                    onChange={(e) => setReview(e.target.value)}
-                    className="rounded border border-[#00000027] bg-transparent p-2 font-Arimo outline-none dark:border-[#ffffff57] 800px:w-full 800px:text-[18px]"
-                    cols={30}
-                    rows={3}
-                    placeholder=" Nhập đánh giá của bạn..."
-                  ></textarea>
+                </div>
+              )}
+              <div className="flex w-full justify-end">
+                <div
+                  className={`${styles.button} mr-2 mt-5 !h-[40px] !w-[unset] text-[18px] !text-white 800px:mr-0 ${reviewLoading && 'cursor-not-allowed opacity-50'} `}
+                  onClick={
+                    reviewLoading
+                      ? () => {}
+                      : () => {
+                          handleReviewSubmit();
+                        }
+                  }
+                >
+                  Gửi đánh giá
                 </div>
               </div>
-            )}
-            <div className="flex w-full justify-end">
-              <div className={`${styles.button} mr-2 mt-5 !h-[40px] !w-[unset] text-[18px] !text-white 800px:mr-0`}>
-                Gửi đánh giá
-              </div>
-            </div>
-          </>
-        </div>
-      )}
-    </div>
+              <div className="h-10 w-full border-b bg-[#ffffff3b]"></div>
+              {courseData && (
+                <div className="w-full">
+                  {(courseData?.course?.reviews && [...courseData?.course?.reviews].reverse())?.map(
+                    (review: any, index: number) => (
+                      <div className="my-5 w-full px-4" key={index}>
+                        <div className="flex w-full gap-2">
+                          <div>
+                            <Image
+                              src={review?.user?.avatar ? review?.user?.avatar?.url : defaultAvatar}
+                              alt={'avatar'}
+                              width={50}
+                              height={50}
+                              className="h-[50px] w-[50px] rounded-full object-cover"
+                            />
+                          </div>
+                          <div className="flex w-full flex-col gap-2 rounded-lg bg-[#00000015] pb-4 pt-2">
+                            <div className="flex items-center gap-4">
+                              <h1 className="pl-3 text-[16px] font-[500] text-black dark:text-white">
+                                {review?.user?.name}
+                              </h1>
+                              <div className="mt-1">
+                                <Rating rating={review?.rating} />
+                              </div>
+                            </div>
+                            <div className="pl-3">
+                              <p className="text-[18px]">{review?.review}</p>
+                            </div>
+                            <div className="flex items-center gap-2 pl-3">
+                              <small>{formatRelativeTime(review?.createdAt)} •</small>
+                              {user?.role === ROLE.ADMIN && (
+                                <small
+                                  className="cursor-pointer hover:underline"
+                                  onClick={() => {
+                                    toggleReplies(review?._id);
+                                    setReplyId(review?._id);
+                                    setIsReplyReview(!isReplyReview);
+                                  }}
+                                >
+                                  {!isReplyReview ? `Phản hồi •` : `Ẩn phản hồi •`}
+                                </small>
+                              )}
+                            </div>
+                            <div>
+                              {showReplies[review?._id] && (
+                                <>
+                                  <div className="relative w-full px-4">
+                                    <input
+                                      type="text"
+                                      placeholder="Nhập phản hồi của bạn..."
+                                      value={replyReview}
+                                      onChange={(e: any) => {
+                                        setReplyReview(e.target.value);
+                                      }}
+                                      className="mt-2 block w-full border-b border-[#000] bg-transparent outline-none placeholder:text-[14px]"
+                                    />
+                                    <button
+                                      className="float-end px-2 py-2 text-[14px] font-[400] text-[#000] hover:text-[#0000009d] dark:text-white"
+                                      onClick={() => handleReplyReviewSubmit()}
+                                    >
+                                      Gửi phản hồi
+                                    </button>
+                                  </div>
+                                  <div className="h-2 w-full"></div>
+                                </>
+                              )}
+                            </div>
+                            {review?.reviewReplies?.map((reply: any, index: number) => (
+                              <div
+                                className="my-5 flex w-full border-t border-[#1607078b] py-2 text-black dark:text-white"
+                                key={index}
+                              >
+                                <div>
+                                  <Image
+                                    src={reply?.user?.avatar ? reply?.user?.avatar?.url : defaultAvatar}
+                                    alt={'avatar'}
+                                    width={40}
+                                    height={40}
+                                    className="h-[40px] w-[40px] rounded-full object-contain"
+                                  />
+                                </div>
+                                <div className="pl-2">
+                                  <h5 className="text-[16px]">{reply?.user?.name}</h5>
+                                  <p>
+                                    <span className="text-[#000000]">{reply?.reply}</span>
+                                  </p>
+                                  <small>{formatRelativeTime(reply?.createdAt)}</small>
+                                  {isReviewReplyExist && (
+                                    <div className="flex items-center gap-2 pl-3">
+                                      <small
+                                        className="cursor-pointer hover:underline"
+                                        onClick={() => {
+                                          setIsDeleteReviewReply(true);
+                                          setReplyReviewId(reply?._id);
+                                          setReviewId(review?._id);
+                                        }}
+                                      >
+                                        Xóa phản hồi
+                                      </small>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  )}
+                </div>
+              )}
+            </>
+          </div>
+        )}
+        {isDeleteReviewReply && (
+          <ConfirmationModal
+            open={isDeleteReviewReply}
+            setOpen={setIsDeleteReviewReply}
+            title="Xác nhận xóa phản hồi"
+            message="Bạn có chắc chắn muốn xóa phản hồi này không?"
+            onConfirm={() => handleDeleteReviewReplySubmit()}
+          />
+        )}
+      </div>
+    </>
   );
 };
 

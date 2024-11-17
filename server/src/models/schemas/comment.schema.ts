@@ -30,10 +30,16 @@ export const commentSchema: Schema<IComment> = new mongoose.Schema(
                 },
                 reply: {
                     type: String
+                },
+                // generate createdAt and updatedAt with timestamps
+                createdAt: {
+                    type: Date,
+                    default: Date.now
+                },
+                updatedAt: {
+                    type: Date,
+                    default: Date.now
                 }
-            },
-            {
-                timestamps: true
             }
         ],
         course: {

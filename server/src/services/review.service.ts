@@ -14,6 +14,18 @@ import { UserRole } from '../constants/enums/user.enum'
 import sendMail from '../utils/mails/send-mail'
 import { TypeOfEmail } from '../constants/user.constant'
 
+const getReviewById = async (reviewId: any) => {
+    try {
+        const review: IReview = (await ReviewModel.findById(reviewId).populate({
+            path: 'user',
+            select: 'name email avatar'
+        })) as IReview
+        return review
+    } catch (error: any) {
+        return new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
+    }
+}
+
 const addReview = async (reviewRequest: IReviewRequest, userId: any, courseId: string) => {
     try {
         const { review, rating } = reviewRequest as IReviewRequest
@@ -85,6 +97,7 @@ const addReview = async (reviewRequest: IReviewRequest, userId: any, courseId: s
         await redis.set(courseId, JSON.stringify(courseAfterUpdate) as any)
         // const allCourses: ICourse[] = (await courseHelper.getAllCourses()) as unknown as ICourse[]
         // await redis.set('allCourses', JSON.stringify(allCourses))
+        const reviewAfterUpdate: IReview = (await getReviewById(newReview?._id)) as unknown as IReview
 
         return course
     } catch (error: any) {
@@ -139,8 +152,10 @@ const addReviewReply = async (reviewRequest: IReplyReviewRequest, userId: string
             },
             TypeOfEmail.NOTIFICATION
         )
+        const courseAfterUpdate: ICourse = (await courseHelper.getOneCourseById(courseId)) as unknown as ICourse
+        await redis.set(courseId, JSON.stringify(courseAfterUpdate) as any)
 
-        return review
+        return courseAfterUpdate
     } catch (error: any) {
         return new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
     }
@@ -164,8 +179,31 @@ const getAllReviews = async () => {
     }
 }
 
+const deleteReplyReview = async (reviewId: any, replyId: any) => {
+    try {
+        const review: IReview = (await ReviewModel.findById(reviewId)) as IReview
+        if (!review) {
+            throw new ErrorHandler('Review not found', StatusCodes.NOT_FOUND)
+        }
+        const replyIndex: number = review.reviewReplies.findIndex((reply: any) => reply._id.toString() === replyId)
+        if (replyIndex === -1) {
+            throw new ErrorHandler('Reply not found', StatusCodes.NOT_FOUND)
+        }
+        review.reviewReplies.splice(replyIndex, 1)
+        await review?.save()
+        const courseAfterUpdate: ICourse = (await courseHelper.getOneCourseById(
+            review.course as unknown as string
+        )) as unknown as ICourse
+        await redis.set(review.course.toString(), JSON.stringify(courseAfterUpdate) as any)
+        return courseAfterUpdate
+    } catch (error: any) {
+        return new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
+    }
+}
+
 export const reviewServices = {
     addReview,
     addReviewReply,
-    getAllReviews
+    getAllReviews,
+    deleteReplyReview
 }

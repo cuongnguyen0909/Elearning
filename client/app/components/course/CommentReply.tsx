@@ -15,7 +15,6 @@ interface CommentReplyProps {
 
 const CommentReply: FC<CommentReplyProps> = (props) => {
   const { data, activeVideo, reply, setReply, handleReply, user, setCommentId, commentId, handleDeleteSubmit } = props;
-  console.log(data);
   return (
     <div>
       <>

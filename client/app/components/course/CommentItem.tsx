@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { BiMessage } from 'react-icons/bi';
 import ConfirmationModal from '../../../components/modal/ConfimationModal';
 import { useSelector } from 'react-redux';
-const defaultAvatar = '/../../../public/assets/avatar.png';
+import defaultAvatar from '../../../public/assets/avatar.png';
 interface CommentItemProps {
   data: any;
   activeVideo: number;
@@ -24,8 +24,17 @@ const CommentItem: FC<CommentItemProps> = (props) => {
   const [replyActive, setReplyActive] = useState(false);
   const [commentRepliesState, setCommentRepliesState] = useState<any>(false);
   const [deleteState, setDeleteState] = useState<boolean>(false);
+  const [visibleReplies, setVisibleReplies] = useState<{ [key: string]: boolean }>({});
   const { user } = useSelector((state: any) => state.auth);
   const isCurrentUserComment = comment?.user?._id === user?._id;
+
+  const toggleReplies = (commentId: string) => {
+    setVisibleReplies((prev) => ({
+      ...prev,
+      [commentId]: !prev[commentId]
+    }));
+  };
+
   return (
     <>
       <div className="my-4 px-4">
@@ -78,41 +87,49 @@ const CommentItem: FC<CommentItemProps> = (props) => {
               {/* <small className="text-[#000000]">{formatDate(comment?.createdAt)}</small> */}
             </div>
             <div className="flex w-full">
-              <span
-                className="mr-2 cursor-pointer text-[14px] text-black hover:underline dark:text-white"
-                onClick={() => setCommentRepliesState(!commentRepliesState)}
-              >
-                {comment?.comment?.commentReplies?.length > 0 &&
-                  (!commentRepliesState
-                    ? `Xem tất cả ${comment?.comment?.commentReplies?.length} phản hồi `
-                    : 'Ẩn tất cả phản hồi')}
-              </span>
+              {comment?.commentReplies?.length > 0 ? (
+                <span
+                  className="mr-2 cursor-pointer text-[14px] text-black hover:underline dark:text-white"
+                  onClick={() => toggleReplies(comment._id)}
+                >
+                  {!visibleReplies[comment._id]
+                    ? `Xem tất cả ${comment.commentReplies.length} phản hồi`
+                    : 'Ẩn tất cả phản hồi'}
+                </span>
+              ) : (
+                <span className="text-[14px] text-gray-500">Không có phản hồi</span>
+              )}
               {/* <BiMessage size={14} className="cursor-pointer" /> */}
-              <span className="cursor-pointer text-[#000]">
+              {/* <span className="cursor-pointer text-[#000]">
                 {comment?.commentRepies?.length === 0 ? 0 : comment?.commentRepies?.length}
-              </span>
+              </span> */}
             </div>
-            {replyActive && (
+            {visibleReplies[comment._id] && (
               <>
                 {comment?.commentReplies?.map((reply: any, index: number) => (
-                  <div className="my-5 flex w-full text-black dark:text-white" key={index}>
-                    <div>
-                      <Image
-                        src={comment?.user?.avatar ? comment?.user?.avatar?.url : defaultAvatar}
-                        alt={'avatar'}
-                        width={40}
-                        height={40}
-                        className="h-[40px] w-[40px] rounded-full object-contain"
-                      />
+                  <>
+                    <div
+                      className="my-5 flex w-full border-t border-[#1607078b] py-2 text-black dark:text-white"
+                      key={index}
+                    >
+                      <div>
+                        <Image
+                          src={comment?.user?.avatar ? comment?.user?.avatar?.url : defaultAvatar}
+                          alt={'avatar'}
+                          width={40}
+                          height={40}
+                          className="h-[40px] w-[40px] rounded-full object-contain"
+                        />
+                      </div>
+                      <div className="pl-2">
+                        <h5 className="text-[16px]">{reply?.user?.name}</h5>
+                        <p>
+                          <span className="text-[#000000]">{reply?.reply}</span>
+                        </p>
+                        <small>{formatRelativeTime(reply?.createdAt)}</small>
+                      </div>
                     </div>
-                    <div className="pl-2">
-                      <h5 className="text-[16px]">{reply?.user?.name}</h5>
-                      <p>
-                        <span className="text-[#000000]">{reply?.reply}</span>
-                      </p>
-                      <small>{formatRelativeTime(reply?.createdAt)}</small>
-                    </div>
-                  </div>
+                  </>
                 ))}
               </>
             )}
