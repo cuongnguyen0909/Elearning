@@ -29,7 +29,7 @@ const CourseContentAccessible: FC<CourseContentAccessibleProps> = (props) => {
           <Header route={route} setRoute={setRoute} open={open} setOpen={setOpen} activeItem={1} />
           <div className="grid w-full 800px:grid-cols-10">
             <Heading
-              title={courseContent[activeVideo]?.title}
+              title={courseContent?.[activeVideo]?.title}
               description={
                 'Edemy là nơi học tập trực tuyến hàng đầu Việt Nam. Học tập trực tuyến mọi lúc, mọi nơi, mọi thiết bị. Đăng ký ngay hôm nay!'
               }

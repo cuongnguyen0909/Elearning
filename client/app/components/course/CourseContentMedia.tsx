@@ -140,7 +140,7 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
   return (
     <div className="m-auto min-h-screen w-[95%] py-4 text-black dark:text-white 800px:w-[86%]">
       <div className="w-full border border-[#0002] shadow-lg dark:border-[#ffffff57]">
-        <CoursePlayer videoUrl={data[activeVideo]?.videoUrl} title={data[activeVideo]?.title} />
+        <CoursePlayer videoUrl={data?.[activeVideo]?.videoUrl} title={data?.[activeVideo]?.title} />
       </div>
       <div className="my-3 flex w-full items-center justify-between">
         <div
@@ -151,15 +151,15 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
           Bài học trước
         </div>
         <div
-          className={`${styles.button} !min-h-[40px] !w-[unset] !py-[unset] !text-white ${activeVideo === data.length - 1 ? '!cursor-no-drop opacity-[.8]' : ''}`}
-          onClick={() => setActiveVideo(activeVideo === data.length - 1 ? activeVideo : activeVideo + 1)}
+          className={`${styles.button} !min-h-[40px] !w-[unset] !py-[unset] !text-white ${activeVideo === data?.length - 1 ? '!cursor-no-drop opacity-[.8]' : ''}`}
+          onClick={() => setActiveVideo(activeVideo === data?.length - 1 ? activeVideo : activeVideo + 1)}
         >
           <AiOutlineArrowRight className="mr-2 text-white" />
           Bài học tiếp theo
         </div>
       </div>
       <div className="h-16">
-        <h1 className="pt-2 text-[25px] font-[600]">{data[activeVideo]?.title}</h1>
+        <h1 className="pt-2 text-[25px] font-[600]">{data?.[activeVideo]?.title}</h1>
       </div>
       <div className="flex w-full items-center justify-between rounded border border-[#00000020] bg-slate-500 bg-opacity-20 p-4 shadow-inner shadow-[bg-slate-700] backdrop-blur">
         {['Tổng quan', 'Tài liệu', 'Q&A', 'Đánh giá'].map((item: any, index: number) => (
@@ -174,7 +174,7 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
       </div>
       {activeBar === 0 && (
         <div className="min-h-[300px] border border-[#ffffff16] bg-white pb-24 shadow-md dark:bg-slate-950">
-          <p className="mb-3 whitespace-pre-line pl-4 pr-2 pt-4 text-[18x]">{data[activeVideo]?.description}</p>
+          <p className="mb-3 whitespace-pre-line pl-4 pr-2 pt-4 text-[18x]">{data?.[activeVideo]?.description}</p>
         </div>
       )}
       {activeBar === 1 && (

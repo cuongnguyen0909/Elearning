@@ -13,6 +13,8 @@ import CustomModal from '../../../components/modal/CustomModal';
 import Login from '../auth/Login';
 import toast from 'react-hot-toast';
 import { formatDate } from '../../utils/formatHelper';
+import { useRouter } from 'next/navigation';
+import Loading from '../../../components/common/Loading';
 interface CourseDetailProps {
   data: any;
   stripePromise: any;
@@ -26,10 +28,12 @@ const CourseDetail: FC<CourseDetailProps> = (props) => {
       refetchOnMountOrArgChange: true
     }
   );
+  const router = useRouter();
   const { data, stripePromise, clientSecret } = props;
   const [courseData, setCourseData] = useState<any>(null);
   const [openPayment, setOpenPayment] = useState(false);
   const [openLogin, setOpenLogin] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [route, setRoute] = useState<string>('Login');
   const discountPercentage = ((courseData?.estimatedPrice - courseData?.price) / courseData?.estimatedPrice) * 100;
   const discountPercentagePrice = discountPercentage.toFixed(0);
@@ -53,8 +57,15 @@ const CourseDetail: FC<CourseDetailProps> = (props) => {
     }
   }, [data]);
   const isPurchased = userData?.user?.courses?.find((course: any) => course?._id === courseData?._id);
+
+  const handleRedirect = (e: any) => {
+    e.preventDefault();
+    setIsLoading(true);
+    router.push(`/course/access/${courseData?._id}`);
+  };
   return (
     <div>
+      {isLoading && <Loading />}
       <div className="m-auto min-h-screen w-[90%] py-5 pb-20 800px:w-[90%]">
         <div className="flex w-full flex-col-reverse 800px:flex-row">
           <div className="w-full pr-4 800px:w-[65%] 800px:pr-[5]">
@@ -184,6 +195,7 @@ const CourseDetail: FC<CourseDetailProps> = (props) => {
                   <Link
                     className={`${styles.button} my-3 !w-[180px] cursor-pointer !bg-[crimson] font-Arimo`}
                     href={`/course/access/${courseData?._id}`}
+                    onClick={(e) => handleRedirect(e)}
                   >
                     Học ngay
                   </Link>
