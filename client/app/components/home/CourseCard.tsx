@@ -44,7 +44,7 @@ const CourseCard: FC<CourseCardProps> = (props) => {
           <div className="flex w-full items-center justify-between px-4">
             <div className="flex items-center justify-start gap-2">
               <h6 className={`text-[#b19b38] dark:text-white ${isProfile && 'hidden 800px:inline'} !text-[16px]`}>
-                {course?.rating}
+                {Number(course?.rating).toFixed(1)}
               </h6>
               <Rating rating={course?.rating} />
             </div>

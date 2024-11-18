@@ -167,11 +167,11 @@ const getAllReviews = async () => {
             .sort({ createdAt: -1 })
             .populate({
                 path: 'user',
-                select: 'name email avatar'
+                select: 'name email avatar role'
             })
             .populate({
                 path: 'reviewReplies.user',
-                select: 'name email avatar'
+                select: 'name email avatar role'
             })) as IReview[]
         return reviews
     } catch (error: any) {

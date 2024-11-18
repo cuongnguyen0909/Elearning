@@ -11,10 +11,26 @@ interface CommentReplyProps {
   commentId: string;
   setCommentId: (value: string) => void;
   handleDeleteSubmit: any;
+  handleDeleteReplySubmit: any;
+  replyCommentId: string;
+  setReplyCommentId: (value: string) => void;
 }
 
 const CommentReply: FC<CommentReplyProps> = (props) => {
-  const { data, activeVideo, reply, setReply, handleReply, user, setCommentId, commentId, handleDeleteSubmit } = props;
+  const {
+    data,
+    activeVideo,
+    reply,
+    setReply,
+    handleReply,
+    user,
+    setCommentId,
+    commentId,
+    handleDeleteSubmit,
+    handleDeleteReplySubmit,
+    replyCommentId,
+    setReplyCommentId
+  } = props;
   return (
     <div>
       <>
@@ -31,6 +47,9 @@ const CommentReply: FC<CommentReplyProps> = (props) => {
                 setCommentId={setCommentId}
                 commentId={commentId}
                 handleDeleteSubmit={handleDeleteSubmit}
+                handleDeleteReplySubmit={handleDeleteReplySubmit}
+                replyCommentId={replyCommentId}
+                setReplyCommentId={setReplyCommentId}
               />
             </div>
           ))}

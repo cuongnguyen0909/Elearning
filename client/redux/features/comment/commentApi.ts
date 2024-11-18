@@ -3,7 +3,7 @@ import { apiSlice } from '../api/apiSlice';
 const commentApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     addComment: builder.mutation({
-      query: ({ comment, courseId, contentId }) => ({
+      query: ({ comment, courseId, contentId }: any) => ({
         url: `comment/add`,
         method: 'POST',
         body: {
@@ -15,7 +15,7 @@ const commentApi = apiSlice.injectEndpoints({
       })
     }),
     deleteComment: builder.mutation({
-      query: ({ commentId, courseId, contentId }) => ({
+      query: ({ commentId, courseId, contentId }: any) => ({
         url: `comment/delete`,
         method: 'DELETE',
         body: {
@@ -27,7 +27,7 @@ const commentApi = apiSlice.injectEndpoints({
       })
     }),
     replyComment: builder.mutation({
-      query: ({ reply, commentId }) => ({
+      query: ({ reply, commentId }: any) => ({
         url: `comment/reply`,
         method: 'PUT',
         body: {
@@ -36,8 +36,24 @@ const commentApi = apiSlice.injectEndpoints({
         },
         credentials: 'include' as const
       })
+    }),
+    deleteReplyComment: builder.mutation({
+      query: ({ commentId, replyId }: any) => ({
+        url: `comment/delete-reply`,
+        method: 'DELETE',
+        body: {
+          commentId,
+          replyId
+        },
+        credentials: 'include' as const
+      })
     })
   })
 });
 
-export const { useAddCommentMutation, useDeleteCommentMutation, useReplyCommentMutation } = commentApi;
+export const {
+  useAddCommentMutation,
+  useDeleteCommentMutation,
+  useReplyCommentMutation,
+  useDeleteReplyCommentMutation
+} = commentApi;

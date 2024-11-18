@@ -194,4 +194,31 @@ const deleteComment = async (commentId: any, courseId: any, contentId: any) => {
     }
 }
 
-export const commentServices = { addComment, addCommentReply, getAllComments, getOneCommentById, deleteComment }
+const deleteCommentReply = async (commentId: any, replyId: any) => {
+    try {
+        const comment: IComment = (await CommentModel.findById(commentId)) as IComment
+        if (!comment) {
+            throw new ErrorHandler('Comment not found', StatusCodes.NOT_FOUND)
+        }
+        comment.commentReplies = comment.commentReplies?.filter(
+            (reply: any) => reply._id.toString() !== replyId.toString()
+        )
+        await comment?.save()
+        const courseAfterUpdate: ICourse = (await courseHelper.getOneCourseById(
+            comment.course as unknown as string
+        )) as unknown as ICourse
+        await redis.set(comment.course.toString(), JSON.stringify(courseAfterUpdate) as any)
+        return courseAfterUpdate
+    } catch (error: any) {
+        return new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
+    }
+}
+
+export const commentServices = {
+    addComment,
+    addCommentReply,
+    getAllComments,
+    getOneCommentById,
+    deleteComment,
+    deleteCommentReply
+}

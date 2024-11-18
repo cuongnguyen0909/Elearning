@@ -69,4 +69,21 @@ const deleteComment = catchAsyncError(async (req: Request, res: Response, next: 
     }
 })
 
-export const commentController = { addComment, addCommentReply, getAllComments, deleteComment }
+const deleteCommentReply = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { commentId, replyId }: any = req.body
+        if (!commentId || !replyId) {
+            throw new ErrorHandler('Invalid request', StatusCodes.BAD_REQUEST)
+        }
+        const course = (await commentServices.deleteCommentReply(commentId, replyId)) as any
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: 'Reply is deleted successfully',
+            course
+        })
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
+    }
+})
+
+export const commentController = { addComment, addCommentReply, getAllComments, deleteComment, deleteCommentReply }

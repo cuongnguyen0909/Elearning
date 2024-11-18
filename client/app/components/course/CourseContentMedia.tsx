@@ -8,7 +8,8 @@ import toast from 'react-hot-toast';
 import {
   useAddCommentMutation,
   useDeleteCommentMutation,
-  useReplyCommentMutation
+  useReplyCommentMutation,
+  useDeleteReplyCommentMutation
 } from '../../../redux/features/comment/commentApi';
 import CommentReply from './CommentReply';
 import {
@@ -22,6 +23,7 @@ import { formatRelativeTime } from '../../utils/formatHelper';
 import { ROLE } from '../../constants/enum';
 import ConfirmationModal from '../../../components/modal/ConfimationModal';
 import Loading from '../../../components/common/Loading';
+import { MdVerified } from 'react-icons/md';
 
 interface CourseContentMediaProps {
   data: any;
@@ -37,6 +39,7 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
   const [activeBar, setActiveBar] = useState<number>(0);
   const [comment, setComment] = useState<string>('');
   const [commentId, setCommentId] = useState<string>('');
+  const [replyCommentId, setReplyCommentId] = useState<string>('');
   const [replyCommentContent, setReplyCommentContent] = useState<string>('');
   const [replyId, setReplyId] = useState<string>('');
   const [reviewId, setReviewId] = useState<string>('');
@@ -92,6 +95,11 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
       error: deleteReviewReplyError
     }
   ] = useDeleteReviewReplyMutation();
+
+  const [
+    deleteReplyComment,
+    { isLoading: deleteReplyCommentLoading, isSuccess: deleteReplyCommentSuccess, error: deleteReplyCommentError }
+  ] = useDeleteReplyCommentMutation();
   const isReviewExist = courseData?.course?.reviews?.find((review: any) => review?.user?._id === user?._id);
   const isReviewReplyExist = courseData?.course?.reviews?.find((review: any) =>
     // review?.reviewReplies?.find((reply: any) => reply?.user?._id === user?._id)
@@ -167,6 +175,12 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
   const handleDeleteSubmit = async () => {
     if (commentId) {
       await deleteComment({ commentId, courseId: id, contentId: data[activeVideo]?._id });
+    }
+  };
+
+  const handleDeleteCommentReplySubmit = async () => {
+    if (commentId) {
+      await deleteReplyComment({ commentId, replyId: replyCommentId });
     }
   };
 
@@ -283,11 +297,31 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
       }
     }
   }, [deleteReviewReplySuccess, deleteReviewReplyError]);
+
+  useEffect(() => {
+    if (deleteReplyCommentSuccess) {
+      toast.success('Xóa phản hồi thành công', {
+        duration: 2000
+      });
+      refetch();
+    }
+    if (deleteReplyCommentError) {
+      if ('data' in deleteReplyCommentError) {
+        const errorData = deleteReplyCommentError.data as any;
+        toast.error(errorData.message, {
+          duration: 2000
+        });
+      }
+    }
+  }, [deleteReplyCommentSuccess, deleteReplyCommentError]);
   return (
     <>
-      {(reviewLoading || commentLoading || replyCommentLoading || replyReviewLoading || deleteReviewReplyLoading) && (
-        <Loading />
-      )}
+      {(reviewLoading ||
+        commentLoading ||
+        replyCommentLoading ||
+        replyReviewLoading ||
+        deleteReviewReplyLoading ||
+        deleteReplyCommentLoading) && <Loading />}
       <div className="m-auto min-h-screen w-[95%] py-4 text-black dark:text-white 800px:w-[86%]">
         <div className="w-full border border-[#0002] shadow-lg dark:border-[#ffffff57]">
           <CoursePlayer videoUrl={data?.[activeVideo]?.videoUrl} title={data?.[activeVideo]?.title} />
@@ -394,6 +428,9 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
                 setCommentId={setCommentId}
                 commentId={commentId}
                 handleDeleteSubmit={handleDeleteSubmit}
+                handleDeleteReplySubmit={handleDeleteCommentReplySubmit}
+                replyCommentId={replyCommentId}
+                setReplyCommentId={setReplyCommentId}
               />
             </div>
           </div>
@@ -410,7 +447,7 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
                     alt={'avatar'}
                     width={50}
                     height={50}
-                    className="h-[50px] w-[50px] rounded-full object-cover"
+                    className="h-[50px] w-[50px] rounded-full object-contain"
                   />
                   <div className="w-full">
                     <h5 className="pl-3 text-[18px] font-[500] text-black dark:text-white">
@@ -475,7 +512,7 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
                               alt={'avatar'}
                               width={50}
                               height={50}
-                              className="h-[50px] w-[50px] rounded-full object-cover"
+                              className="h-[50px] w-[50px] rounded-full object-contain"
                             />
                           </div>
                           <div className="flex w-full flex-col gap-2 rounded-lg bg-[#00000015] pb-4 pt-2">
@@ -491,7 +528,7 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
                               <p className="text-[18px]">{review?.review}</p>
                             </div>
                             <div className="flex items-center gap-2 pl-3">
-                              <small>{formatRelativeTime(review?.createdAt)} •</small>
+                              <small>{formatRelativeTime(review?.createdAt)}</small>
                               {user?.role === ROLE.ADMIN && (
                                 <small
                                   className="cursor-pointer hover:underline"
@@ -501,7 +538,7 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
                                     setIsReplyReview(!isReplyReview);
                                   }}
                                 >
-                                  {!isReplyReview ? `Phản hồi •` : `Ẩn phản hồi •`}
+                                  {!isReplyReview ? `• Phản hồi` : `• Ẩn phản hồi`}
                                 </small>
                               )}
                             </div>
@@ -531,7 +568,7 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
                             </div>
                             {review?.reviewReplies?.map((reply: any, index: number) => (
                               <div
-                                className="my-5 flex w-full border-t border-[#1607078b] py-2 text-black dark:text-white"
+                                className="flex w-full border-t border-[#1607078b] px-4 py-2 text-black dark:text-white"
                                 key={index}
                               >
                                 <div>
@@ -544,13 +581,16 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
                                   />
                                 </div>
                                 <div className="pl-2">
-                                  <h5 className="text-[16px]">{reply?.user?.name}</h5>
+                                  <div className="flex items-center gap-2">
+                                    <h5 className="text-[16px]">{reply?.user?.name}</h5>
+                                    {reply?.user?.role === ROLE.ADMIN && <MdVerified className="text-blue-600" />}
+                                  </div>
                                   <p>
                                     <span className="text-[#000000]">{reply?.reply}</span>
                                   </p>
-                                  <small>{formatRelativeTime(reply?.createdAt)}</small>
-                                  {isReviewReplyExist && (
-                                    <div className="flex items-center gap-2 pl-3">
+                                  <div className="flex items-center gap-2">
+                                    <small>{formatRelativeTime(reply?.createdAt)}</small>
+                                    {isReviewReplyExist && (
                                       <small
                                         className="cursor-pointer hover:underline"
                                         onClick={() => {
@@ -559,10 +599,10 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
                                           setReviewId(review?._id);
                                         }}
                                       >
-                                        Xóa phản hồi
+                                        • Xóa phản hồi
                                       </small>
-                                    </div>
-                                  )}
+                                    )}
+                                  </div>
                                 </div>
                               </div>
                             ))}

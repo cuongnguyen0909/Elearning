@@ -6,6 +6,8 @@ import { BiMessage } from 'react-icons/bi';
 import ConfirmationModal from '../../../components/modal/ConfimationModal';
 import { useSelector } from 'react-redux';
 import defaultAvatar from '../../../public/assets/avatar.png';
+import { ROLE } from '../../constants/enum';
+import { MdVerified } from 'react-icons/md';
 interface CommentItemProps {
   data: any;
   activeVideo: number;
@@ -16,14 +18,30 @@ interface CommentItemProps {
   commentId: string;
   setCommentId: (value: string) => void;
   handleDeleteSubmit: any;
+  handleDeleteReplySubmit: any;
+  replyCommentId: string;
+  setReplyCommentId: (value: string) => void;
 }
 
 const CommentItem: FC<CommentItemProps> = (props) => {
-  const { data, activeVideo, comment, reply, setReply, handleReply, commentId, setCommentId, handleDeleteSubmit } =
-    props;
+  const {
+    data,
+    activeVideo,
+    comment,
+    reply,
+    setReply,
+    handleReply,
+    commentId,
+    setCommentId,
+    handleDeleteSubmit,
+    handleDeleteReplySubmit,
+    replyCommentId,
+    setReplyCommentId
+  } = props;
   const [replyActive, setReplyActive] = useState(false);
   const [commentRepliesState, setCommentRepliesState] = useState<any>(false);
   const [deleteState, setDeleteState] = useState<boolean>(false);
+  const [deleteReplyState, setDeleteReplyState] = useState<boolean>(false);
   const [visibleReplies, setVisibleReplies] = useState<{ [key: string]: boolean }>({});
   const { user } = useSelector((state: any) => state.auth);
   const isCurrentUserComment = comment?.user?._id === user?._id;
@@ -122,11 +140,36 @@ const CommentItem: FC<CommentItemProps> = (props) => {
                         />
                       </div>
                       <div className="pl-2">
-                        <h5 className="text-[16px]">{reply?.user?.name}</h5>
+                        <div className="flex items-center gap-2">
+                          <h5 className="text-[16px]">{reply?.user?.name}</h5>
+                          {reply?.user?.role === ROLE.ADMIN && <MdVerified className="text-blue-600" />}
+                        </div>
                         <p>
                           <span className="text-[#000000]">{reply?.reply}</span>
                         </p>
-                        <small>{formatRelativeTime(reply?.createdAt)}</small>
+                        <div className="flex items-center gap-1">
+                          <small>{formatRelativeTime(reply?.createdAt)}</small>
+                          <small>•</small>
+                          {/* <small>Xóa phản hồi</small> */}
+                          {user?._id === reply?.user?._id && (
+                            <small
+                              className="cursor-pointer text-[#000000] hover:underline"
+                              onClick={() => {
+                                if (deleteReplyState === false) {
+                                  setDeleteReplyState(true);
+                                  setReplyCommentId(reply?._id);
+                                  setCommentId(comment?._id);
+                                } else {
+                                  setDeleteReplyState(false);
+                                  setReplyCommentId('');
+                                  setCommentId('');
+                                }
+                              }}
+                            >
+                              Xóa phản hồi
+                            </small>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </>
@@ -143,6 +186,12 @@ const CommentItem: FC<CommentItemProps> = (props) => {
                     onChange={(e: any) => setReply(e.target.value)}
                     className="mt-2 block w-full border-b border-[#000] bg-transparent outline-none placeholder:text-[14px]"
                   />
+                  <button
+                    className="float-end px-2 py-2 text-[14px] font-[400] text-[#000] hover:text-[#0000009d] dark:text-white"
+                    onClick={() => setReplyActive(false)}
+                  >
+                    Hủy bỏ
+                  </button>
                   <button
                     className="float-end px-2 py-2 text-[14px] font-[400] text-[#000] hover:text-[#0000009d] dark:text-white"
                     onClick={() => handleReply()}
@@ -163,6 +212,15 @@ const CommentItem: FC<CommentItemProps> = (props) => {
           title="Xác nhận xóa bình luận"
           message="Bạn có chắc chắn muốn xóa bình luận này không?"
           onConfirm={() => handleDeleteSubmit()}
+        />
+      )}
+      {deleteReplyState && (
+        <ConfirmationModal
+          open={deleteReplyState}
+          setOpen={setDeleteReplyState}
+          title="Xác nhận xóa phản hồi"
+          message="Bạn có chắc chắn muốn xóa phản hồi này không?"
+          onConfirm={() => handleDeleteReplySubmit()}
         />
       )}
     </>

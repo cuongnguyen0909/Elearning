@@ -12,11 +12,11 @@ const getOneCourseById = async (courseId: string) => {
                 populate: [
                     {
                         path: 'user',
-                        select: 'name email avatar'
+                        select: 'name email avatar role'
                     },
                     {
                         path: 'reviewReplies.user',
-                        select: 'name email avatar'
+                        select: 'name email avatar role'
                     }
                 ]
             })
@@ -25,11 +25,11 @@ const getOneCourseById = async (courseId: string) => {
                 populate: [
                     {
                         path: 'user',
-                        select: 'name email avatar'
+                        select: 'name email avatar role'
                     },
                     {
                         path: 'commentReplies.user',
-                        select: 'name email avatar'
+                        select: 'name email avatar role'
                     }
                 ]
             })) as ICourse

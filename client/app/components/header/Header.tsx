@@ -142,6 +142,7 @@ const Header: FC<Props> = (props) => {
                   href={`/profile`}
                   // onClick={() => setActiveItem(5)}
                   onClick={handleProfileClick}
+                  title={`${user?.email} - ${user?.name}`}
                 >
                   <Image
                     src={user.avatar ? user?.avatar?.url : avatar}
