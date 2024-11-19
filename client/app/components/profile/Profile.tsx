@@ -7,6 +7,7 @@ import { useLogoutQuery } from '../../../redux/features/auth/authApi';
 import ProfileSidebar from './ProfileSidebar';
 import ProfileDetails from './ProfileDetails';
 import ChangePassword from './ChangePassword';
+import MyCourses from './MyCourses';
 import { isAdminAuth } from '../../utils/isAdmin';
 
 type Props = {
@@ -39,7 +40,7 @@ const Profile: React.FC<Props> = (props) => {
   return (
     <div className="mx-auto flex w-[85%]">
       <div
-        className={`${scroll ? 'top-[120px]' : 'top-[30px]'} sticky left-[30px] mb-[80px] mt-[80px] h-[450px] w-[60px] rounded-md border border-[#0000001b] bg-opacity-90 shadow-xl dark:border-[#ffffff1d] dark:bg-slate-900 dark:shadow-sm 800px:w-[310px]`}
+        className={`${scroll ? 'top-[120px]' : 'top-[30px]'} sticky left-[30px] mb-[80px] mt-[80px] h-[350px] w-[60px] rounded-md border border-[#0000001b] bg-opacity-90 shadow-xl dark:border-[#ffffff1d] dark:bg-slate-900 dark:shadow-sm 800px:w-[310px]`}
       >
         <ProfileSidebar
           user={user}
@@ -52,6 +53,7 @@ const Profile: React.FC<Props> = (props) => {
       <div className="mt-[80px] h-full w-full bg-transparent">
         {active === 1 && <ProfileDetails user={user} avatar={avatar} />}
         {active === 2 && <ChangePassword />}
+        {active === 3 && <MyCourses />}
       </div>
     </div>
   );

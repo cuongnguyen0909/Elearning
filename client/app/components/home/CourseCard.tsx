@@ -18,17 +18,21 @@ const CourseCard: FC<CourseCardProps> = (props) => {
   const handleRedirect = (e: any) => {
     e.preventDefault();
     setIsLoading(true);
-    router.push(`/course/${course?._id}`);
+    if (isProfile) {
+      router.push(`/course/access/${course?._id}`);
+    } else {
+      router.push(`/course/${course?._id}`);
+    }
   };
   return (
     <>
       {isLoading && <Loading />}
       <Link
-        href={!isProfile ? `/course/${course?._id}` : `profile/course/${course.id}`}
+        href={!isProfile ? `/course/${course?._id}` : `/course/access/${course._id}`}
         onClick={(e) => handleRedirect(e)}
       >
         <div
-          className={`min-h-[25vh] w-[95%] rounded-lg border border-[#00000033] bg-[#f7f9fa] shadow-sm backdrop-blur hover:bg-[#f7f9fa2a] dark:border-[#ffffff1d] dark:bg-slate-500 dark:bg-opacity-20 dark:shadow-inner dark:shadow-[bg-slate-700]`}
+          className={`min-h-[25vh] w-[95%] rounded-lg border border-[#00000033] bg-[#f7f9fa] shadow-sm backdrop-blur hover:bg-[#f7f9fa2a] dark:border-[#ffffff1d] dark:bg-slate-500 dark:bg-opacity-20 dark:shadow-inner dark:shadow-[bg-slate-700] ${isProfile && '!w-[300px]'} `}
         >
           <div className="h-[20vh]">
             <Image
@@ -39,12 +43,12 @@ const CourseCard: FC<CourseCardProps> = (props) => {
               className="w-full rounded object-cover"
             />
           </div>
-          <div className={`${isSearch && 'pt-16 text-center'} pt-12`}>
+          <div className={`${isSearch && 'pt-16'} pt-12 text-center`}>
             <h1 className="font-Arimo text-[16px] font-[500] leading-[24px] tracking-tight text-black dark:text-white">
               {course?.title}
             </h1>
           </div>
-          <div className={`flex w-full items-center justify-between px-4 ${isSearch && 'py-4'}`}>
+          <div className={`flex w-full items-center justify-between px-4 ${isSearch && 'py-4'} `}>
             <div className="flex items-center justify-start gap-2">
               <h6 className={`text-[#b19b38] dark:text-white ${isProfile && 'hidden 800px:inline'} !text-[16px]`}>
                 {Number(course?.rating).toFixed(1)}
