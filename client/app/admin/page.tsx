@@ -7,10 +7,11 @@ import AdminSidebar from '../components/admin/sidebar/AdminSidebar';
 import DashboardHero from '../components/admin/common/DashboardHero';
 interface IPageProps {}
 const page: FC<IPageProps> = (props) => {
-  const { theme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
   useEffect(() => {
     setMounted(true);
+    setTheme('dark');
   }, []);
 
   if (!mounted) return null;

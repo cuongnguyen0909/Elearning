@@ -72,7 +72,7 @@ const AdminSidebar: FC = () => {
   const [selected, setSelected] = useState('Dashboard');
   const [mounted, setMounted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { theme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const router = useRouter();
   const {} = useLogoutQuery(undefined, {
     skip: !logout ? true : false

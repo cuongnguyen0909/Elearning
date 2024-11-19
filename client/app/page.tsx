@@ -15,12 +15,13 @@ type Props = {};
 const Page: FC<Props> = (props: Props) => {
   const [open, setOpen] = useState(false);
   const [activeItem, setActiveItem] = useState(0);
-  const { theme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const [route, setRoute] = useState('Login');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    setTheme('light');
   }, []);
 
   if (!mounted) return null;
