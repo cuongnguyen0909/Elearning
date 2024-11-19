@@ -1,20 +1,19 @@
 import { StatusCodes } from 'http-status-codes'
-import { ICourse } from '../models/schemas/course.schema'
-import { IUser } from '../models/schemas/user.schema'
-import { UserModel } from '../models/user.model'
-import { IContent } from '../models/schemas/content.schema'
-import ErrorHandler from '../utils/handlers/ErrorHandler'
-import { CommentModel } from '../models/comment.model'
-import { IComment } from '../models/schemas/comment.schema'
-import { CourseModel } from '../models/course.model'
-import { INotification } from '../models/schemas/notification.schema'
-import { NotificationModel } from '../models/notification.model'
 import { redis } from '../configs/connect.redis.config'
-import { ICommentRequest, IReplyCommentRequest } from '../interfaces/comment.interface,'
-import sendMail from '../utils/mails/send-mail'
 import { TypeOfEmail } from '../constants/user.constant'
 import { courseHelper } from '../helpers/course.helper'
-import { UserRole } from '../constants/enums/user.enum'
+import { ICommentRequest, IReplyCommentRequest } from '../interfaces/comment.interface,'
+import { CommentModel } from '../models/comment.model'
+import { CourseModel } from '../models/course.model'
+import { NotificationModel } from '../models/notification.model'
+import { IComment } from '../models/schemas/comment.schema'
+import { IContent } from '../models/schemas/content.schema'
+import { ICourse } from '../models/schemas/course.schema'
+import { INotification } from '../models/schemas/notification.schema'
+import { IUser } from '../models/schemas/user.schema'
+import { UserModel } from '../models/user.model'
+import ErrorHandler from '../utils/handlers/ErrorHandler'
+import sendMail from '../utils/mails/send-mail'
 
 const addComment = async (commentRequest: ICommentRequest, userId: any) => {
     try {
@@ -33,7 +32,6 @@ const addComment = async (commentRequest: ICommentRequest, userId: any) => {
             throw new ErrorHandler('Content not found', StatusCodes.NOT_FOUND)
         }
 
-        //create a new comment
         const newComment: IComment = await CommentModel.create({
             user: userId,
             comment,
@@ -42,23 +40,17 @@ const addComment = async (commentRequest: ICommentRequest, userId: any) => {
             commentReplies: []
         })
 
-        //add comment to the course content
         courseContent.comments?.push(newComment?._id as any)
         await course?.save()
-        // await redis.set(courseId, JSON.stringify(course) as any)
 
-        //create new a notification for admin
         const newNotification: INotification = (await NotificationModel.create({
             user: user?._id,
             title: 'New Comment Received',
             message: `${user?.name} added a comment to ${courseContent?.title}`,
             comment: newComment?._id
         })) as INotification
-        // console.log('newNotification', newNotification)
         const courseAfterUpdate: ICourse = (await courseHelper.getOneCourseById(courseId)) as unknown as ICourse
         await redis.set(courseId, JSON.stringify(courseAfterUpdate) as any)
-        // const allCourses: ICourse[] = (await courseHelper.getAllCourses()) as unknown as ICourse[]
-        // await redis.set('allCourses', JSON.stringify(allCourses))
         const newCommentPopulated: IComment = (await getOneCommentById(newComment?._id)) as unknown as IComment
         return newCommentPopulated
     } catch (error: any) {
@@ -125,8 +117,6 @@ const addCommentReply = async (commentRequest: IReplyCommentRequest, userId: any
             comment.course as unknown as string
         )) as unknown as ICourse
         await redis.set(comment.course.toString(), JSON.stringify(courseAfterReplyComment) as any)
-        // const allCourses = await CourseModel.find().sort({ createdAt: -1 })
-        // await redis.set('allCourses', JSON.stringify(allCourses))
         return comment
     } catch (error: any) {
         return new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
@@ -145,9 +135,7 @@ const getAllComments = async () => {
                 path: 'commentReplies.user',
                 select: 'name email avatar'
             })) as IComment[]
-        // .populate({
 
-        // })
         return comments
     } catch (error: any) {
         return new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)

@@ -1,5 +1,7 @@
 import { StatusCodes } from 'http-status-codes'
 import { redis } from '../configs/connect.redis.config'
+import { UserRole } from '../constants/enums/user.enum'
+import { TypeOfEmail } from '../constants/user.constant'
 import { courseHelper } from '../helpers/course.helper'
 import { IReplyReviewRequest, IReviewRequest } from '../interfaces/review.interface'
 import { CourseModel } from '../models/course.model'
@@ -10,9 +12,7 @@ import { IReview } from '../models/schemas/review.schema'
 import { IUser } from '../models/schemas/user.schema'
 import { UserModel } from '../models/user.model'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
-import { UserRole } from '../constants/enums/user.enum'
 import sendMail from '../utils/mails/send-mail'
-import { TypeOfEmail } from '../constants/user.constant'
 
 const getReviewById = async (reviewId: any) => {
     try {
@@ -95,8 +95,6 @@ const addReview = async (reviewRequest: IReviewRequest, userId: any, courseId: s
         })
         const courseAfterUpdate: ICourse = (await courseHelper.getOneCourseById(courseId)) as unknown as ICourse
         await redis.set(courseId, JSON.stringify(courseAfterUpdate) as any)
-        // const allCourses: ICourse[] = (await courseHelper.getAllCourses()) as unknown as ICourse[]
-        // await redis.set('allCourses', JSON.stringify(allCourses))
         const reviewAfterUpdate: IReview = (await getReviewById(newReview?._id)) as unknown as IReview
 
         return course

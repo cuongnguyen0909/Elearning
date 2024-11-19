@@ -1,9 +1,7 @@
-import React, { FC, useState } from 'react';
+import { FC, useState } from 'react';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
-import { MdOutlineOndemandVideo } from 'react-icons/md';
-import { formatTime } from '../../utils/formatHelper';
 import { IoPlayCircleOutline } from 'react-icons/io5';
-import { useLoadUserQuery } from '../../../redux/features/api/apiSlice';
+import { formatTime } from '../../utils/formatHelper';
 
 interface CourseContentListProps {
   data: any;

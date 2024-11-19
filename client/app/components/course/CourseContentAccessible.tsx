@@ -1,13 +1,11 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import Loading from '../../../components/common/Loading';
 import Heading from '../../../components/public/Heading';
+import { useLoadUserQuery } from '../../../redux/features/api/apiSlice';
 import { useGetCourseContentAccessibleQuery } from '../../../redux/features/course/courseApi';
 import Header from '../header/Header';
 import CourseContentList from './CourseContentList';
 import CourseContentMedia from './CourseContentMedia';
-import { useMarkCompleteVideoMutation } from '../../../redux/features/profile/profileApi';
-import next from 'next';
-import { useLoadUserQuery } from '../../../redux/features/api/apiSlice';
 
 interface CourseContentAccessibleProps {
   id: any;
@@ -16,7 +14,7 @@ interface CourseContentAccessibleProps {
 
 const CourseContentAccessible: FC<CourseContentAccessibleProps> = (props) => {
   const { id, user } = props;
-  const { data, isSuccess, isLoading, error, refetch } = useGetCourseContentAccessibleQuery(id, {
+  const { data, isLoading, refetch } = useGetCourseContentAccessibleQuery(id, {
     refetchOnMountOrArgChange: true
   });
   const { data: userData, refetch: refetchUserData } = useLoadUserQuery(

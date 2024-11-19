@@ -1,30 +1,30 @@
-import React, { FC, useEffect, useState } from 'react';
-import CoursePlayer from '../admin/course/components/CoursePlayer';
-import { AiFillStar, AiOutlineArrowLeft, AiOutlineArrowRight, AiOutlineStar } from 'react-icons/ai';
-import { styles } from '../../utils/style';
 import Image from 'next/image';
-import defaultAvatar from '../../../public/assets/avatar.png';
+import { FC, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
+import { AiFillStar, AiOutlineArrowLeft, AiOutlineArrowRight, AiOutlineStar } from 'react-icons/ai';
+import { MdVerified } from 'react-icons/md';
+import Loading from '../../../components/common/Loading';
+import ConfirmationModal from '../../../components/modal/ConfimationModal';
+import Rating from '../../../components/rating/Rating';
+import defaultAvatar from '../../../public/assets/avatar.png';
 import {
   useAddCommentMutation,
   useDeleteCommentMutation,
-  useReplyCommentMutation,
-  useDeleteReplyCommentMutation
+  useDeleteReplyCommentMutation,
+  useReplyCommentMutation
 } from '../../../redux/features/comment/commentApi';
-import CommentReply from './CommentReply';
+import { useGetCoursesByIdQuery } from '../../../redux/features/course/courseApi';
+import { useMarkCompleteVideoMutation } from '../../../redux/features/profile/profileApi';
 import {
   useAddReviewMutation,
   useDeleteReviewReplyMutation,
   useReplyToReviewMutation
 } from '../../../redux/features/review/reviewApi';
-import { useGetCoursesByIdQuery } from '../../../redux/features/course/courseApi';
-import Rating from '../../../components/rating/Rating';
-import { formatRelativeTime } from '../../utils/formatHelper';
 import { ROLE } from '../../constants/enum';
-import ConfirmationModal from '../../../components/modal/ConfimationModal';
-import Loading from '../../../components/common/Loading';
-import { MdVerified } from 'react-icons/md';
-import { useMarkCompleteVideoMutation } from '../../../redux/features/profile/profileApi';
+import { formatRelativeTime } from '../../utils/formatHelper';
+import { styles } from '../../utils/style';
+import CoursePlayer from '../admin/course/components/CoursePlayer';
+import CommentReply from './CommentReply';
 
 interface CourseContentMediaProps {
   data: any;
