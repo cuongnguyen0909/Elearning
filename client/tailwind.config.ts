@@ -17,7 +17,6 @@ const config: Config = {
         lightButton: '#0288d1'
       },
       fontFamily: {
-        Poppins: ['var(--font-Poppins)'],
         Josefin: ['var(--font-Josefin)'],
         Arimo: ['var(--font-Arimo)']
       },

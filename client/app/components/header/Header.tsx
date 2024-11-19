@@ -1,24 +1,27 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 import { FC, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
+import { AiOutlineLogout } from 'react-icons/ai';
 import { HiOutlineMenuAlt3, HiOutlineUserCircle } from 'react-icons/hi';
+import { IoSearch } from 'react-icons/io5';
+import { LiaUserCheckSolid } from 'react-icons/lia';
 import { useSelector } from 'react-redux';
+import Loading from '../../../components/common/Loading';
 import CustomModal from '../../../components/modal/CustomModal';
 import NavItems from '../../../components/navigation/NavItems';
 import ThemeSwitcher from '../../../components/theme/ThemeSwitcher';
 import avatar from '../../../public/assets/avatar.png';
+import { useLoadUserQuery } from '../../../redux/features/api/apiSlice';
 import { useLogoutQuery, useSocialLoginMutation } from '../../../redux/features/auth/authApi';
 import Login from '../auth/Login';
 import SignUp from '../auth/SignUp';
 import Verification from '../auth/Verification';
-import { useLoadUserQuery } from '../../../redux/features/api/apiSlice';
-import Loading from '../../../components/common/Loading';
-import { useRouter, usePathname } from 'next/navigation';
 type Props = {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -27,13 +30,13 @@ type Props = {
   route: string;
   setRoute: (route: string) => void;
 };
-const URL_API = process.env.NEXT_PUBLIC_API_SERVER_URL;
 
 const Header: FC<Props> = (props) => {
   const { activeItem, open, setOpen, route, setRoute, setActiveItem } = props;
   const { user, isLoggedIn } = useSelector((state: any) => state.auth);
   const { data } = useSession();
   const [isLoading, setIsLoading] = useState(false);
+  const [isShowPopupProfile, setIsShowPopupProfile] = useState(false);
   const { isLoading: loadingProfile } = useLoadUserQuery(
     {},
     {
@@ -43,15 +46,10 @@ const Header: FC<Props> = (props) => {
   const [socialLogin, { isSuccess, error }] = useSocialLoginMutation();
   const [active, setActive] = useState(false);
   const [openSidebar, setOpenSidebar] = useState(false);
-  const { theme } = useTheme();
+  const [search, setSearch] = useState('');
   const [logout, setLogout] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
-  // useEffect(() => {
-  //   if (pathname === '/profile') {
-  //     setIsLoading(false);
-  //   }
-  // }, [pathname]);
 
   const handleProfileClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -63,6 +61,10 @@ const Header: FC<Props> = (props) => {
     skip: !logout
   });
 
+  const logOutHandler = async () => {
+    setLogout(true);
+    await signOut();
+  };
   useEffect(() => {
     if (data && !isLoggedIn) {
       socialLogin({
@@ -105,6 +107,14 @@ const Header: FC<Props> = (props) => {
     }
   };
 
+  const handleSearch = () => {
+    if (search.trim() === '') {
+      router.push('/course');
+    } else {
+      router.push(`/course?keyword=${search}`);
+    }
+  };
+
   return (
     <div className={`text-lightText relative w-full shadow-md dark:bg-gray-900 dark:text-white`}>
       <div
@@ -122,6 +132,23 @@ const Header: FC<Props> = (props) => {
                 demy
               </Link>
             </div>
+            {/* search input */}
+            <div className="relative flex items-center">
+              <input
+                type="text"
+                placeholder="Tìm kiếm khóa học"
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                }}
+                className="h-[40px] w-[300px] rounded-md border border-[#0000001f] px-2 text-black dark:border-[#ffffff1d] dark:bg-[#ffffff1d] dark:text-white"
+              />
+              <IoSearch
+                size={20}
+                className="absolute right-4 top-2 text-black dark:text-white"
+                onClick={() => handleSearch()}
+              />
+            </div>
             <div className="flex items-center">
               <NavItems activeItem={activeItem} isMobile={false} />
             </div>
@@ -136,25 +163,21 @@ const Header: FC<Props> = (props) => {
                 />
               </div>
               {/* {loadingProfile && <Loading />} */}
-              {isLoading && <Loading />} {/* Hiển thị loading khi cần */}
+              {isLoading && <Loading />}
               {user ? (
-                <Link
-                  href={`/profile`}
-                  // onClick={() => setActiveItem(5)}
-                  onClick={handleProfileClick}
-                  title={`${user?.email} - ${user?.name}`}
-                >
+                <>
                   <Image
                     src={user.avatar ? user?.avatar?.url : avatar}
                     width={30}
                     height={30}
                     alt="avatar"
-                    className="cursor-pointer rounded-full"
+                    className="relative cursor-pointer rounded-full"
                     style={{
                       border: activeItem === 5 ? '2px solid #fff' : 'none'
                     }}
+                    onClick={() => setIsShowPopupProfile(!isShowPopupProfile)}
                   />
-                </Link>
+                </>
               ) : (
                 <HiOutlineUserCircle
                   size={30}
@@ -168,6 +191,28 @@ const Header: FC<Props> = (props) => {
             </div>
           </div>
         </div>
+        {isShowPopupProfile && (
+          <div className="absolute right-0 top-[70px] z-50 flex w-[200px] flex-col gap-4 rounded-md border bg-white py-4 text-black shadow-md dark:bg-slate-900 dark:shadow-lg">
+            <Link
+              href={`/profile`}
+              // onClick={() => setActiveItem(5)}
+              onClick={handleProfileClick}
+              title={`${user?.email} - ${user?.name}`}
+              className={`flex w-full cursor-pointer items-center gap-4 px-2`}
+            >
+              <LiaUserCheckSolid size={20} className="text-black dark:text-white" />
+              <h5 className="pl-2 font-Arimo text-black hover:text-[#000000b3] hover:underline dark:text-white 800px:block">
+                Trang cá nhân
+              </h5>
+            </Link>
+            <div className={`flex w-full cursor-pointer items-center gap-4 px-2`} onClick={() => logOutHandler()}>
+              <AiOutlineLogout size={20} className="text-black dark:text-white" />
+              <h5 className="pl-2 font-Arimo text-black hover:text-[#000000b3] hover:underline dark:text-white 800px:block">
+                Đăng xuất
+              </h5>
+            </div>
+          </div>
+        )}
         {/* mbile sidebar */}
         {openSidebar && (
           <div
@@ -180,7 +225,10 @@ const Header: FC<Props> = (props) => {
               <HiOutlineUserCircle
                 size={25}
                 className="my-2 ml-5 cursor-pointer text-black dark:text-white"
-                onClick={() => setOpen(true)}
+                onClick={() => {
+                  setOpen(true);
+                  setOpenSidebar(false);
+                }}
               />
               <br />
               <br />

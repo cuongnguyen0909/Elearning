@@ -45,6 +45,15 @@ export const courseApi = apiSlice.injectEndpoints({
         method: 'GET',
         credentials: 'include' as const
       })
+    }),
+    // Query mới: Tìm kiếm và lọc
+    searchCourses: builder.query({
+      query: ({ keyword, category }) => ({
+        url: `course/search`,
+        method: 'GET',
+        params: { keyword, category },
+        credentials: 'include' as const
+      })
     })
   })
 });
@@ -55,5 +64,6 @@ export const {
   useEditCourseMutation,
   useGetAllCoursesByUserQuery,
   useGetCoursesByIdQuery,
-  useGetCourseContentAccessibleQuery
+  useGetCourseContentAccessibleQuery,
+  useSearchCoursesQuery
 } = courseApi;

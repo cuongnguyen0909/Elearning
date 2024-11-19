@@ -7,12 +7,6 @@ import { ThemeProvider } from '../components/theme/ThemeProvider';
 import './globals.css';
 import { Providers } from './Provider';
 
-const poppins = Poppins({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-Arimo'
-});
-
 const josefin = Josefin_Sans({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
@@ -33,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body
-        className={`${poppins.variable} ${josefin.variable} ${arimo.variable} !bg-white bg-no-repeat dark:bg-gradient-to-b dark:from-gray-900 dark:to-black`}
+        className={`${arimo.variable} ${josefin.variable} !bg-white bg-no-repeat dark:bg-gradient-to-b dark:from-gray-900 dark:to-black`}
         //  duration-300
       >
         <Providers>

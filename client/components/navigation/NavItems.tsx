@@ -13,7 +13,7 @@ export const navItemsData = [
   },
   {
     name: 'Khóa học',
-    url: '/courses'
+    url: '/course'
   },
   {
     name: 'Về chúng tôi',
@@ -40,7 +40,7 @@ const NavItems: FC<Props> = (props) => {
               <span
                 className={`${
                   activeItem === index ? 'text-[#9c4aa0] dark:text-[#7575c7]' : 'text-black dark:text-white'
-                } font-Arimo px-6 text-[18px] font-[500]`}
+                } px-6 font-Arimo text-[18px] font-[500]`}
               >
                 {item?.name}
               </span>
@@ -52,7 +52,8 @@ const NavItems: FC<Props> = (props) => {
           <div className="w-full py-6 text-center">
             <Link href={'/'} passHref>
               <span className="font-Arimo text-[25px] font-bold">
-                <span className="dark:text-[#37b668]">E</span>Learning
+                <span className="text-[#2190ff] dark:text-[#2190ff]">E</span>
+                demy
               </span>
             </Link>
           </div>
@@ -62,7 +63,7 @@ const NavItems: FC<Props> = (props) => {
                 <span
                   className={`${
                     activeItem === index ? 'text-[crimson] dark:text-[#37a39a]' : 'text-black dark:text-white'
-                  } font-Arimo block px-6 py-5 text-[18px] font-[400]`}
+                  } block px-6 py-5 font-Arimo text-[18px] font-[400]`}
                 >
                   {item?.name}
                 </span>
