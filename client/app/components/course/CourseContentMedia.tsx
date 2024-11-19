@@ -24,6 +24,7 @@ import { ROLE } from '../../constants/enum';
 import ConfirmationModal from '../../../components/modal/ConfimationModal';
 import Loading from '../../../components/common/Loading';
 import { MdVerified } from 'react-icons/md';
+import { useMarkCompleteVideoMutation } from '../../../redux/features/profile/profileApi';
 
 interface CourseContentMediaProps {
   data: any;
@@ -32,10 +33,11 @@ interface CourseContentMediaProps {
   setActiveVideo: (value: number) => void;
   user: any;
   refetch?: any;
+  refetchUserData?: any;
 }
 
 const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
-  const { data, id, activeVideo, setActiveVideo, user, refetch } = props;
+  const { data, id, activeVideo, setActiveVideo, user, refetch, refetchUserData } = props;
   const [activeBar, setActiveBar] = useState<number>(0);
   const [comment, setComment] = useState<string>('');
   const [commentId, setCommentId] = useState<string>('');
@@ -50,6 +52,56 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
   const [replyReviewId, setReplyReviewId] = useState<string>('');
   const [isDeleteReviewReply, setIsDeleteReviewReply] = useState<boolean>(false);
   const [showReplies, setShowReplies] = useState<{ [key: string]: boolean }>({});
+  const [isNextEnale, setIsNextEnable] = useState<boolean>(false);
+  const isCompleted = user?.completedVideos?.find((item: any) => item?.contentId === data?.[activeVideo]?._id);
+
+  const [
+    markCompleteVideo,
+    { isLoading: markCompleteVideoLoading, isSuccess: markCompleteVideoSuccess, error: markCompleteVideoError }
+  ] = useMarkCompleteVideoMutation();
+
+  const handleNextVideo = async () => {
+    if (activeVideo < data?.length - 1) {
+      const nextVideoIndex = activeVideo + 1;
+      if (isCompleted?.isCompleted && isNextEnale) {
+        setActiveVideo(nextVideoIndex);
+        setIsNextEnable(true);
+      } else {
+        await markCompleteVideo({
+          courseId: id,
+          contentId: data?.[activeVideo]?._id,
+          contentTitle: data?.[activeVideo]?.title
+        });
+        setActiveVideo(nextVideoIndex);
+        setIsNextEnable(false);
+      }
+    } else if (activeVideo === data?.length - 1) {
+      await markCompleteVideo({
+        courseId: id,
+        contentId: data?.[activeVideo]?._id,
+        contentTitle: data?.[activeVideo]?.title
+      });
+      setIsNextEnable(true);
+      setActiveVideo(0);
+      toast.success('Bạn đã học hết khóa học', {
+        duration: 2000
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (markCompleteVideoSuccess) {
+      refetchUserData();
+    }
+    if (markCompleteVideoError) {
+      if ('data' in markCompleteVideoError) {
+        const errorData = markCompleteVideoError.data as any;
+        toast.error(errorData.message, {
+          duration: 2000
+        });
+      }
+    }
+  }, [markCompleteVideoSuccess, markCompleteVideoError]);
 
   const toggleReplies = (reviewId: string) => {
     setShowReplies((prev) => ({
@@ -58,19 +110,31 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
     }));
   };
 
+  useEffect(() => {
+    setIsNextEnable(false);
+    const timer = setTimeout(() => {
+      setIsNextEnable(true);
+    }, 15000); // 15s
+
+    return () => clearTimeout(timer);
+  }, [activeVideo]);
+
+  useEffect(() => {
+    if (isCompleted?.isCompleted) {
+      setIsNextEnable(true);
+    }
+  }, [isCompleted]);
+
   const { data: courseData, refetch: refectCourse } = useGetCoursesByIdQuery(id, {
     refetchOnMountOrArgChange: true
   });
-  const [addComment, { data: commentData, isLoading: commentLoading, isSuccess: commentSuccess, error: commentError }] =
+
+  const [addComment, { isLoading: commentLoading, isSuccess: commentSuccess, error: commentError }] =
     useAddCommentMutation();
+
   const [
     deleteComment,
-    {
-      data: deleteCommentData,
-      isLoading: deleteCommentLoading,
-      isSuccess: deleteCommentSuccess,
-      error: deleteCommentError
-    }
+    { isLoading: deleteCommentLoading, isSuccess: deleteCommentSuccess, error: deleteCommentError }
   ] = useDeleteCommentMutation();
 
   const [
@@ -88,27 +152,22 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
 
   const [
     deleteReviewReply,
-    {
-      data: deleteReviewReplyData,
-      isLoading: deleteReviewReplyLoading,
-      isSuccess: deleteReviewReplySuccess,
-      error: deleteReviewReplyError
-    }
+    { isLoading: deleteReviewReplyLoading, isSuccess: deleteReviewReplySuccess, error: deleteReviewReplyError }
   ] = useDeleteReviewReplyMutation();
 
   const [
     deleteReplyComment,
     { isLoading: deleteReplyCommentLoading, isSuccess: deleteReplyCommentSuccess, error: deleteReplyCommentError }
   ] = useDeleteReplyCommentMutation();
+
   const isReviewExist = courseData?.course?.reviews?.find((review: any) => review?.user?._id === user?._id);
-  const isReviewReplyExist = courseData?.course?.reviews?.find((review: any) =>
-    // review?.reviewReplies?.find((reply: any) => reply?.user?._id === user?._id)
-    {
-      if (review?.reviewReplies) {
-        return review?.reviewReplies?.find((reply: any) => reply?.user?._id === user?._id);
-      }
+
+  const isReviewReplyExist = courseData?.course?.reviews?.find((review: any) => {
+    if (review?.reviewReplies) {
+      return review?.reviewReplies?.find((reply: any) => reply?.user?._id === user?._id);
     }
-  );
+  });
+
   const handleComment = () => {
     if (comment.length === 0) {
       toast.error('Bình luận không được để trống', {
@@ -335,11 +394,14 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
             Bài học trước
           </div>
           <div
-            className={`${styles.button} !min-h-[40px] !w-[unset] !py-[unset] !text-white ${activeVideo === data?.length - 1 ? '!cursor-no-drop opacity-[.8]' : ''}`}
-            onClick={() => setActiveVideo(activeVideo === data?.length - 1 ? activeVideo : activeVideo + 1)}
+            className={`${styles.button} !min-h-[40px] !w-[unset] !py-[unset] !text-white ${isNextEnale ? '' : 'pointer-events-none cursor-not-allowed opacity-50'} `}
+            onClick={() => {
+              handleNextVideo && handleNextVideo();
+              // setActiveVideo(activeVideo === data?.length - 1 ? activeVideo : activeVideo + 1);
+            }}
           >
             <AiOutlineArrowRight className="mr-2 text-white" />
-            Bài học tiếp theo
+            {activeVideo === data?.length - 1 ? 'Kết thúc' : 'Bài học tiếp theo'}
           </div>
         </div>
         <div className="h-16">

@@ -23,5 +23,6 @@ profileRouter.put(
 )
 //change avatar
 profileRouter.put('/change-avatar', profileController.changeAvatar)
+profileRouter.put('/mark-complete-video', profileController.makeCompletedVideo)
 
 export default profileRouter

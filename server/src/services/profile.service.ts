@@ -6,6 +6,9 @@ import { IUser } from '../models/schemas/user.schema'
 import { UserModel } from '../models/user.model'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
 import { StatusCodes } from 'http-status-codes'
+import { ICourse } from '../models/schemas/course.schema'
+import { CourseModel } from '../models/course.model'
+import { profileHelpers } from '../helpers/profile.helper'
 dotenv.config()
 
 const getProfileById = async (uid: string) => {
@@ -107,9 +110,55 @@ const uploadImage = async (userId: any, upadteAvatarRequest: IUpdateAvatarReques
     }
 }
 
+const markCompletedContent = async (userId: string, courseId: string, contentId: string, contentTitle: string) => {
+    try {
+        const user: IUser | null = await UserModel.findById(userId)
+        if (!user) {
+            throw new ErrorHandler('User not found', StatusCodes.NOT_FOUND)
+        }
+
+        const course: ICourse | null = await CourseModel.findById(courseId)
+        if (!course) {
+            throw new ErrorHandler('Course not found', StatusCodes.NOT_FOUND)
+        }
+
+        // Kiểm tra xem video đã hoàn thành hay chưa
+        const isVideoCompleted = user.completedVideos.some(
+            (content: any) => content?.course?.toString() === courseId && content?.contentId?.toString() === contentId
+        )
+        if (isVideoCompleted) {
+            throw new ErrorHandler('Video is already completed', StatusCodes.BAD_REQUEST)
+        }
+
+        // Tìm contentId trong course.contents
+        const content = course.contents.find((content: any) => content?._id?.toString() === contentId)
+        if (!content) {
+            throw new ErrorHandler('Content not found in course', StatusCodes.NOT_FOUND)
+        }
+
+        // Thêm content vào danh sách hoàn thành
+        user.completedVideos.push({
+            course: courseId,
+            contentId,
+            contentTitle,
+            isCompleted: true
+        })
+
+        await user.save()
+        // Cập nhật cache (nếu cần)
+        const userAfterUpdated: IUser | null = (await profileHelpers.getProfileById(userId)) as IUser
+        await redis.set(userId, JSON.stringify(userAfterUpdated) as any)
+
+        return user
+    } catch (error: any) {
+        throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
+    }
+}
+
 export const profileServices = {
     getProfileById,
     updateProfile,
     updatePassword,
-    uploadImage
+    uploadImage,
+    markCompletedContent
 }

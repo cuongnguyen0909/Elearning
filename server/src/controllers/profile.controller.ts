@@ -1,7 +1,7 @@
+import { IUser } from './../models/schemas/user.schema'
 import { NextFunction, Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { IUpdateAvatarRequest, IUpdatePasswordRequest, IUpdateProfileRequest } from '../interfaces/user.interface'
-import { IUser } from '../models/schemas/user.schema'
 import { profileServices } from '../services/profile.service'
 import catchAsyncError from '../utils/handlers/catch-async-error'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
@@ -64,9 +64,30 @@ const changeAvatar = catchAsyncError(async (req: Request, res: Response, next: N
     }
 })
 
+const makeCompletedVideo = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const userId: string = req.user?._id as string
+        const { courseId, contentId, contentTitle } = req.body as any
+        const user: IUser = (await profileServices.markCompletedContent(
+            userId,
+            courseId,
+            contentId,
+            contentTitle
+        )) as unknown as IUser
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: 'Content is marked as completed',
+            user: user
+        })
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
+    }
+})
+
 export const profileController = {
     getProfileInfo,
     updateProfile,
     changePassword,
-    changeAvatar
+    changeAvatar,
+    makeCompletedVideo
 }

@@ -1,10 +1,13 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import Loading from '../../../components/common/Loading';
 import Heading from '../../../components/public/Heading';
 import { useGetCourseContentAccessibleQuery } from '../../../redux/features/course/courseApi';
 import Header from '../header/Header';
 import CourseContentList from './CourseContentList';
 import CourseContentMedia from './CourseContentMedia';
+import { useMarkCompleteVideoMutation } from '../../../redux/features/profile/profileApi';
+import next from 'next';
+import { useLoadUserQuery } from '../../../redux/features/api/apiSlice';
 
 interface CourseContentAccessibleProps {
   id: any;
@@ -16,10 +19,17 @@ const CourseContentAccessible: FC<CourseContentAccessibleProps> = (props) => {
   const { data, isSuccess, isLoading, error, refetch } = useGetCourseContentAccessibleQuery(id, {
     refetchOnMountOrArgChange: true
   });
+  const { data: userData, refetch: refetchUserData } = useLoadUserQuery(
+    {},
+    {
+      refetchOnMountOrArgChange: true
+    }
+  );
   const [route, setRoute] = useState<string>('Login');
   const [open, setOpen] = useState<boolean>(false);
   const [activeVideo, setActiveVideo] = useState<number>(0);
   const courseContent = data?.course?.contents;
+
   return (
     <>
       {isLoading ? (
@@ -43,10 +53,17 @@ const CourseContentAccessible: FC<CourseContentAccessibleProps> = (props) => {
                 setActiveVideo={setActiveVideo}
                 user={user}
                 refetch={refetch}
+                refetchUserData={refetchUserData}
               />
             </div>
             <div className="col-span-3 800px:col-span-3 800px:block">
-              <CourseContentList data={data?.course} setActiveVideo={setActiveVideo} activeVideo={activeVideo} />
+              <CourseContentList
+                data={data?.course}
+                setActiveVideo={setActiveVideo}
+                activeVideo={activeVideo}
+                refetchUserData={refetchUserData}
+                userData={userData}
+              />
             </div>
           </div>
         </>

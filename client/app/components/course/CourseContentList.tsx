@@ -3,21 +3,24 @@ import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import { MdOutlineOndemandVideo } from 'react-icons/md';
 import { formatTime } from '../../utils/formatHelper';
 import { IoPlayCircleOutline } from 'react-icons/io5';
+import { useLoadUserQuery } from '../../../redux/features/api/apiSlice';
 
 interface CourseContentListProps {
   data: any;
   activeVideo?: number;
   setActiveVideo?: (value: number) => void;
   isDemo?: boolean;
+  userData?: any;
+  refetchUserData?: any;
 }
 
 const CourseContentList: FC<CourseContentListProps> = (props) => {
-  const { data, activeVideo, setActiveVideo, isDemo } = props;
-  const [visibleSection, setVisibleSection] = useState<Set<string>>(new Set<string>());
+  const { data, activeVideo, setActiveVideo, isDemo, userData, refetchUserData } = props;
 
+  const [visibleSection, setVisibleSection] = useState<Set<string>>(new Set<string>());
+  const completedVideos: any[] = userData?.user?.completedVideos;
   //find unique section
   const videoSections: string[] = [...new Set<string>(data?.contents?.map((video: any) => video?.videoSection))];
-
   let totalCount: number = 0;
 
   const toggleSection = (sections: string) => {
@@ -29,6 +32,7 @@ const CourseContentList: FC<CourseContentListProps> = (props) => {
     }
     setVisibleSection(newVisibleSection);
   };
+
   return (
     <div className={`${!isDemo && 'sticky left-0 top-24 z-30 ml-[-30px]'} mt-[15px] w-full`}>
       {videoSections?.map((section: string, indexOfSection: number) => {
@@ -36,6 +40,7 @@ const CourseContentList: FC<CourseContentListProps> = (props) => {
 
         // filter video by section
         const sectionVideos: any[] = data?.contents?.filter((video: any) => video.videoSection === section);
+        // console.log('sectionVideos', sectionVideos);
         const sectionVideoCount: number = sectionVideos.length;
         const sectionVideoLength: number = sectionVideos.reduce(
           (totalLength: number, item: any) => totalLength + Number(item?.videoDuration),
@@ -79,19 +84,36 @@ const CourseContentList: FC<CourseContentListProps> = (props) => {
               <div className="w-full gap-2 bg-[#ffffff4c]">
                 {sectionVideos?.map((item: any, indexOfLesson: number) => {
                   const videoIndex: number = sectionStartIndex + indexOfLesson;
+                  // check current video is completed or not
+                  const completedVideo = completedVideos?.find(
+                    (content: any) =>
+                      content?.course?.toString() === data?._id && content?.contentId?.toString() === item?._id
+                  );
                   return (
                     <div
                       className={`h-14 w-full gap-2 ${
                         videoIndex === activeVideo
-                          ? 'w-full bg-[#0093fc] dark:bg-slate-800 dark:text-white'
-                          : 'hover:bg-[#fff]'
-                      } cursor-pointer border-t transition-all`}
+                          ? 'bg-[#0093fc] dark:bg-slate-800 dark:text-white'
+                          : completedVideos?.some(
+                                (content: any) =>
+                                  content?.course?.toString() === data?._id &&
+                                  content?.contentId?.toString() === item?._id
+                              )
+                            ? 'hover:bg-[#fff]'
+                            : 'cursor-not-allowed opacity-50'
+                      } border-t transition-all`}
                       key={item?._id}
                       onClick={() => {
-                        if (isDemo) {
-                          return;
+                        if (
+                          videoIndex === activeVideo || // Là video hiện tại
+                          completedVideos?.some(
+                            (content: any) =>
+                              content?.course?.toString() === data?._id && content?.contentId?.toString() === item?._id
+                          )
+                        ) {
+                          setActiveVideo && setActiveVideo(videoIndex);
+                          refetchUserData && refetchUserData();
                         }
-                        setActiveVideo && setActiveVideo(videoIndex);
                       }}
                     >
                       <div className="border-top flex items-center gap-2">
@@ -104,9 +126,10 @@ const CourseContentList: FC<CourseContentListProps> = (props) => {
                         </div>
                         <div className="font-thin">
                           <h1
-                            className={`text-[16px] text-black dark:text-white ${videoIndex === activeVideo && 'bg-[#0093fc] text-white dark:bg-slate-800 dark:text-white'}`}
+                            className={`text-[16px] text-black dark:text-white ${videoIndex === activeVideo && 'bg-[#0093fc] text-white dark:bg-slate-800 dark:text-white'} `}
                           >
-                            {indexOfSection + 1}.{indexOfLesson + 1}. {item?.title}
+                            {indexOfSection + 1}.{indexOfLesson + 1}. {item?.title}{' '}
+                            {completedVideo?.isCompleted && '✔'}
                           </h1>
                           <h5
                             className={`text-black dark:text-white ${videoIndex === activeVideo && 'bg-[#0093fc] text-white dark:bg-slate-800 dark:text-white'}`}

@@ -57,7 +57,7 @@ const CourseDetail: FC<CourseDetailProps> = (props) => {
     }
   }, [data]);
   const isPurchased = userData?.user?.courses?.find((course: any) => course?._id === courseData?._id);
-
+  console.log(userData);
   const handleRedirect = (e: any) => {
     e.preventDefault();
     setIsLoading(true);

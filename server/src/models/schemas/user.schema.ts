@@ -77,10 +77,24 @@ export const userSchema: Schema<IUser> = new mongoose.Schema(
         ],
         completedVideos: [
             {
-                videoId: {
+                course: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'Course'
+                },
+                contentTitle: {
+                    type: String
+                },
+                contentId: {
                     type: mongoose.Schema.Types.ObjectId
                 },
-                isCompleted: Boolean
+                isCompleted: {
+                    type: Boolean,
+                    default: false
+                },
+                completedAt: {
+                    type: Date,
+                    default: Date.now
+                }
             }
         ]
     },
