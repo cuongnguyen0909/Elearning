@@ -2,6 +2,7 @@ import { FC, useState } from 'react';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import { IoPlayCircleOutline } from 'react-icons/io5';
 import { formatTime } from '../../utils/formatHelper';
+import { IoMdCheckmarkCircle } from 'react-icons/io';
 
 interface CourseContentListProps {
   data: any;
@@ -114,26 +115,37 @@ const CourseContentList: FC<CourseContentListProps> = (props) => {
                         }
                       }}
                     >
-                      <div className="border-top flex items-center gap-2">
-                        <div className="w-2"></div>
-                        <div className="">
-                          <IoPlayCircleOutline
-                            size={20}
-                            className={`mr-2 text-black dark:text-white ${videoIndex === activeVideo && 'bg-[#0093fc] text-white dark:bg-slate-800 dark:text-white'}`}
-                          />
+                      <div className="flex items-center justify-between">
+                        <div className="border-top flex items-center gap-2">
+                          <div className="w-2"></div>
+                          <div className="flex items-center">
+                            <div className="">
+                              <IoPlayCircleOutline
+                                size={20}
+                                className={`mr-2 text-black dark:text-white ${videoIndex === activeVideo && 'bg-[#0093fc] text-white dark:bg-slate-800 dark:text-white'}`}
+                              />
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <h1
+                                  className={`text-[16px] text-black dark:text-white ${videoIndex === activeVideo && 'bg-[#0093fc] text-white dark:bg-slate-800 dark:text-white'} `}
+                                >
+                                  {indexOfSection + 1}.{indexOfLesson + 1}. {item?.title}{' '}
+                                </h1>
+
+                                <h5
+                                  className={`text-black dark:text-white ${videoIndex === activeVideo && 'bg-[#0093fc] text-white dark:bg-slate-800 dark:text-white'}`}
+                                >
+                                  {formatTime(Number(item?.videoDuration))}
+                                </h5>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                        <div className="font-thin">
-                          <h1
-                            className={`text-[16px] text-black dark:text-white ${videoIndex === activeVideo && 'bg-[#0093fc] text-white dark:bg-slate-800 dark:text-white'} `}
-                          >
-                            {indexOfSection + 1}.{indexOfLesson + 1}. {item?.title}{' '}
-                            {completedVideo?.isCompleted && '✔'}
-                          </h1>
-                          <h5
-                            className={`text-black dark:text-white ${videoIndex === activeVideo && 'bg-[#0093fc] text-white dark:bg-slate-800 dark:text-white'}`}
-                          >
-                            {formatTime(Number(item?.videoDuration))}
-                          </h5>
+                        <div className="flex items-center justify-end px-2">
+                          {completedVideo?.isCompleted && (
+                            <IoMdCheckmarkCircle size={20} className="bg-transparent text-green-500" />
+                          )}
                         </div>
                       </div>
                     </div>
