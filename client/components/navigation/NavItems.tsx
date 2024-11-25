@@ -39,7 +39,7 @@ const NavItems: FC<Props> = (props) => {
             <Link href={`${item?.url}`} key={index} passHref>
               <span
                 className={`${
-                  activeItem === index ? 'text-[#9c4aa0] dark:text-[#7575c7]' : 'text-black dark:text-white'
+                  activeItem === index ? 'text-[crimson] dark:text-[#7575c7]' : 'text-black dark:text-white'
                 } px-6 font-Arimo text-[18px] font-[500]`}
               >
                 {item?.name}

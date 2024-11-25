@@ -65,22 +65,26 @@ const CourseDetail: FC<CourseDetailProps> = (props) => {
   return (
     <div>
       {isLoading && <Loading />}
-      <div className="m-auto min-h-screen w-[90%] py-5 pb-20 800px:w-[90%]">
+      <div className="m-auto min-h-screen w-[90%] py-6 800px:w-[90%]">
         <div className="flex w-full flex-col-reverse 800px:flex-row">
-          <div className="w-full pr-4 800px:w-[65%] 800px:pr-[5]">
-            <div className="border px-10 pb-20">
-              <h1 className="font-Arimo text-[26px] font-[600] text-black dark:text-white">{courseData?.title}</h1>
-              <div className="flex items-center justify-between pt-3">
-                <div className="flex break-inside-avoid-column flex-col justify-start gap-6">
-                  <p className="mt-[20px] overflow-hidden whitespace-pre-line text-[18px] text-black dark:text-white">
+          <div className="w-full px-4 800px:w-[65%] 800px:pr-[5]">
+            <div className="w-full">
+              <h1 className="px-4 font-Arimo text-[26px] font-bold text-black dark:text-white">{courseData?.title}</h1>
+              <div className="flex items-center justify-between gap-4 py-4">
+                <div className="flex break-inside-avoid-column flex-col justify-start px-4">
+                  <p className="overflow-hidden whitespace-pre-line text-[18px] text-black dark:text-white">
                     {courseData?.description}
                   </p>
                   <div className="flex items-center gap-4">
-                    <h6 className={`!text-[16px] text-[#b19b38] dark:text-white`}>{courseData?.rating}</h6>
+                    <h6 className={`!text-[16px] text-[#b19b38] dark:text-white`}>
+                      {Number(courseData?.rating).toFixed(1)}
+                    </h6>
                     <div className="mt-[2px]">
                       <Rating rating={courseData?.rating} />
                     </div>
-                    <h5 className="text-black dark:text-white">{courseData?.reviews?.length} Đánh giá</h5>
+                    <a href="#reviews" className="text-black underline dark:text-white">
+                      {courseData?.reviews?.length} Đánh giá
+                    </a>
                     <h5 className="text-black dark:text-white">{courseData?.purchased} Học viên</h5>
                   </div>
                   <div>
@@ -91,64 +95,69 @@ const CourseDetail: FC<CourseDetailProps> = (props) => {
                 </div>
               </div>
             </div>
-            <h2 className="font-Arimo text-[22px] font-[600] text-black dark:text-white">
-              Bạn sẽ học được gì từ khóa học này?
-            </h2>
-            <div>
-              {courseData?.benefits?.map((item: any, index: number) => (
-                <div key={index} className="flex w-full py-2 800px:items-center">
-                  <div className="mr-1 w-[15px]">
-                    <IoCheckmarkDoneOutline size={20} className="text-black dark:text-white" />
-                  </div>
-                  <p className="pl-2 text-black dark:text-white">{item?.title}</p>
-                </div>
-              ))}
-              <br />
-              <br />
+            <div className="h-6 w-full"></div>
+            <div className="border-t border-[#ccc] pt-4">
+              <h2 className="px-4 font-Arimo text-[22px] font-bold text-black dark:text-white">Tổng quan khóa học</h2>
+              <CourseContentList data={courseData} isDemo={true} />
             </div>
-            <h2 className="font-Arimo text-[22px] font-[600] text-black dark:text-white">
-              Một số yêu cầu trước khi tham gia
-            </h2>
-            <div>
+            <div className="h-6 w-full"></div>
+            <div className="border-t border-[#ccc] pt-4">
+              <h1 className="px-4 font-Arimo text-[20px] font-bold text-black dark:text-white">Mô tả khóa học</h1>
+              <p className="overflow-hidden whitespace-pre-line px-4 py-2 text-[18px] text-black dark:text-white">
+                {courseData?.description}
+              </p>
+            </div>
+            <div className="h-6 w-full"></div>
+            <div className="border-t border-[#ccc] pt-4">
+              <h2 className="px-4 font-Arimo text-[22px] font-bold text-black dark:text-white">
+                Bạn sẽ học được gì từ khóa học này?
+              </h2>
+              {courseData?.benefits?.map((item: any, index: number) => (
+                <div key={index} className="flex w-full px-4 py-2 800px:items-center">
+                  <div className="w-[15px mr-1">
+                    <IoCheckmarkDoneOutline size={20} className="text-black dark:text-white" />
+                  </div>
+                  <p className="pl-2 text-black dark:text-white">{item?.title}</p>
+                </div>
+              ))}
+            </div>
+            <div className="h-6 w-full"></div>
+            <div className="border-t border-[#ccc] pt-4">
+              <h2 className="px-4 font-Arimo text-[22px] font-bold text-black dark:text-white">
+                Một số yêu cầu trước khi tham gia
+              </h2>
               {courseData?.prerequisites?.map((item: any, index: number) => (
-                <div key={index} className="flex w-full py-2 800px:items-center">
+                <div key={index} className="flex w-full px-4 py-2 800px:items-center">
                   <div className="mr-1 w-[15px]">
                     <IoCheckmarkDoneOutline size={20} className="text-black dark:text-white" />
                   </div>
                   <p className="pl-2 text-black dark:text-white">{item?.title}</p>
                 </div>
               ))}
-              <br />
-              <br />
-              <div>
-                <h2 className="font-Arimo text-[22px] font-[600] text-black dark:text-white">Tổng quan khóa học</h2>
-                <CourseContentList data={courseData} isDemo={true} />
-              </div>
-              <br />
-              <br />
-              <div className="w-full">
-                <h1 className="font-Arimo text-[20px] font-[600] text-black dark:text-white">Mô tả khóa học</h1>
-                <p className="mt-[20px] overflow-hidden whitespace-pre-line text-[18px] text-black dark:text-white">
-                  {courseData?.description}
-                </p>
-              </div>
-              <br />
-              <br />
-              <div className="w-full">
-                <div className="items-center 800px:flex">
-                  <Rating rating={courseData?.rating} />
-                  <div className="mb-2 800px:mb-[unset]" />
-                  <h5 className="font-Arimo text-[22px] text-black dark:text-white">
+              <div className="h-6 w-full"></div>
+              <div className="border-t border-[#ccc] pt-4">
+                <div className="flex items-center">
+                  <h2 className="px-4 font-Arimo text-[22px] font-bold text-black dark:text-white">
+                    Đánh giá từ học viên
+                  </h2>
+                  <h4 className="text-black dark:text-white">
+                    <i>({courseData?.reviews?.length} đánh giá)</i>
+                  </h4>
+                </div>
+                <div className="items-center justify-center gap-4 800px:flex">
+                  <h2 className="px-4 font-Arimo text-[22px] font-semibold text-black dark:text-white">
                     {Number.isInteger(courseData?.rating)
                       ? courseData?.rating.toFixed(1)
-                      : courseData?.rating.toFixed(2)}
-                    {'  '}
-                    Đánh giá từ {courseData?.reviews?.length} học viên
-                  </h5>
+                      : courseData?.rating.toFixed(1)}
+                    / 5
+                  </h2>
+                  <div className="mt-1">
+                    <Rating isDemo rating={courseData?.rating} />
+                  </div>
                 </div>
-                <br />
+                <div className="h-6 w-full"></div>
                 {(courseData?.reviews && [...courseData?.reviews].reverse())?.map((review: any, index: number) => (
-                  <div key={index} className="w-full pb-4">
+                  <div key={index} className="w-full px-4 pb-4" id="reviews">
                     <div className="flex">
                       <div className="h-[50px] w-[50px]">
                         <div className="flex h-[50px] w-[50px] cursor-pointer items-center justify-center rounded-[50px] bg-slate-600">
@@ -163,11 +172,11 @@ const CourseDetail: FC<CourseDetailProps> = (props) => {
                           <Rating rating={review?.rating} />
                         </div>
                         <p className="text-black dark:text-white">{review?.review}</p>
-                        <small className="text-[000000d1] dark:text-[#ffffff83]">
+                        <small className="text-[000000d1] text-black dark:text-[#ffffff83]">
                           {new Date(review?.createdAt).toLocaleDateString()}
                         </small>
                       </div>
-                      <div className="800px:hiiden flex items-center pl-2">
+                      <div className="flex items-center pl-2 800px:hidden">
                         <h5 className="pr-2 text-[18px] text-black dark:text-white">{review?.user?.name}</h5>
                         <Rating rating={review?.rating} />
                       </div>

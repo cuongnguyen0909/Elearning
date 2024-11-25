@@ -51,17 +51,17 @@ const CourseContentList: FC<CourseContentListProps> = (props) => {
 
         return (
           <div
-            className={` ${!isDemo && 'border border-[#00000022] bg-[#f7f9fa] shadow-md dark:border-b dark:border-[#ffffff8e]'} className-section ${isDemo && 'border-[#00000022] shadow-md dark:border dark:border-[#ffffff8e]'} `}
+            className={` ${!isDemo && 'border border-[#00000022] bg-[#f7f9fa] shadow-md dark:border-b dark:border-[#ffffff8e] dark:bg-slate-900'} className-section ${isDemo && 'border-[#00000022] shadow-md dark:border dark:border-[#ffffff8e]'} `}
           >
-            <div className={'hover:bg-[#fff]'}>
+            <div className={`${isDemo ? '' : 'hover:bg-[#fff] dark:hover:bg-slate-700'}`}>
               <div className="flex w-full gap-2">
                 <div className="h-2 w-2"></div>
                 {/* Render video section */}
                 <div
-                  className="flex h-10 w-full cursor-pointer items-center justify-between gap-1"
+                  className={`flex h-10 w-full cursor-pointer items-center justify-between gap-1`}
                   onClick={() => toggleSection(section)}
                 >
-                  <h2 className="text-[18px] font-[600] text-black dark:text-white">
+                  <h2 className={`text-[18px] font-[600] text-black dark:text-white`}>
                     {indexOfSection + 1}. {section}
                   </h2>
                   <button className="mr-4 cursor-pointer text-black dark:text-white">
@@ -98,9 +98,9 @@ const CourseContentList: FC<CourseContentListProps> = (props) => {
                                   content?.course?.toString() === data?._id &&
                                   content?.contentId?.toString() === item?._id
                               )
-                            ? 'hover:bg-[#fff]'
+                            ? 'cursor-pointer hover:bg-[#fff] dark:hover:bg-slate-800'
                             : 'cursor-not-allowed opacity-50'
-                      } border-t transition-all`}
+                      } border-t transition-all ${isDemo ? 'cursor-pointer opacity-100' : ''} dark:text-white`}
                       key={item?._id}
                       onClick={() => {
                         if (
