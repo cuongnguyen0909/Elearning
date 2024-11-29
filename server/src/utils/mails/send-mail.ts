@@ -34,8 +34,8 @@ const sendMail = async (options: IEmailOptions, type: string): Promise<void> => 
 
     //render the email template with ejs
     const mailOptions: any = {
-        from: '"QNU ELearning" <noreply@support.elearningQNU@gmail.com>',
-        replyTo: 'noreply@support.elearningQNU@gmail.com',
+        from: '"Study ELearning" <noreply@support.elearningStudy@gmail.com>',
+        replyTo: 'noreply@support.elearningStudy@gmail.com',
         to: email,
         subject,
         html
