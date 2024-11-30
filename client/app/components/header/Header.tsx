@@ -64,7 +64,10 @@ const Header: FC<Props> = (props) => {
   const logOutHandler = async () => {
     setLogout(true);
     await signOut();
+    router.push('/');
+    setIsShowPopupProfile(false);
   };
+
   useEffect(() => {
     if (data && !isLoggedIn) {
       socialLogin({
@@ -80,7 +83,7 @@ const Header: FC<Props> = (props) => {
       });
     }
     if (error) {
-      toast.error('Đăng nhập thất baạ', {
+      toast.error('Đăng nhập thất bại', {
         duration: 2000
       });
     }
@@ -192,7 +195,7 @@ const Header: FC<Props> = (props) => {
           </div>
         </div>
         {isShowPopupProfile && (
-          <div className="absolute right-0 top-[70px] z-50 flex w-[200px] flex-col gap-4 rounded-md border bg-white py-4 text-black shadow-md dark:bg-slate-900 dark:shadow-lg">
+          <div className="absolute right-0 top-[70px] z-[100] flex w-[200px] flex-col gap-4 rounded-md border bg-white py-4 text-black shadow-md dark:bg-slate-900 dark:shadow-lg">
             <Link
               href={`/profile`}
               // onClick={() => setActiveItem(5)}

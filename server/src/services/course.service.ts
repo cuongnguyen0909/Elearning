@@ -28,7 +28,7 @@ const createCourse = async (courseDataRequest: ICourse) => {
         const courseAfterUpdate: ICourse = (await courseHelper.getOneCourseById(courseId)) as unknown as ICourse
         await redis.set(courseId, JSON.stringify(courseAfterUpdate) as any)
         const allCourses = await courseHelper.getAllCourses()
-        // await redis.set('allCourses', JSON.stringify(allCourses))
+        await redis.set('allCourses', JSON.stringify(allCourses))
         return course
     } catch (error: any) {
         return new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
@@ -46,10 +46,15 @@ const updateCourse = async (courseId: string, courseDataRequest: ICourse) => {
         }
 
         // Lấy thông tin khóa học hiện tại
-        const existingCourse: ICourse = (await CourseModel.findById(courseId)) as ICourse
-        if (!existingCourse) {
-            throw new ErrorHandler('Course not found', StatusCodes.NOT_FOUND)
+        const isCourseCachedExist = await redis.get(courseId)
+        if (isCourseCachedExist) {
+            const existingCourse: ICourse = JSON.parse(isCourseCachedExist) as ICourse
         }
+        // Lấy thông tin khóa học hi
+        // const existingCourse: ICourse = (await CourseModel.findById(courseId)) as ICourse
+        // if (!existingCourse) {
+        //     throw new ErrorHandler('Course not found', StatusCodes.NOT_FOUND)
+        // }
 
         // Kiểm tra và xử lý thumbnail
         const thumbnail: any = courseDataRequest?.thumbnail
@@ -79,10 +84,12 @@ const updateCourse = async (courseId: string, courseDataRequest: ICourse) => {
 
         // Lấy thông tin khóa học sau khi cập nhật
         const courseAfterUpdate: ICourse = (await courseHelper.getOneCourseById(courseId)) as unknown as ICourse
-
         // Cập nhật khóa học vào Redis
         await redis.set(courseId, JSON.stringify(courseAfterUpdate))
-
+        // update all coures
+        const allCourses = await courseHelper.getAllCourses()
+        // update all courses
+        await redis.set('allCourses', JSON.stringify(allCourses))
         // Trả về kết quả
         return updatedCourse
     } catch (error: any) {
@@ -109,11 +116,14 @@ const getOneCourseWithoutLogin = async (courseId: string) => {
 
 const getAllCoursesWithoutLogin = async () => {
     try {
-        // const isCachedExist: string = (await redis.get('allCourses')) as unknown as string
+        const isCachedExist: string = (await redis.get('allCourses')) as unknown as string
+        if (isCachedExist) {
+            return JSON.parse(isCachedExist) as ICourse[]
+        }
 
-        const courses: ICourse[] = (await courseHelper.getAllCourses()) as unknown as ICourse[]
-        // await redis.set('allCourses', JSON.stringify(courses) as any)
-        return courses
+        const allCourses: ICourse[] = (await courseHelper.getAllCourses()) as unknown as ICourse[]
+        await redis.set('allCourses', JSON.stringify(allCourses) as any)
+        return allCourses
     } catch (error: any) {
         return new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
     }
@@ -143,10 +153,16 @@ const getAccessibleCourses = async (courseList: [], courseId: string) => {
 
 const getAllCoursesByAdmin = async () => {
     try {
-        const courses: ICourse[] = (await courseHelper.getAllCourses()) as unknown as ICourse[]
-        return courses
+        const isCachedExist: string = (await redis.get('allCourses')) as unknown as string
+        if (isCachedExist) {
+            return JSON.parse(isCachedExist) as ICourse[]
+        }
+
+        const allCourses: ICourse[] = (await courseHelper.getAllCourses()) as unknown as ICourse[]
+        await redis.set('allCourses', JSON.stringify(allCourses) as any)
+        return allCourses
     } catch (error: any) {
-        throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
+        return new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
     }
 }
 
@@ -210,8 +226,8 @@ const deleteCourse = async (courseId: string) => {
         await course?.save()
         const deletedCourse: ICourse = (await courseHelper.getOneCourseById(courseId)) as ICourse
         await redis.del(courseId)
-        // const allCourses = await courseHelper.getAllCourses()
-        // await redis.set('allCourses', JSON.stringify(allCourses))
+        const allCourses = await courseHelper.getAllCourses()
+        await redis.set('allCourses', JSON.stringify(allCourses))
         return deletedCourse
     } catch (error: any) {
         throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)

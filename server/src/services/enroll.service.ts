@@ -15,6 +15,7 @@ import { StatusCodes } from 'http-status-codes'
 import { redis } from '../configs/connect.redis.config'
 import { profile } from 'console'
 import { profileHelpers } from '../helpers/profile.helper'
+import { enrollHelper } from '../helpers/enroll.helper'
 
 require('dotenv').config()
 
@@ -94,7 +95,8 @@ const createNewEnrollment = async (enrollRequest: any, userId: string) => {
             message: `You have a new course enrolled: ${course?.title}`
         })) as INotification
 
-        //save user and course
+        const allEnrollments = await enrollHelper.getAllEntrollments()
+        redis.set('allEnrollments', JSON.stringify(allEnrollments))
 
         return { newEnroll, course, notification, user }
     } catch (error: any) {
@@ -104,10 +106,13 @@ const createNewEnrollment = async (enrollRequest: any, userId: string) => {
 
 const getAllEnrollments = async () => {
     try {
-        const enrollments: IEnroll[] = (await EnrollmentModel.find().sort({ createdAt: -1 }).populate({
-            path: 'user course'
-        })) as IEnroll[]
-        return enrollments
+        const isCachedExist = await redis.get('allEnrollments')
+        if (isCachedExist) {
+            return JSON.parse(isCachedExist)
+        }
+        const allEnrollments: IEnroll[] = (await enrollHelper.getAllEntrollments()) as IEnroll[]
+        redis.set('allEnrollments', JSON.stringify(allEnrollments))
+        return allEnrollments
     } catch (error: any) {
         throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
     }

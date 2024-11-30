@@ -5,19 +5,20 @@ import ErrorHandler from '../utils/handlers/ErrorHandler'
 import { UserRole } from '../constants/enums/user.enum'
 import { redis } from '../configs/connect.redis.config'
 import { StatusCodes } from 'http-status-codes'
+import { userHelper } from '../helpers/user.helper'
 dotenv.config()
 
 const getAllUser = async () => {
     try {
-        //find all user with isDeleted false
-        const users: IUser[] = (await UserModel.find({
-            isDeleted: false
-        })
-            .sort({ createdAt: -1 })
-            .populate({
-                path: 'courses'
-            })) as IUser[]
-        return users
+        //check cache in redis all users
+        const isCachedExist = await redis.get('allUsers')
+        if (isCachedExist) {
+            return JSON.parse(isCachedExist)
+        }
+
+        const allUsers = await userHelper.getAllUsers()
+        redis.set('allUsers', JSON.stringify(allUsers))
+        return allUsers
     } catch (error: any) {
         throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
     }
@@ -92,6 +93,7 @@ const lockUser = async (userId: string) => {
         throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
     }
 }
+
 const unLockUser = async (userId: string) => {
     try {
         const updatedUser: IUser = (await UserModel.findByIdAndUpdate(
@@ -104,6 +106,7 @@ const unLockUser = async (userId: string) => {
         throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
     }
 }
+
 const deleteUser = async (userId: string) => {
     try {
         const user: IUser = (await UserModel.findById(userId)) as IUser

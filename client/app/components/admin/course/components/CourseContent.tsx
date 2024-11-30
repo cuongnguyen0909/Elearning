@@ -17,6 +17,7 @@ const CourseContent: FC<CourseContentProps> = (props) => {
   const { active, setActive, courseContent, setCourseContent, handleSubmit: handleCourseSubmit } = props;
   const [isCollapsed, setIsCollapsed] = useState(Array(courseContent?.length).fill(false));
   const [activeSection, setActiveSection] = useState(1);
+  const [focusedInputIndex, setFocusedInputIndex] = useState<number | null>(null);
   const handleSubmit = (e: any) => {
     e.preventDefault();
   };
@@ -136,29 +137,39 @@ const CourseContent: FC<CourseContentProps> = (props) => {
             <>
               <div className={`w-full bg-[#cdc8c817] px-2 py-4 ${showSectionInput ? 'mt-10' : 'mb-0'}`} key={index}>
                 {showSectionInput && (
-                  <div className="flex w-full items-center pb-4">
-                    <input
-                      type="text"
-                      className={`font-Arimo w-min cursor-pointer bg-transparent text-[20px] text-black outline-none dark:text-white`}
-                      value={content?.videoSection}
-                      onChange={(e) => {
-                        const updatedData = [...courseContent];
-                        updatedData[index].videoSection = e?.target?.value;
-                        setCourseContent(updatedData);
-                      }}
-                    />
-                    <BsPencil
-                      className="cursor-pointer text-black dark:text-white"
-                      onClick={() => {
-                        const updatedData = [...courseContent];
-                        updatedData[index].videoSection = `Chương ${activeSection}`;
-                        setCourseContent(updatedData);
-                      }}
-                    />
-                    <br />
+                  <div className="flex w-full items-center gap-4 pb-4">
+                    <div className="flex w-full items-center gap-4">
+                      <input
+                        type="text"
+                        className={`w-min cursor-pointer bg-transparent font-Arimo text-[20px] text-black outline-none dark:text-white`}
+                        value={content?.videoSection}
+                        onChange={(e) => {
+                          const updatedData = [...courseContent];
+                          updatedData[index].videoSection = e?.target?.value;
+                          setCourseContent(updatedData);
+                        }}
+                        ref={(el) => {
+                          if (focusedInputIndex === index && el) {
+                            el.focus(); // Tự động focus khi chỉ mục trùng khớp
+                          }
+                        }}
+                        onBlur={() => {
+                          setFocusedInputIndex(null);
+                        }}
+                      />
+                      <BsPencil
+                        className="cursor-pointer text-black dark:text-white"
+                        onClick={() => {
+                          setFocusedInputIndex(index);
+                        }}
+                      />
+                    </div>
                   </div>
                 )}
-                <div className="my-0 flex w-full items-center justify-between">
+                <div
+                  className="my-0 flex w-full cursor-pointer items-center justify-between"
+                  onClick={() => handleCollapseToggle(index)}
+                >
                   {isCollapsed[index] ? (
                     <>
                       {content.title ? (

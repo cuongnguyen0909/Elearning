@@ -228,7 +228,7 @@ const AdminSidebar: FC = () => {
                 setSelected={setSelected}
               />
               <Item
-                title="Đã đăng ký"
+                title="Khóa học đã bán"
                 to="/admin/enrollment/all"
                 icon={<ReceiptOutlinedIcon />}
                 selected={selected}
@@ -278,7 +278,7 @@ const AdminSidebar: FC = () => {
                 setSelected={setSelected}
               />
               <Item
-                title="Lượt đăng ký"
+                title="Khóa học đã bán"
                 to="/admin/analytics/enrollments"
                 icon={<MapOutlinedIcon />}
                 selected={selected}

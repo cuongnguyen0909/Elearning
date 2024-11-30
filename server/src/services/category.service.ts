@@ -1,6 +1,8 @@
 import { StatusCodes } from 'http-status-codes'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
 import { CategoryModel } from '../models/category.mode'
+import { categoryHelper } from '../helpers/category.help'
+import { redis } from '../configs/connect.redis.config'
 
 const createCategory = async (title: string) => {
     try {
@@ -14,6 +16,8 @@ const createCategory = async (title: string) => {
         }
 
         const newCategory = await CategoryModel.create({ title })
+        const allCategories = await categoryHelper.getAllCategories()
+        redis.set('allCategories', JSON.stringify(allCategories))
         return newCategory
     } catch (error: any) {
         throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
@@ -29,6 +33,8 @@ const updateCategory = async (id: string, title: string) => {
         }
 
         const updatedCategory = await CategoryModel.findByIdAndUpdate(id, { title }, { new: true })
+        const allCategories = await categoryHelper.getAllCategories()
+        redis.set('allCategories', JSON.stringify(allCategories))
         return updatedCategory
     } catch (error: any) {
         throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
@@ -44,6 +50,8 @@ const deleteCategory = async (id: string) => {
         }
 
         await CategoryModel.findByIdAndDelete(id)
+        const allCategories = await categoryHelper.getAllCategories()
+        redis.set('allCategories', JSON.stringify(allCategories))
         return 'Category deleted successfully'
     } catch (error: any) {
         throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
@@ -52,8 +60,13 @@ const deleteCategory = async (id: string) => {
 
 const getAllCategories = async () => {
     try {
-        const categories = await CategoryModel.find()
-        return categories
+        const isCachedExist = await redis.get('allCategories')
+        if (isCachedExist) {
+            return JSON.parse(isCachedExist)
+        }
+        const allCategories = await categoryHelper.getAllCategories()
+        redis.set('allCategories', JSON.stringify(allCategories))
+        return allCategories
     } catch (error: any) {
         throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
     }

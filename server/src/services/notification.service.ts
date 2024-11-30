@@ -4,33 +4,17 @@ import { INotification } from '../models/schemas/notification.schema'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
 import cron from 'node-cron'
 import { StatusCodes } from 'http-status-codes'
+import { redis } from '../configs/connect.redis.config'
+import { notificationHelper } from '../helpers/notification.helper'
 
 const getNotifications = async () => {
     try {
-        //get all notifications
-        const notifications: INotification[] = await NotificationModel.find()
-            .sort({ createdAt: -1 })
-            ?.populate({
-                path: 'user',
-                select: 'name email'
-            })
-            ?.populate({
-                path: 'comment',
-                populate: [
-                    {
-                        path: 'user',
-                        select: 'avatar name email'
-                    },
-                    {
-                        path: 'commentReplies.user',
-                        select: 'avatar name email'
-                    }
-                ]
-            })
-            ?.populate({
-                path: 'review'
-            })
-        return notifications
+        const isCachedExist = await redis.get('allNotifications')
+        if (isCachedExist) {
+            return JSON.parse(isCachedExist)
+        }
+        const allNotifications: INotification[] = await notificationHelper.getAllNotifications()
+        await redis.set('allNotifications', JSON.stringify(allNotifications))
     } catch (error: any) {
         throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
     }
@@ -49,12 +33,9 @@ const updateNotificationStatus = async (notificationId: string) => {
         ;(await notification?.save()).populate({
             path: 'user'
         })
-
-        const notifications: INotification[] = await NotificationModel.find().sort({ createdAt: -1 }).populate({
-            path: 'user',
-            select: 'name email'
-        })
-        return { notification, notifications }
+        const allNotifications = await redis.get('allNotifications')
+        await redis.set('allNotifications', JSON.stringify(allNotifications))
+        return { notification, allNotifications }
     } catch (error: any) {
         throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
     }
@@ -67,6 +48,8 @@ const deleleNotificationsAfter30Days = async () => {
             await NotificationModel.deleteMany({ status: 'read', createdAt: { $lt: thirtyDaysAgo } })
             console.log('Deleted read notifications after 30 days')
         })
+        const allNotifications = await notificationHelper.getAllNotifications()
+        return allNotifications
     } catch (error: any) {
         throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
     }
