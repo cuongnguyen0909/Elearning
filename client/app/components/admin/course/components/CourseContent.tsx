@@ -137,33 +137,32 @@ const CourseContent: FC<CourseContentProps> = (props) => {
             <>
               <div className={`w-full bg-[#cdc8c817] px-2 py-4 ${showSectionInput ? 'mt-10' : 'mb-0'}`} key={index}>
                 {showSectionInput && (
-                  <div className="flex w-full items-center gap-4 pb-4">
-                    <div className="flex w-full items-center gap-4">
-                      <input
-                        type="text"
-                        className={`w-min cursor-pointer bg-transparent font-Arimo text-[20px] text-black outline-none dark:text-white`}
-                        value={content?.videoSection}
-                        onChange={(e) => {
-                          const updatedData = [...courseContent];
-                          updatedData[index].videoSection = e?.target?.value;
-                          setCourseContent(updatedData);
-                        }}
-                        ref={(el) => {
-                          if (focusedInputIndex === index && el) {
-                            el.focus(); // Tự động focus khi chỉ mục trùng khớp
-                          }
-                        }}
-                        onBlur={() => {
-                          setFocusedInputIndex(null);
-                        }}
-                      />
-                      <BsPencil
-                        className="cursor-pointer text-black dark:text-white"
-                        onClick={() => {
-                          setFocusedInputIndex(index);
-                        }}
-                      />
-                    </div>
+                  <div className="flex w-full items-center gap-8 pb-4">
+                    <input
+                      type="text"
+                      className={`w-min cursor-pointer bg-transparent font-Arimo text-[20px] text-black outline-none dark:text-white`}
+                      value={content?.videoSection}
+                      onChange={(e) => {
+                        const updatedData = [...courseContent];
+                        updatedData[index].videoSection = e?.target?.value;
+                        setCourseContent(updatedData);
+                      }}
+                      ref={(el) => {
+                        if (focusedInputIndex === index && el) {
+                          el.focus(); // Tự động focus khi chỉ mục trùng khớp
+                        }
+                      }}
+                      onBlur={() => {
+                        setFocusedInputIndex(null);
+                      }}
+                    />
+                    <BsPencil
+                      className="cursor-pointer text-black dark:text-white"
+                      onClick={() => {
+                        setFocusedInputIndex(index);
+                      }}
+                      title="Sửa tên chương"
+                    />
                   </div>
                 )}
                 <div
@@ -194,6 +193,7 @@ const CourseContent: FC<CourseContentProps> = (props) => {
                           setCourseContent(updatedData);
                         }
                       }}
+                      title="Xóa bài học"
                     />
                     <MdOutlineKeyboardArrowUp
                       fontSize="large"
@@ -202,6 +202,7 @@ const CourseContent: FC<CourseContentProps> = (props) => {
                         transform: isCollapsed[index] ? 'rotate(180deg)' : 'rotate(0deg)'
                       }}
                       onClick={() => handleCollapseToggle(index)}
+                      title="Mở rộng "
                     />
                   </div>
                 </div>
@@ -274,7 +275,6 @@ const CourseContent: FC<CourseContentProps> = (props) => {
                           setCourseContent(updatedData);
                         }}
                       />
-                      <br />
                     </div>
                     {// links
                     content?.links?.map((link: any, linkIndex: number) => (
@@ -348,7 +348,6 @@ const CourseContent: FC<CourseContentProps> = (props) => {
                         />
                       </div>
                     ))}
-                    <br />
                     {/* add linl button */}
                     <div className="mb-4 inline-block">
                       <p
@@ -361,10 +360,9 @@ const CourseContent: FC<CourseContentProps> = (props) => {
                     </div>
                   </>
                 )}
-                <br />
                 {/* add new content */}
                 {index === courseContent.length - 1 && (
-                  <div>
+                  <div className="pt-8">
                     <p
                       className="flex cursor-pointer items-center text-[18px] text-black dark:text-white"
                       onClick={(e: any) => handleNewCourseContent(content, e)}
@@ -378,9 +376,8 @@ const CourseContent: FC<CourseContentProps> = (props) => {
             </>
           );
         })}
-        <br />
         <div
-          className="flex cursor-pointer items-center text-[20px] text-black dark:text-white"
+          className="flex cursor-pointer items-center py-4 text-[20px] text-black dark:text-white"
           onClick={() => addNewSection()}
         >
           <AiOutlinePlusCircle className="mr-2" />
@@ -401,9 +398,6 @@ const CourseContent: FC<CourseContentProps> = (props) => {
           Tiếp theo
         </div>
       </div>
-      <br />
-      <br />
-      <br />
     </div>
   );
 };
