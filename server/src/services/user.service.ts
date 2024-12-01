@@ -48,6 +48,8 @@ const updateUserRole = async (currentUserId: string, email: string) => {
         if (!updatedUser) {
             throw new ErrorHandler('Cập nhật quyền người dùng không thành công', StatusCodes.INTERNAL_SERVER_ERROR)
         }
+        const allUsers = await userHelper.getAllUsers()
+        redis.set('allUsers', JSON.stringify(allUsers))
         return updatedUser
     } catch (error: any) {
         throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
@@ -75,6 +77,8 @@ const deleteUserAdminRole = async (currentUserId: string, email: string) => {
         if (!updatedUser) {
             throw new ErrorHandler('Cập nhật quyền người dùng không thành công', StatusCodes.INTERNAL_SERVER_ERROR)
         }
+        const allUsers = await userHelper.getAllUsers()
+        redis.set('allUsers', JSON.stringify(allUsers))
         return updatedUser
     } catch (error: any) {
         throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
@@ -88,6 +92,8 @@ const lockUser = async (userId: string) => {
             { isBlocked: true },
             { new: true }
         )) as IUser
+        const allUsers = await userHelper.getAllUsers()
+        redis.set('allUsers', JSON.stringify(allUsers))
         return updatedUser
     } catch (error: any) {
         throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
@@ -101,6 +107,8 @@ const unLockUser = async (userId: string) => {
             { isBlocked: false },
             { new: true }
         )) as IUser
+        const allUsers = await userHelper.getAllUsers()
+        redis.set('allUsers', JSON.stringify(allUsers))
         return updatedUser
     } catch (error: any) {
         throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
@@ -122,6 +130,8 @@ const deleteUser = async (userId: string) => {
         user.isDeleted = true
         await user.save()
         await redis.del(userId)
+        const allUsers = await userHelper.getAllUsers()
+        redis.set('allUsers', JSON.stringify(allUsers))
         return user
     } catch (error: any) {
         throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)

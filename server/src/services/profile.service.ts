@@ -17,7 +17,8 @@ const getProfileById = async (uid: string) => {
         if (!userSession) {
             throw new ErrorHandler('User not found', StatusCodes.NOT_FOUND)
         }
-        const user: IUser = JSON.parse(userSession) as IUser
+        const user: IUser = (await profileHelpers.getProfileById(uid)) as IUser
+        redis.set(uid, JSON.stringify(user) as any)
         return user
     } catch (error: any) {
         throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
