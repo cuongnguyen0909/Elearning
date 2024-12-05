@@ -18,7 +18,7 @@ const addComment = catchAsyncError(async (req: Request, res: Response, next: Nex
         const comment = (await commentServices.addComment(commentData, userId)) as any
         res.status(StatusCodes.OK).json({
             success: true,
-            message: 'Comment is added successfully',
+            message: 'Bình luận thành công',
             comment
         })
     } catch (error: any) {
@@ -33,7 +33,7 @@ const addCommentReply = catchAsyncError(async (req: Request, res: Response, next
         const comment: IComment = (await commentServices.addCommentReply(replyCommentRequest, userId)) as IComment
         res.status(StatusCodes.OK).json({
             success: true,
-            message: 'Reply is added successfully',
+            message: 'Phản hồi bình luận thành công',
             comment
         })
     } catch (error: any) {
@@ -62,7 +62,7 @@ const deleteComment = catchAsyncError(async (req: Request, res: Response, next: 
         ;(await commentServices.deleteComment(commentId, courseId, contentId)) as any
         res.status(StatusCodes.OK).json({
             success: true,
-            message: 'Comment is deleted successfully'
+            message: 'Xóa bình luận thành công'
         })
     } catch (error: any) {
         return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
@@ -78,7 +78,7 @@ const deleteCommentReply = catchAsyncError(async (req: Request, res: Response, n
         const course = (await commentServices.deleteCommentReply(commentId, replyId)) as any
         res.status(StatusCodes.OK).json({
             success: true,
-            message: 'Reply is deleted successfully',
+            message: 'Xóa phản hồi thành công',
             course
         })
     } catch (error: any) {

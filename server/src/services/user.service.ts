@@ -120,11 +120,11 @@ const deleteUser = async (userId: string) => {
         const user: IUser = (await UserModel.findById(userId)) as IUser
 
         if (!user) {
-            throw new ErrorHandler('User not found', StatusCodes.NOT_FOUND)
+            throw new ErrorHandler('Không tìm thấy người dùng.', StatusCodes.NOT_FOUND)
         }
 
         if (user.role === UserRole.ADMIN) {
-            throw new ErrorHandler('You can not delete admin', StatusCodes.BAD_REQUEST)
+            throw new ErrorHandler('Bạn không thể xóa quản trị viên', StatusCodes.BAD_REQUEST)
         }
 
         user.isDeleted = true

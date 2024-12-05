@@ -11,7 +11,7 @@ const createCourse = async (courseDataRequest: ICourse) => {
     try {
         const thumbnail: string = courseDataRequest?.thumbnail as unknown as string
         if (!courseDataRequest) {
-            throw new ErrorHandler('Invalid data', StatusCodes.BAD_REQUEST)
+            throw new ErrorHandler('Thông tin không hợp lệ.', StatusCodes.BAD_REQUEST)
         }
         // if (!thumbnail) {
         //     throw new ErrorHandler('Thumbnail is required', StatusCodes.BAD_REQUEST)
@@ -39,10 +39,10 @@ const updateCourse = async (courseId: string, courseDataRequest: ICourse) => {
     try {
         // Kiểm tra courseId và courseDataRequest có hợp lệ không
         if (!courseId) {
-            throw new ErrorHandler('Invalid course id', StatusCodes.BAD_REQUEST)
+            throw new ErrorHandler('Mã khóa học không hợp lệ.', StatusCodes.BAD_REQUEST)
         }
         if (!courseDataRequest) {
-            throw new ErrorHandler('Invalid data', StatusCodes.BAD_REQUEST)
+            throw new ErrorHandler('Thông tin không hợp lệ.', StatusCodes.BAD_REQUEST)
         }
 
         // Lấy thông tin khóa học hiện tại
@@ -135,11 +135,11 @@ const getAccessibleCourses = async (courseList: [], courseId: string) => {
         const courseExists: any = courseList.find((id: any) => id.toString() === courseId) as any
 
         if (!courseExistById) {
-            throw new ErrorHandler('Course not found', StatusCodes.NOT_FOUND)
+            throw new ErrorHandler('Không tìm thấy khóa học.', StatusCodes.NOT_FOUND)
         }
 
         if (!courseExists) {
-            throw new ErrorHandler('You are not allowed to access this course', StatusCodes.FORBIDDEN)
+            throw new ErrorHandler('Bạn không thể truy cập vào khóa học này.', StatusCodes.FORBIDDEN)
         }
         const course: ICourse = (await courseHelper.getOneCourseById(courseId)) as unknown as ICourse
 
@@ -220,7 +220,7 @@ const deleteCourse = async (courseId: string) => {
     try {
         const course: ICourse = (await CourseModel.findById(courseId)) as ICourse
         if (!course) {
-            throw new ErrorHandler('Course not found', StatusCodes.NOT_FOUND)
+            throw new ErrorHandler('Không tìm thấy khóa học.', StatusCodes.NOT_FOUND)
         }
         course.isDeleted = true
         await course?.save()

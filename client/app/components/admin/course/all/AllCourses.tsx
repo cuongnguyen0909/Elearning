@@ -8,16 +8,24 @@ import { FiEdit2 } from 'react-icons/fi';
 import Loading from '../../../../../components/common/Loading';
 import { useGetAllCoursesQuery } from '../../../../../redux/features/course/courseApi';
 import { styles } from '../../../../utils/style';
+import { useRouter } from 'next/navigation';
 interface AllCoursesProps {}
 
 const AllCourses: FC<AllCoursesProps> = (props) => {
   const { theme, setTheme } = useTheme();
+  const router = useRouter();
   const { isLoading, isSuccess, error, data, refetch } = useGetAllCoursesQuery(
     {},
     {
       refetchOnMountOrArgChange: true
     }
   );
+  const [loadingEdit, setLoadingEdit] = useState(false);
+
+  const handleEditClick = (id: string) => {
+    setLoadingEdit(true);
+    router.push(`/admin/course/edit/${id}`);
+  };
   const rows: any[] = [];
   const courses = data?.courses;
 
@@ -72,9 +80,12 @@ const AllCourses: FC<AllCoursesProps> = (props) => {
       renderCell: (params: any) => {
         return (
           <Box className="mt-2 flex items-center justify-center">
-            <Link href={`/admin/course/edit/${params.row.id}`}>
-              <FiEdit2 className="text-black dark:text-white" size={20} />
-            </Link>
+            <FiEdit2
+              className="cursor-pointer text-black dark:text-white"
+              size={20}
+              onClick={() => handleEditClick(params.row.id)} // Gọi hàm xử lý khi click Edit
+            />
+
             <Button>
               <AiOutlineDelete className="text-black dark:text-white" size={20} />
             </Button>
@@ -87,19 +98,17 @@ const AllCourses: FC<AllCoursesProps> = (props) => {
     courses?.forEach((course: any) => {
       const createdAt = new Date(course?.createdAt || '');
       const formattedDate = !isNaN(createdAt.getTime()) ? createdAt.toLocaleDateString('en-US') : 'Invalid Date';
+      console.log(course?.ratings);
       rows.push({
         id: course?._id,
         title: course?.title,
         category: course?.category?.title,
-        ratings: course?.rating,
+        ratings: course?.rating?.toFixed(1),
         purchased: course?.purchased,
         created_at: formattedDate
       });
     });
   }
-  // console.log(rows);
-  // console.log(courses);
-  console.log(data);
   useEffect(() => {
     if (isSuccess) {
       refetch();
@@ -108,7 +117,7 @@ const AllCourses: FC<AllCoursesProps> = (props) => {
 
   return (
     <div className="ml-12 mt-[120px]">
-      {isLoading ? (
+      {isLoading || loadingEdit ? (
         <Loading />
       ) : (
         <Box m="20px">

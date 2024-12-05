@@ -228,19 +228,19 @@ const AdminSidebar: FC = () => {
                 setSelected={setSelected}
               />
               <Item
-                title="Khóa học đã bán"
+                title="Đơn hàng"
                 to="/admin/enrollment/all"
                 icon={<ReceiptOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
-              <Item
+              {/* <Item
                 title="Quản trị viên"
                 to="/admin/team"
                 icon={<ManageHistoryIcon />}
                 selected={selected}
                 setSelected={setSelected}
-              />
+              /> */}
               {/* <Typography variant="h5" sx={{ m: '15px 0 5px 20px' }} className={styles.title_admin_sidebar}>
                             {!isCollapsed && 'Khoá học'}
                         </Typography> */}
@@ -278,7 +278,7 @@ const AdminSidebar: FC = () => {
                 setSelected={setSelected}
               />
               <Item
-                title="Khóa học đã bán"
+                title="Lượt mua"
                 to="/admin/analytics/enrollments"
                 icon={<MapOutlinedIcon />}
                 selected={selected}

@@ -22,14 +22,14 @@ const addComment = async (commentRequest: ICommentRequest, userId: any) => {
 
         const course: ICourse = (await CourseModel.findById(courseId)) as ICourse
         if (!course) {
-            throw new ErrorHandler('Course not found', StatusCodes.NOT_FOUND)
+            throw new ErrorHandler('Không tìm thấy khóa học.', StatusCodes.NOT_FOUND)
         }
 
         const courseContent: IContent = course?.contents?.find(
             (content: any) => content?._id.toString() === contentId
         ) as IContent
         if (!courseContent) {
-            throw new ErrorHandler('Content not found', StatusCodes.NOT_FOUND)
+            throw new ErrorHandler('Không tìm thấy bài học.', StatusCodes.NOT_FOUND)
         }
 
         const newComment: IComment = await CommentModel.create({
@@ -45,8 +45,8 @@ const addComment = async (commentRequest: ICommentRequest, userId: any) => {
 
         const newNotification: INotification = (await NotificationModel.create({
             user: user?._id,
-            title: 'New Comment Received',
-            message: `${user?.name} added a comment to ${courseContent?.title}`,
+            title: 'Nhận một bình luận mới.',
+            message: `${user?.name} đã bình luận ${courseContent?.title}`,
             comment: newComment?._id
         })) as INotification
         const courseAfterUpdate: ICourse = (await courseHelper.getOneCourseById(courseId)) as unknown as ICourse
@@ -66,17 +66,17 @@ const addCommentReply = async (commentRequest: IReplyCommentRequest, userId: any
         const userComment: IUser = (await UserModel.findById(comment?.user)) as IUser
         const contentId: any = comment?.content as any
         if (!comment) {
-            throw new ErrorHandler('Comment not found', StatusCodes.NOT_FOUND)
+            throw new ErrorHandler('Không thể tìm thấy bình luận', StatusCodes.NOT_FOUND)
         }
         const course: ICourse = (await CourseModel.findById(comment?.course)) as ICourse
         if (!course) {
-            throw new ErrorHandler('Course not found', StatusCodes.NOT_FOUND)
+            throw new ErrorHandler('Không tìm thấy khóa học.', StatusCodes.NOT_FOUND)
         }
         const content: IContent = course?.contents?.find(
             (content: any) => content?._id.toString() === contentId.toString()
         ) as IContent
         if (!content) {
-            throw new ErrorHandler('Content not found', StatusCodes.NOT_FOUND)
+            throw new ErrorHandler('Không tìm thấy bài học.', StatusCodes.NOT_FOUND)
         }
         const newReply: any = {
             user: userId,
@@ -91,8 +91,8 @@ const addCommentReply = async (commentRequest: IReplyCommentRequest, userId: any
             // create a notification
             await NotificationModel.create({
                 user: userReply?._id,
-                title: 'New Comment Received',
-                message: `You have a comment from ${userReply?.name} on ${content?.title}`,
+                title: 'Bình luận mới.',
+                message: `Bạn có một bình luận từ ${userReply?.name} trong ${content?.title}`,
                 comment: commentId
             })
         } else {
@@ -163,20 +163,20 @@ const deleteComment = async (commentId: any, courseId: any, contentId: any) => {
     try {
         const course: ICourse = (await CourseModel.findById(courseId)) as ICourse
         if (!course) {
-            throw new ErrorHandler('Course not found', StatusCodes.NOT_FOUND)
+            throw new ErrorHandler('Không tìm thấy khóa học.', StatusCodes.NOT_FOUND)
         }
         const content: IContent = course?.contents?.find(
             (content: any) => content?._id.toString() === contentId.toString()
         ) as IContent
         if (!content) {
-            throw new ErrorHandler('Content not found', StatusCodes.NOT_FOUND)
+            throw new ErrorHandler('Không tìm thấy bài học.', StatusCodes.NOT_FOUND)
         }
         content.comments = content.comments?.filter((comment: any) => comment.toString() !== commentId.toString())
         ;(await CommentModel.findByIdAndDelete(commentId)) as any
         await course?.save()
         const courseAfterDeleteComment: ICourse = (await courseHelper.getOneCourseById(courseId)) as unknown as ICourse
         await redis.set(courseId, JSON.stringify(courseAfterDeleteComment) as any)
-        return 'Comment is deleted successfully'
+        return 'Xóa bình luận thành công'
     } catch (error: any) {
         return new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
     }
@@ -186,7 +186,7 @@ const deleteCommentReply = async (commentId: any, replyId: any) => {
     try {
         const comment: IComment = (await CommentModel.findById(commentId)) as IComment
         if (!comment) {
-            throw new ErrorHandler('Comment not found', StatusCodes.NOT_FOUND)
+            throw new ErrorHandler('Không thể tìm thấy bình luận', StatusCodes.NOT_FOUND)
         }
         comment.commentReplies = comment.commentReplies?.filter(
             (reply: any) => reply._id.toString() !== replyId.toString()

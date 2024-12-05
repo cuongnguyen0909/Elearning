@@ -26,7 +26,7 @@ const addReview = catchAsyncError(async (req: Request, res: Response, next: Next
         }
         res.status(StatusCodes.OK).json({
             success: true,
-            message: 'Review is added successfully',
+            message: 'Đánh giá thành công',
             course
         })
     } catch (error: any) {
@@ -45,7 +45,7 @@ const addReviewReply = catchAsyncError(async (req: Request, res: Response, next:
 
         res.status(StatusCodes.OK).json({
             success: true,
-            message: 'Review reply is added successfully',
+            message: 'Đánh giá phản hồi thành công',
             course
         })
     } catch (error: any) {
@@ -61,7 +61,6 @@ const getAllReviews = catchAsyncError(async (req: Request, res: Response, next: 
         }
         res.status(StatusCodes.OK).json({
             success: true,
-            message: 'All reviews are fetched successfully',
             reviews
         })
     } catch (error: any) {
@@ -75,7 +74,7 @@ const deleteReviewReply = catchAsyncError(async (req: Request, res: Response, ne
         const course: ICourse = (await reviewServices.deleteReplyReview(reviewId, replyId)) as ICourse
         res.status(StatusCodes.OK).json({
             success: true,
-            message: 'Review reply is deleted successfully',
+            message: 'Xóa phản hồi thành công',
             course
         })
     } catch (error: any) {

@@ -25,7 +25,7 @@ const registerUser = async (userData: IRegistrationRequest) => {
         // Check if email already exists
         const isEmailExist: IUser = (await UserModel.findOne({ email })) as IUser
         if (isEmailExist) {
-            throw new ErrorHandler('Email is already exist', StatusCodes.BAD_REQUEST)
+            throw new ErrorHandler('Email đã tồn tại. Vui lòng thử email khác.', StatusCodes.BAD_REQUEST)
         }
 
         const user: IRegistrationRequest = { name, email, password }
@@ -65,7 +65,7 @@ const activateUser = async (activationRequest: IActivationRequest) => {
 
         //check if activation code is valid
         if (newUser && newUser.activationCode !== activationCode) {
-            throw new ErrorHandler('Invalid activation code', StatusCodes.BAD_REQUEST)
+            throw new ErrorHandler('Mã OTP không hợp lệ.', StatusCodes.BAD_REQUEST)
         }
         const { name, email, password } = newUser.user as IUser
 
@@ -73,7 +73,7 @@ const activateUser = async (activationRequest: IActivationRequest) => {
         const existingUser: IUser = (await UserModel.findOne({ email })) as IUser
 
         if (existingUser) {
-            throw new ErrorHandler('User is already exist', StatusCodes.BAD_REQUEST)
+            throw new ErrorHandler('Người dùng đã tồn tại.', StatusCodes.BAD_REQUEST)
         }
 
         const user = await UserModel.create({ name, email, password })
@@ -90,7 +90,7 @@ const loginUser = async (loginRequest: ILoginRequest) => {
         const { email, password } = loginRequest
         //check email or password is entered or not
         if (!email || !password) {
-            throw new ErrorHandler('Please enter email and password', StatusCodes.BAD_REQUEST)
+            throw new ErrorHandler('Email và mật khẩu không được bỏ trống', StatusCodes.BAD_REQUEST)
         }
 
         //check user is exist or not
@@ -99,11 +99,11 @@ const loginUser = async (loginRequest: ILoginRequest) => {
             path: 'courses'
         })) as IUser
         if (!user) {
-            throw new ErrorHandler('Invalid email or password', StatusCodes.UNAUTHORIZED)
+            throw new ErrorHandler('Email không đúng. Vui lòng nhập lại', StatusCodes.UNAUTHORIZED)
         }
         if (user.isBlocked || user.isDeleted) {
             throw new ErrorHandler(
-                'You are not allowed to login. Please contact us via email for more information about your account',
+                'Tài khoản của bạn không khả dụng. Vui lòng liên hệ với chúng tôi qua email để biết thêm thông tin về tài khoản của bạn',
                 StatusCodes.UNAUTHORIZED
             )
         }
@@ -112,12 +112,12 @@ const loginUser = async (loginRequest: ILoginRequest) => {
 
         //check if password is matched
         if (!isPasswordMatched) {
-            return new ErrorHandler("Email or password doesn't match. Please try again", StatusCodes.UNAUTHORIZED)
+            return new ErrorHandler('Mật khẩu không chính xác. Vui lòng thử lại', StatusCodes.UNAUTHORIZED)
         }
         //check user is blocked or not
         if (user.isBlocked) {
             throw new ErrorHandler(
-                'Something went wrong. Please contact us via email for more information about your account',
+                'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ với chúng tôi qua email để biết thêm thông tin về tài khoản của bạn',
                 StatusCodes.UNAUTHORIZED
             )
         }
@@ -145,7 +145,7 @@ const createNewAccessToken = async (refreshToken: string) => {
 
         const userOfSession: any = await redis.get(decoded?.id as string)
         if (!userOfSession) {
-            throw new ErrorHandler('Please login to access this resource', StatusCodes.NOT_FOUND)
+            throw new ErrorHandler('Hãy đăng nhập trước khi truy cập vào tài nguyên này', StatusCodes.NOT_FOUND)
         }
 
         const user = JSON.parse(userOfSession) as IUser

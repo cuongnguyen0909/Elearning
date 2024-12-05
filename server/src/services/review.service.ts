@@ -32,38 +32,35 @@ const addReview = async (reviewRequest: IReviewRequest, userId: any, courseId: s
         //check if the user is allowed to access the course
         const user: IUser = (await UserModel.findById(userId)) as IUser
         if (!user) {
-            throw new ErrorHandler('User not found', StatusCodes.NOT_FOUND)
+            throw new ErrorHandler('Không tìm thấy tài khoản.', StatusCodes.NOT_FOUND)
         }
         if (user.role === UserRole.ADMIN) {
-            throw new ErrorHandler('Admin is not allowed to add review', StatusCodes.FORBIDDEN)
+            throw new ErrorHandler('Quản trị viên không được đánh giá khóa học.', StatusCodes.FORBIDDEN)
         }
         const userCourseList: any = user?.courses as any
 
         if (Number(rating) < 1 || Number(rating) > 5) {
-            throw new ErrorHandler('Rating must be between 1 and 5', StatusCodes.BAD_REQUEST)
+            throw new ErrorHandler('Số sao phải từ một đến năm.', StatusCodes.BAD_REQUEST)
         }
 
         if (userCourseList?.length === 0 || !userCourseList) {
-            throw new ErrorHandler(
-                'You have not purchased any course. Please enroll in this course',
-                StatusCodes.FORBIDDEN
-            )
+            throw new ErrorHandler('Bạn chưa đăng ký khóa học. Hãy đăng ký ngay!', StatusCodes.FORBIDDEN)
         }
         const courseExists: any = userCourseList?.some((course: any) => course?._id.toString() === courseId) as any
         if (!courseExists) {
-            throw new ErrorHandler('You are not allowed to access this course', StatusCodes.FORBIDDEN)
+            throw new ErrorHandler('Bạn không có quyền truy cập vào khóa học.', StatusCodes.FORBIDDEN)
         }
 
         //find the course by id
         const course: ICourse = (await courseHelper.getOneCourseById(courseId)) as unknown as ICourse
         if (!course) {
-            throw new ErrorHandler('Course not found', StatusCodes.NOT_FOUND)
+            throw new ErrorHandler('Không tìm thấy khóa học.', StatusCodes.NOT_FOUND)
         }
         const isUserReviewed: boolean = course?.reviews?.some(
             (review: any) => review.user?._id.toString() === userId.toString()
         )
         if (isUserReviewed) {
-            throw new ErrorHandler('You have already added a review to this course', StatusCodes.BAD_REQUEST)
+            throw new ErrorHandler('Bạn đã đánh giá khóa học này rồi.', StatusCodes.BAD_REQUEST)
         }
         //create a new review and save in to database
         const newReview: IReview = await ReviewModel.create({
@@ -88,8 +85,8 @@ const addReview = async (reviewRequest: IReviewRequest, userId: any, courseId: s
 
         //update in redis
         const notification = await NotificationModel.create({
-            title: 'New Review Added',
-            message: `${user?.name} added a review to ${course?.title} with rating ${rating}`,
+            title: 'Đánh giá mới',
+            message: `${user?.name} vừa đánh giá bài học: ${course?.title} với số sao: ${rating}`,
             user: userId,
             review: newReview?._id
         })
@@ -109,19 +106,19 @@ const addReviewReply = async (reviewRequest: IReplyReviewRequest, userId: string
         const { reply, reviewId, courseId } = reviewRequest as IReplyReviewRequest
         const user: IUser = (await UserModel.findById(userId)) as IUser
         if (!user) {
-            throw new ErrorHandler('User not found', StatusCodes.NOT_FOUND)
+            throw new ErrorHandler('Không tìm thấy người dùng.', StatusCodes.NOT_FOUND)
         }
 
         //check course exist
         const course: ICourse = (await CourseModel.findById(courseId)) as ICourse
         if (!course) {
-            throw new ErrorHandler('Course not found', StatusCodes.NOT_FOUND)
+            throw new ErrorHandler('Không tìm thấy khóa học.', StatusCodes.NOT_FOUND)
         }
         //check review exist
         const review: IReview = (await ReviewModel.findById(reviewId)) as IReview
         const reviewrUser: IUser = (await UserModel.findById(review?.user)) as IUser
         if (!review) {
-            throw new ErrorHandler('Review not found', StatusCodes.NOT_FOUND)
+            throw new ErrorHandler('Không tìm thấy đánh giá.', StatusCodes.NOT_FOUND)
         }
         //create a new review reply
         const newReviewReply: any = {
@@ -181,7 +178,7 @@ const deleteReplyReview = async (reviewId: any, replyId: any) => {
     try {
         const review: IReview = (await ReviewModel.findById(reviewId)) as IReview
         if (!review) {
-            throw new ErrorHandler('Review not found', StatusCodes.NOT_FOUND)
+            throw new ErrorHandler('Không tìm thấy đánh giá.', StatusCodes.NOT_FOUND)
         }
         const replyIndex: number = review.reviewReplies.findIndex((reply: any) => reply._id.toString() === replyId)
         if (replyIndex === -1) {

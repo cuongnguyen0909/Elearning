@@ -38,18 +38,18 @@ const createNewEnrollment = async (enrollRequest: any, userId: string) => {
         }
 
         if (!courseId || !payment_info) {
-            throw new ErrorHandler('Missing required fields', StatusCodes.BAD_REQUEST)
+            throw new ErrorHandler('Vui lòng điền đầy đủ thông tin.', StatusCodes.BAD_REQUEST)
         }
         //check course is already enrolled or not
         const isCourseEnrolled: any = user?.courses?.some((course: any) => course?._id.toString() === courseId)
 
         if (isCourseEnrolled) {
-            throw new ErrorHandler('You have already purchased this course', StatusCodes.BAD_REQUEST)
+            throw new ErrorHandler('Bạn đã mua khóa học này rồi. Hãy mua khóa học khác.', StatusCodes.BAD_REQUEST)
         }
 
         const course: ICourse = (await CourseModel.findById(courseId)) as ICourse
         if (!course) {
-            throw new ErrorHandler('Course not found', StatusCodes.NOT_FOUND)
+            throw new ErrorHandler('Không tìm thấy khóa học.', StatusCodes.NOT_FOUND)
         }
 
         //create new enroll
@@ -91,8 +91,8 @@ const createNewEnrollment = async (enrollRequest: any, userId: string) => {
 
         const notification: INotification = (await NotificationModel.create({
             user: user?._id,
-            title: 'New Course Enrolled',
-            message: `You have a new course enrolled: ${course?.title}`
+            title: 'Đăng ký khóa học thành công',
+            message: `Bạn đã đăng ký khóa học ${course?.title}`
         })) as INotification
 
         const allEnrollments = await enrollHelper.getAllEntrollments()

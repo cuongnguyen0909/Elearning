@@ -12,7 +12,7 @@ const createCourse = catchAsyncError(async (req: Request, res: Response, next: N
         const course: ICourse = (await courseServices.createCourse(data)) as ICourse
         res.status(StatusCodes.CREATED).json({
             success: true,
-            message: 'Course is created successfully',
+            message: 'Khóa học được tạo thành công',
             course
         })
     } catch (error: any) {
@@ -27,7 +27,7 @@ const updateCourse = catchAsyncError(async (req: Request, res: Response, next: N
         const updatedCourse: ICourse = (await courseServices.updateCourse(courseId, data)) as ICourse
         res.status(StatusCodes.OK).json({
             success: true,
-            message: 'Course is updated successfully',
+            message: 'Khóa học được cập nhật thành công',
             course: updatedCourse
         })
     } catch (error: any) {
@@ -110,7 +110,7 @@ const deleteCourse = catchAsyncError(async (req: Request, res: Response, next: N
         const deletedCourse: ICourse = (await courseServices.deleteCourse(courseId)) as ICourse
         res.status(StatusCodes.OK).json({
             success: true,
-            message: 'Course deleted successfully',
+            message: 'Khóa học đã được xóa',
             course: deletedCourse
         })
     } catch (error: any) {

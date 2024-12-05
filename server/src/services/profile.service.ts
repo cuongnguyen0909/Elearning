@@ -15,7 +15,7 @@ const getProfileById = async (uid: string) => {
     try {
         const userSession: any = (await redis.get(uid)) as any
         if (!userSession) {
-            throw new ErrorHandler('User not found', StatusCodes.NOT_FOUND)
+            throw new ErrorHandler('Không tìm thấy khóa học.', StatusCodes.NOT_FOUND)
         }
         const user: IUser = (await profileHelpers.getProfileById(uid)) as IUser
         redis.set(uid, JSON.stringify(user) as any)
@@ -59,21 +59,21 @@ const updatePassword = async (updatePasswordRequest: IUpdatePasswordRequest, use
 
         //check new password is different from current password
         if (currentPassword === newPassword) {
-            throw new ErrorHandler('New password must be different from current password', StatusCodes.BAD_REQUEST)
+            throw new ErrorHandler('Mật khẩu mới phải khác với mật khẩu cũ.', StatusCodes.BAD_REQUEST)
         }
 
         const user: IUser = (await UserModel.findById(userId).select('+password -role')) as IUser
 
         //check login by social then password is not set
         if (!user.password) {
-            throw new ErrorHandler('Password is not set', StatusCodes.BAD_REQUEST)
+            throw new ErrorHandler('Không tìm thấy mật khẩu.', StatusCodes.BAD_REQUEST)
         }
 
         //check password is matched or not
         const isPasswordMatched: boolean = await user.comparePassword(currentPassword)
         //check wrong pasword
         if (!isPasswordMatched) {
-            throw new ErrorHandler('Password is incorrect', StatusCodes.BAD_REQUEST)
+            throw new ErrorHandler('Mật khẩu không đúng.', StatusCodes.BAD_REQUEST)
         }
 
         user.password = newPassword
@@ -115,12 +115,12 @@ const markCompletedContent = async (userId: string, courseId: string, contentId:
     try {
         const user: IUser | null = await UserModel.findById(userId)
         if (!user) {
-            throw new ErrorHandler('User not found', StatusCodes.NOT_FOUND)
+            throw new ErrorHandler('Không tìm thấy tài khoản.', StatusCodes.NOT_FOUND)
         }
 
         const course: ICourse | null = await CourseModel.findById(courseId)
         if (!course) {
-            throw new ErrorHandler('Course not found', StatusCodes.NOT_FOUND)
+            throw new ErrorHandler('Không tìm thấy khóa học.', StatusCodes.NOT_FOUND)
         }
 
         // Kiểm tra xem video đã hoàn thành hay chưa
@@ -128,13 +128,13 @@ const markCompletedContent = async (userId: string, courseId: string, contentId:
             (content: any) => content?.course?.toString() === courseId && content?.contentId?.toString() === contentId
         )
         if (isVideoCompleted) {
-            throw new ErrorHandler('Video is already completed', StatusCodes.BAD_REQUEST)
+            throw new ErrorHandler('Hoàn thành bài học. Hãy chuyển sang bài học tiếp theo.', StatusCodes.BAD_REQUEST)
         }
 
         // Tìm contentId trong course.contents
         const content = course.contents.find((content: any) => content?._id?.toString() === contentId)
         if (!content) {
-            throw new ErrorHandler('Content not found in course', StatusCodes.NOT_FOUND)
+            throw new ErrorHandler('Bài học này không có trong khóa học.', StatusCodes.NOT_FOUND)
         }
 
         // Thêm content vào danh sách hoàn thành

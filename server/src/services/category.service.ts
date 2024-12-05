@@ -8,11 +8,11 @@ const createCategory = async (title: string) => {
     try {
         // Check if category already exists
         if (!title) {
-            throw new ErrorHandler('Category title is required', StatusCodes.BAD_REQUEST)
+            throw new ErrorHandler('Tên thể loại không được bỏ trống', StatusCodes.BAD_REQUEST)
         }
         const isCategoryExist = await CategoryModel.findOne({ title })
         if (isCategoryExist) {
-            throw new ErrorHandler('Category is already exist', StatusCodes.BAD_REQUEST)
+            throw new ErrorHandler('Thể loại này đã tồn lại.', StatusCodes.BAD_REQUEST)
         }
 
         const newCategory = await CategoryModel.create({ title })
@@ -29,7 +29,7 @@ const updateCategory = async (id: string, title: string) => {
         // Check if category already exists
         const isCategoryExist = await CategoryModel.findById(id)
         if (!isCategoryExist) {
-            throw new ErrorHandler('Category does not exist', StatusCodes.BAD_REQUEST)
+            throw new ErrorHandler('Thể loại này không khả dụng.', StatusCodes.BAD_REQUEST)
         }
 
         const updatedCategory = await CategoryModel.findByIdAndUpdate(id, { title }, { new: true })
@@ -46,13 +46,13 @@ const deleteCategory = async (id: string) => {
         // Check if category already exists
         const isCategoryExist = await CategoryModel.findById(id)
         if (!isCategoryExist) {
-            throw new ErrorHandler('Category does not exist', StatusCodes.BAD_REQUEST)
+            throw new ErrorHandler('Thể loại này không khả dụng.', StatusCodes.BAD_REQUEST)
         }
 
         await CategoryModel.findByIdAndDelete(id)
         const allCategories = await categoryHelper.getAllCategories()
         redis.set('allCategories', JSON.stringify(allCategories))
-        return 'Category deleted successfully'
+        return 'Xóa thể loại thành công'
     } catch (error: any) {
         throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
     }

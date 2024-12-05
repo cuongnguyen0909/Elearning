@@ -26,7 +26,7 @@ const updateProfile = catchAsyncError(async (req: Request, res: Response, next: 
         const user: IUser = (await profileServices.updateProfile(userId, updateInfoRequest)) as IUser
         res.status(StatusCodes.OK).json({
             success: true,
-            message: 'User info is updated successfully',
+            message: 'Cập nhật thông tin thành công',
             userId: user._id
         })
     } catch (error: any) {
@@ -41,7 +41,7 @@ const changePassword = catchAsyncError(async (req: Request, res: Response, next:
         const user: IUser = (await profileServices.updatePassword(changePasswordRequest, userId)) as IUser
         res.status(StatusCodes.OK).json({
             success: true,
-            message: 'Password is updated successfully',
+            message: 'Cập nhật mật khẩu thành công',
             userId: user._id
         })
     } catch (error: any) {
@@ -56,7 +56,7 @@ const changeAvatar = catchAsyncError(async (req: Request, res: Response, next: N
         const user: IUser = (await profileServices.uploadImage(userId, updateAvatarRequest)) as unknown as IUser
         res.status(StatusCodes.OK).json({
             success: true,
-            message: 'Avatar is updated successfully',
+            message: 'Cập nhật ảnh đại diện thành công',
             userId: user._id
         })
     } catch (error: any) {
@@ -76,7 +76,7 @@ const makeCompletedVideo = catchAsyncError(async (req: Request, res: Response, n
         )) as unknown as IUser
         res.status(StatusCodes.OK).json({
             success: true,
-            message: 'Content is marked as completed',
+            message: 'Hoàn thành bài học thành công',
             user: user
         })
     } catch (error: any) {

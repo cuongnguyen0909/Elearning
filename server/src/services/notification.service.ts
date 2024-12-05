@@ -25,7 +25,7 @@ const updateNotificationStatus = async (notificationId: string) => {
     try {
         const notification: INotification = (await NotificationModel.findById(notificationId)) as INotification
         if (!notification) {
-            throw new ErrorHandler('Notification not found', StatusCodes.NOT_FOUND)
+            throw new ErrorHandler('Không tìm thấy thông báo.', StatusCodes.NOT_FOUND)
         }
         if (notification.status) {
             notification.status = 'read'
@@ -35,7 +35,7 @@ const updateNotificationStatus = async (notificationId: string) => {
         })
         const allNotifications = await redis.get('allNotifications')
         await redis.set('allNotifications', JSON.stringify(allNotifications))
-        return { notification, allNotifications }
+        return notification
     } catch (error: any) {
         throw new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
     }
@@ -46,7 +46,7 @@ const deleleNotificationsAfter30Days = async () => {
         cron.schedule('0 0 0 * * *', async () => {
             const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
             await NotificationModel.deleteMany({ status: 'read', createdAt: { $lt: thirtyDaysAgo } })
-            console.log('Deleted read notifications after 30 days')
+            console.log('Xóa thông báo cũ hơn 30 ngày')
         })
         const allNotifications = await notificationHelper.getAllNotifications()
         return allNotifications

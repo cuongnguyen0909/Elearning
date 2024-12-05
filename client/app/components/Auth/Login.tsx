@@ -57,7 +57,7 @@ const Login: React.FC<Props> = (props) => {
     <div className="w-full">
       {isLoading && <Loading />}
       <h1 className={`${styles.title}`}>
-        Dự án <span className="text-[#2190ff]">ELearning</span>
+        Dự án <span className="text-[#2190ff]">Edemy</span>
       </h1>
       <form onSubmit={handleSubmit}>
         {/* email field */}

@@ -20,11 +20,10 @@ const getNotifications = catchAsyncError(async (req: Request, res: Response, nex
 const updateNotificationStatus = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
         const notificationId = req.params.id as string
-        const { notification, notifications } = await notificationServices.updateNotificationStatus(notificationId)
+        const notification = await notificationServices.updateNotificationStatus(notificationId)
         res.status(StatusCodes.OK).json({
             success: true,
-            notification,
-            notifications
+            notification
         })
     } catch (error: any) {
         return next(new ErrorHandler(error.message, StatusCodes.BAD_REQUEST))
