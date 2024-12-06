@@ -47,6 +47,13 @@ const commentApi = apiSlice.injectEndpoints({
         },
         credentials: 'include' as const
       })
+    }),
+    getAllComments: builder.query({
+      query: () => ({
+        url: `comment/all`,
+        method: 'GET',
+        credentials: 'include' as const
+      })
     })
   })
 });
@@ -55,5 +62,6 @@ export const {
   useAddCommentMutation,
   useDeleteCommentMutation,
   useReplyCommentMutation,
-  useDeleteReplyCommentMutation
+  useDeleteReplyCommentMutation,
+  useGetAllCommentsQuery
 } = commentApi;

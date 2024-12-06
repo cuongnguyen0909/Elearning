@@ -15,23 +15,27 @@ import ManageHistoryIcon from '@mui/icons-material/ManageHistory';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
+import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
+import FeedbackOutlinedIcon from '@mui/icons-material/FeedbackOutlined';
 
 export {
-    HomeOutlinedIcon,
-    ArrowForwardIosIcon,
-    ArrowBackIosIcon,
-    PeopleOutlinedIcon,
-    ReceiptOutlinedIcon,
-    BarChartOutlinedIcon,
-    MapOutlinedIcon,
-    GroupsIcon,
-    OndemandVideoIcon,
-    VideoCallIcon,
-    WebIcon,
-    QuizIcon,
-    WysiwygIcon,
-    ManageHistoryIcon,
-    SettingsIcon,
-    ExitToAppIcon,
-    CategoryOutlinedIcon
+  HomeOutlinedIcon,
+  ArrowForwardIosIcon,
+  ArrowBackIosIcon,
+  PeopleOutlinedIcon,
+  ReceiptOutlinedIcon,
+  BarChartOutlinedIcon,
+  MapOutlinedIcon,
+  GroupsIcon,
+  OndemandVideoIcon,
+  VideoCallIcon,
+  WebIcon,
+  QuizIcon,
+  WysiwygIcon,
+  ManageHistoryIcon,
+  SettingsIcon,
+  ExitToAppIcon,
+  CategoryOutlinedIcon,
+  CommentOutlinedIcon,
+  FeedbackOutlinedIcon
 };

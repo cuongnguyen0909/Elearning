@@ -27,7 +27,9 @@ import {
   OndemandVideoIcon,
   QuizIcon,
   ReceiptOutlinedIcon,
-  SettingsIcon
+  SettingsIcon,
+  CommentOutlinedIcon,
+  FeedbackOutlinedIcon
 } from './Icon';
 
 interface ItemProps {
@@ -234,6 +236,20 @@ const AdminSidebar: FC = () => {
                 selected={selected}
                 setSelected={setSelected}
               />
+              <Item
+                title="Bình luận"
+                to="/admin/comment/all"
+                icon={<FeedbackOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              {/* <Item
+                title="Đánh giá"
+                to="/admin/review/all"
+                icon={<ReceiptOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              /> */}
               {/* <Item
                 title="Quản trị viên"
                 to="/admin/team"

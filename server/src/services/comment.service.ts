@@ -14,6 +14,7 @@ import { IUser } from '../models/schemas/user.schema'
 import { UserModel } from '../models/user.model'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
 import sendMail from '../utils/mails/send-mail'
+import { commentHelper } from '../helpers/comment.helper'
 
 const addComment = async (commentRequest: ICommentRequest, userId: any) => {
     try {
@@ -125,17 +126,12 @@ const addCommentReply = async (commentRequest: IReplyCommentRequest, userId: any
 
 const getAllComments = async () => {
     try {
-        const comments: IComment[] = (await CommentModel.find()
-            .sort({ createdAt: -1 })
-            .populate({
-                path: 'user',
-                select: 'name email avatar'
-            })
-            .populate({
-                path: 'commentReplies.user',
-                select: 'name email avatar'
-            })) as IComment[]
-
+        const isCachedExist = await redis.get('allComments')
+        if (isCachedExist) {
+            return JSON.parse(isCachedExist) as IComment[]
+        }
+        const comments: IComment[] = await commentHelper.getAllComments()
+        await redis.set('allComments', JSON.stringify(comments) as any)
         return comments
     } catch (error: any) {
         return new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
@@ -176,6 +172,8 @@ const deleteComment = async (commentId: any, courseId: any, contentId: any) => {
         await course?.save()
         const courseAfterDeleteComment: ICourse = (await courseHelper.getOneCourseById(courseId)) as unknown as ICourse
         await redis.set(courseId, JSON.stringify(courseAfterDeleteComment) as any)
+        const allComments = (await commentHelper.getAllComments()) as any
+        await redis.set('allComments', JSON.stringify(allComments) as any)
         return 'Xóa bình luận thành công'
     } catch (error: any) {
         return new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)
