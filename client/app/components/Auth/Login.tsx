@@ -16,8 +16,8 @@ type Props = {
 };
 
 const loginSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid email').required('Please enter your email'),
-  password: Yup.string().required('Please enter your password').min(6, 'Password must be at least 6 characters')
+  email: Yup.string().email('Email không hợp lệ').required('Email không được bỏ trống'),
+  password: Yup.string().required('Mật khẩu không được bỏ trống').min(6, 'Mật khẩu phải có ít nhất 6 ký tự')
 });
 
 const Login: React.FC<Props> = (props) => {

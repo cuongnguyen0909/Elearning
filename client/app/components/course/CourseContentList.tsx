@@ -3,23 +3,38 @@ import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import { IoPlayCircleOutline } from 'react-icons/io5';
 import { formatTime } from '../../utils/formatHelper';
 import { IoMdCheckmarkCircle } from 'react-icons/io';
+import { log } from 'console';
 
 interface CourseContentListProps {
-  data: any;
+  data?: any;
   activeVideo?: number;
   setActiveVideo?: (value: number) => void;
+  contents?: any;
   isDemo?: boolean;
   userData?: any;
   refetchUserData?: any;
 }
 
 const CourseContentList: FC<CourseContentListProps> = (props) => {
-  const { data, activeVideo, setActiveVideo, isDemo, userData, refetchUserData } = props;
+  const { data, activeVideo, setActiveVideo, isDemo, userData, refetchUserData, contents } = props;
 
   const [visibleSection, setVisibleSection] = useState<Set<string>>(new Set<string>());
   const completedVideos: any[] = userData?.user?.completedVideos;
   //find unique section
-  const videoSections: string[] = [...new Set<string>(data?.contents?.map((video: any) => video?.videoSection))];
+  let videoSections: string[] = [];
+  if (data) {
+    videoSections = [...new Set<string>(data?.contents?.map((video: any) => video?.videoSection))];
+  } else if (contents) {
+    videoSections = [...new Set<string>(contents?.map((video: any) => video?.videoSection))];
+  }
+
+  // const videoSections: string[] = [
+  //   ...new Set<string>(
+  //     data
+  //       ? data?.contents?.map((video: any) => video?.videoSection)
+  //       : contents?.map((video: any) => video?.videoSection)
+  //   )
+  // ];
   let totalCount: number = 0;
 
   const toggleSection = (sections: string) => {
@@ -38,10 +53,12 @@ const CourseContentList: FC<CourseContentListProps> = (props) => {
         const isSectionVisible = visibleSection.has(section);
 
         // filter video by section
-        const sectionVideos: any[] = data?.contents?.filter((video: any) => video.videoSection === section);
+        const sectionVideos: any[] = data
+          ? data?.contents?.filter((video: any) => video.videoSection === section)
+          : contents?.filter((video: any) => video.videoSection === section);
         // console.log('sectionVideos', sectionVideos);
-        const sectionVideoCount: number = sectionVideos.length;
-        const sectionVideoLength: number = sectionVideos.reduce(
+        const sectionVideoCount: number = sectionVideos?.length;
+        const sectionVideoLength: number = sectionVideos?.reduce(
           (totalLength: number, item: any) => totalLength + Number(item?.videoDuration),
           0
         );

@@ -55,10 +55,8 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
   const [isNextEnale, setIsNextEnable] = useState<boolean>(false);
   const isCompleted = user?.completedVideos?.find((item: any) => item?.contentId === data?.[activeVideo]?._id);
 
-  const [
-    markCompleteVideo,
-    { isLoading: markCompleteVideoLoading, isSuccess: markCompleteVideoSuccess, error: markCompleteVideoError }
-  ] = useMarkCompleteVideoMutation();
+  const [markCompleteVideo, { isSuccess: markCompleteVideoSuccess, error: markCompleteVideoError }] =
+    useMarkCompleteVideoMutation();
 
   const handleNextVideo = async () => {
     if (activeVideo < data?.length - 1) {

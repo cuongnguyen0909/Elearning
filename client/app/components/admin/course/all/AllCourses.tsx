@@ -26,6 +26,11 @@ const AllCourses: FC<AllCoursesProps> = (props) => {
     setLoadingEdit(true);
     router.push(`/admin/course/edit/${id}`);
   };
+
+  const handleCreateClick = () => {
+    setLoadingEdit(true);
+    router.push('/admin/course/create');
+  };
   const rows: any[] = [];
   const courses = data?.courses;
 
@@ -125,9 +130,9 @@ const AllCourses: FC<AllCoursesProps> = (props) => {
             <div
               className={`${styles.button} fixed top-24 !h-[30px] !w-[15%] bg-[#7eb0c457] text-black dark:border dark:border-[#fff] dark:bg-[#2190ff] dark:text-white`}
             >
-              <Link href="/admin/course/create" passHref>
+              <Button className="dark:font-semibold dark:text-white" onClick={() => handleCreateClick()}>
                 Thêm khóa học
-              </Link>
+              </Button>
             </div>
           </div>
           <Box

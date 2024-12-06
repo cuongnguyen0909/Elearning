@@ -50,7 +50,7 @@ const CheckoutForm: FC<CheckoutFormProps> = (props) => {
       setIsLoading(false);
     } else if (paymentIntent && paymentIntent.status === 'succeeded') {
       // success
-      setMessage('Payment succeeded!');
+      setMessage('Thanh toán thành công');
       const enrollmentData = {
         course: data?._id,
         payment_info: paymentIntent
@@ -67,13 +67,16 @@ const CheckoutForm: FC<CheckoutFormProps> = (props) => {
       setLoadUser(true);
     }
     if (isSuccessCreateEnrollment) {
-      toast.success('Payment success');
+      toast.success('Thanh toán thành công', {
+        duration: 2000
+      });
     }
     if (errorCreateEnrollment) {
       if ('data' in errorCreateEnrollment) {
         const errorData = errorCreateEnrollment as any;
         setMessage(errorData.data.message);
       }
+      toast.error('Thanh toán thất bại', { duration: 2000 });
     }
   }, [errorCreateEnrollment, errorCreateEnrollment]);
   return (

@@ -18,6 +18,7 @@ const CourseContent: FC<CourseContentProps> = (props) => {
   const [isCollapsed, setIsCollapsed] = useState(Array(courseContent?.length).fill(false));
   const [activeSection, setActiveSection] = useState(1);
   const [focusedInputIndex, setFocusedInputIndex] = useState<number | null>(null);
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
   };

@@ -3,7 +3,7 @@ import { IoCheckmarkDoneOutline } from 'react-icons/io5';
 import CoursePlayer from './CoursePlayer';
 import { styles } from '../../../../utils/style';
 import Rating from '../../../../../components/rating/Rating';
-
+import CourseContentList from '../../../course/CourseContentList';
 interface CoursePreviewProps {
   active: number;
   setActive: (active: number) => void;
@@ -26,6 +26,7 @@ const CoursePreview: FC<CoursePreviewProps> = (props) => {
   const editCourseFinally = () => {
     handleCourseEdit();
   };
+  console.log('courseData', courseData?.contents);
   return (
     <div className="m-auto mb-5 w-[90%] py-5 800px:w-[90%]">
       <div className="relative w-full">
@@ -43,7 +44,7 @@ const CoursePreview: FC<CoursePreviewProps> = (props) => {
           </h4>
         </div>
         <div className="flex items-center">
-          <div className={`${styles.button} font-Arimo my-3 !w-[180px] flex-[1%] cursor-not-allowed !bg-[crimson]`}>
+          <div className={`${styles.button} my-3 !w-[180px] flex-[1%] cursor-not-allowed !bg-[crimson] font-Arimo`}>
             Mua ngay {courseData?.price === 0 ? 'Free' : `$${courseData?.price}`}
           </div>
           <div className="flex flex-[65%] items-center">
@@ -54,7 +55,7 @@ const CoursePreview: FC<CoursePreviewProps> = (props) => {
               placeholder="Nhập mã giảm giá..."
               className={`${styles.input} !mt-0 ml-3 1100px:w-[60%] 1500px:!w-[50%]`}
             />
-            <div className={`${styles.button} font-Arimo my-3 ml-4 !w-[120px] cursor-pointer`}>Áp dụng</div>
+            <div className={`${styles.button} my-3 ml-4 !w-[120px] cursor-pointer font-Arimo`}>Áp dụng</div>
           </div>
         </div>
         <br />
@@ -77,14 +78,20 @@ const CoursePreview: FC<CoursePreviewProps> = (props) => {
         </div>
       </div>
       <br />
+      <div>
+        <h1 className="font-Arimo text-[25px] font-[600]">
+          Nội dung khóa học <span className="text-[#f6b100]">*</span>
+        </h1>
+        <div className="mx-6">
+          <CourseContentList contents={courseData?.contents} />
+        </div>
+      </div>
       <div className="w-full">
         <div className="w-full 800px:pr-5">
-          <div className="flex items-center justify-between pt-3">
-            <div className="flex items-center justify-between">
-              <Rating rating={4.5} />
-              <h5>0 Đánh giá</h5>
-              {/* <h5>0 Students</h5> */}
-            </div>
+          <div className="mt-8 flex items-center justify-start gap-6">
+            <Rating rating={4.5} />
+            <h5>0 Đánh giá</h5>
+            {/* <h5>0 Students</h5> */}
           </div>
           <br />
           <h1 className="font-Arimo text-[25px] font-[600]">
