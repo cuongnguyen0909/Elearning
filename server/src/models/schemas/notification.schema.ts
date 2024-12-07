@@ -1,3 +1,4 @@
+import { ref } from 'joi'
 import mongoose, { Document, Schema } from 'mongoose'
 
 export interface INotification extends Document {
@@ -7,6 +8,8 @@ export interface INotification extends Document {
     user: mongoose.Types.ObjectId
     comment?: mongoose.Types.ObjectId
     review?: mongoose.Types.ObjectId
+    content?: mongoose.Types.ObjectId
+    course?: mongoose.Types.ObjectId
 }
 
 export const notificationSchema = new mongoose.Schema<INotification>(
@@ -35,6 +38,13 @@ export const notificationSchema = new mongoose.Schema<INotification>(
         review: {
             type: Schema.Types.ObjectId,
             ref: 'Review'
+        },
+        content: {
+            type: Schema.Types.ObjectId
+        },
+        course: {
+            type: Schema.Types.ObjectId,
+            ref: 'Course'
         }
     },
     {

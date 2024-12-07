@@ -88,7 +88,8 @@ const addReview = async (reviewRequest: IReviewRequest, userId: any, courseId: s
             title: 'Đánh giá mới',
             message: `${user?.name} vừa đánh giá bài học: ${course?.title} với số sao: ${rating}`,
             user: userId,
-            review: newReview?._id
+            review: newReview?._id,
+            course: courseId
         })
         const courseAfterUpdate: ICourse = (await courseHelper.getOneCourseById(courseId)) as unknown as ICourse
         await redis.set(courseId, JSON.stringify(courseAfterUpdate) as any)

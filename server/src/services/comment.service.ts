@@ -48,7 +48,9 @@ const addComment = async (commentRequest: ICommentRequest, userId: any) => {
             user: user?._id,
             title: 'Nhận một bình luận mới.',
             message: `${user?.name} đã bình luận ${courseContent?.title}`,
-            comment: newComment?._id
+            comment: newComment?._id,
+            content: contentId,
+            course: courseId
         })) as INotification
         const courseAfterUpdate: ICourse = (await courseHelper.getOneCourseById(courseId)) as unknown as ICourse
         await redis.set(courseId, JSON.stringify(courseAfterUpdate) as any)
