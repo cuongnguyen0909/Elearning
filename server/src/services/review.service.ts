@@ -13,6 +13,7 @@ import { IUser } from '../models/schemas/user.schema'
 import { UserModel } from '../models/user.model'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
 import sendMail from '../utils/mails/send-mail'
+import { reviewHelper } from '../helpers/review.helpers'
 
 const getReviewById = async (reviewId: any) => {
     try {
@@ -159,16 +160,7 @@ const addReviewReply = async (reviewRequest: IReplyReviewRequest, userId: string
 
 const getAllReviews = async () => {
     try {
-        const reviews: IReview[] = (await ReviewModel.find()
-            .sort({ createdAt: -1 })
-            .populate({
-                path: 'user',
-                select: 'name email avatar role'
-            })
-            .populate({
-                path: 'reviewReplies.user',
-                select: 'name email avatar role'
-            })) as IReview[]
+        const reviews: IReview[] = await reviewHelper.getAllReviews()
         return reviews
     } catch (error: any) {
         return new ErrorHandler(error.message, StatusCodes.BAD_REQUEST)

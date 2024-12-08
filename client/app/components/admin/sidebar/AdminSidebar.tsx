@@ -243,13 +243,13 @@ const AdminSidebar: FC = () => {
                 selected={selected}
                 setSelected={setSelected}
               />
-              {/* <Item
+              <Item
                 title="Đánh giá"
                 to="/admin/review/all"
                 icon={<ReceiptOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
-              /> */}
+              />
               {/* <Item
                 title="Quản trị viên"
                 to="/admin/team"

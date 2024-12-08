@@ -1,34 +1,37 @@
-import { Box, Button, Modal } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useTheme } from 'next-themes';
 import { FC, useEffect, useState } from 'react';
-import { AiOutlineDelete } from 'react-icons/ai';
-import { FiEdit2 } from 'react-icons/fi';
+import { AiOutlineDelete, AiOutlineInfo } from 'react-icons/ai';
 import Loading from '../../../../components/common/Loading';
 
-import toast from 'react-hot-toast';
-import ConfirmationModal from '../../../../components/modal/ConfimationModal';
-import { useDeleteCommentMutation, useGetAllCommentsQuery } from '../../../../redux/features/comment/commentApi';
-import { styles } from '../../../utils/style';
+import { useRouter } from 'next/navigation';
+import { useGetAllReviewsQuery } from '../../../../redux/features/review/reviewApi';
 
-interface AllCommentProps {}
+interface AllReviewProps {}
 
-const AllComment: FC<AllCommentProps> = (props) => {
+const AllReview: FC<AllReviewProps> = (props) => {
   const { theme, setTheme } = useTheme();
-  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [openModel, setOpenModel] = useState(false);
+  const router = useRouter();
   const [id, setId] = useState('');
   const [courseId, setCourseId] = useState('');
-  const [contentId, setContentId] = useState('');
-  const { isLoading, isSuccess, error, data, refetch } = useGetAllCommentsQuery(
+  const [loading, setLoading] = useState(false);
+  const { isLoading, isSuccess, error, data, refetch } = useGetAllReviewsQuery(
     {},
     {
       refetchOnMountOrArgChange: true
     }
   );
-  const [
-    deleteComment,
-    { isLoading: deleteCommentLoading, isSuccess: deleteCommentSuccess, error: deleteCommentError }
-  ] = useDeleteCommentMutation();
+  //   const [
+  //     deleteComment,
+  //     { isLoading: deleteCommentLoading, isSuccess: deleteCommentSuccess, error: deleteCommentError }
+  //   ] = useDeleteCommentMutation();
+
+  const handleRedirectToCourseThroughId = (id: string) => {
+    setLoading(true);
+    router.push(`/course/access/${id}`);
+  };
 
   const rows: any[] = [];
 
@@ -41,8 +44,8 @@ const AllComment: FC<AllCommentProps> = (props) => {
       flex: 1
     },
     {
-      field: 'comment',
-      headerName: 'Bình luận',
+      field: 'review',
+      headerName: 'Đánh giá',
       headerAlign: 'center',
       align: 'center',
       flex: 1
@@ -55,8 +58,8 @@ const AllComment: FC<AllCommentProps> = (props) => {
       flex: 1
     },
     {
-      field: 'content',
-      headerName: 'Mã bài học',
+      field: 'rating',
+      headerName: 'Số sao',
       headerAlign: 'center',
       align: 'center',
       flex: 1
@@ -77,14 +80,12 @@ const AllComment: FC<AllCommentProps> = (props) => {
         return (
           <Box className="mt-2 flex items-center justify-center">
             <Button
-              onClick={() => {
-                setOpenDeleteModal(true);
-                setId(params.row.id);
-                setCourseId(params.row.course);
-                setContentId(params.row.content);
+              onClick={(e) => {
+                e.stopPropagation();
+                handleRedirectToCourseThroughId(params.row.course);
               }}
             >
-              <AiOutlineDelete className="text-black dark:text-white" size={20} />
+              <AiOutlineInfo className="text-black dark:text-white" size={20} />
             </Button>
           </Box>
         );
@@ -92,28 +93,28 @@ const AllComment: FC<AllCommentProps> = (props) => {
     }
   ];
 
-  if (Array.isArray(data?.comments)) {
-    data?.comments?.forEach((comment: any) => {
-      const createdAt = new Date(comment?.createdAt || '');
+  if (Array.isArray(data?.reviews)) {
+    data?.reviews?.forEach((review: any) => {
+      const createdAt = new Date(review?.createdAt || '');
       const formattedDate = !isNaN(createdAt.getTime()) ? createdAt.toLocaleDateString('en-US') : 'Invalid Date';
       rows.push({
-        id: comment?._id,
-        comment: comment?.comment,
-        course: comment?.course,
-        content: comment?.content,
+        id: review?._id,
+        review: review?.review,
+        course: review?.course,
+        rating: review?.rating,
         createdAt: formattedDate
       });
     });
   }
 
-  const handleSubmitDeleteCategory = async () => {
-    await deleteComment({
-      commentId: id,
-      courseId: courseId,
-      contentId: contentId
-    });
-    setOpenDeleteModal(false);
-  };
+  //   const handleSubmitDeleteCategory = async () => {
+  //     await deleteComment({
+  //       commentId: id,
+  //       courseId: courseId,
+  //       contentId: contentId
+  //     });
+  //     setOpenDeleteModal(false);
+  //   };
 
   useEffect(() => {
     if (isSuccess) {
@@ -121,18 +122,18 @@ const AllComment: FC<AllCommentProps> = (props) => {
     }
   }, [isSuccess]);
 
-  useEffect(() => {
-    if (deleteCommentSuccess) {
-      refetch();
-      toast.success('Xóa bình luận thành công');
-    }
-    if (deleteCommentError) {
-      toast.error('Xóa bình luận thất bại');
-    }
-  }, [deleteCommentSuccess, deleteCommentError]);
+  //   useEffect(() => {
+  //     if (deleteCommentSuccess) {
+  //       refetch();
+  //       toast.success('Xóa bình luận thành công');
+  //     }
+  //     if (deleteCommentError) {
+  //       toast.error('Xóa bình luận thất bại');
+  //     }
+  //   }, [deleteCommentSuccess, deleteCommentError]);
   return (
     <div className="ml-12 mt-[120px]">
-      {isLoading || deleteCommentLoading ? (
+      {isLoading || loading ? (
         <Loading />
       ) : (
         <Box m="20px">
@@ -198,7 +199,7 @@ const AllComment: FC<AllCommentProps> = (props) => {
           >
             <DataGrid checkboxSelection rows={rows} columns={columns} />
           </Box>
-          {openDeleteModal && (
+          {/* {openDeleteModal && (
             <ConfirmationModal
               open={openDeleteModal}
               setOpen={setOpenDeleteModal}
@@ -206,11 +207,11 @@ const AllComment: FC<AllCommentProps> = (props) => {
               message={`Bạn có chắc chắn muốn xóa bình luận không?`}
               onConfirm={handleSubmitDeleteCategory}
             />
-          )}
+          )} */}
         </Box>
       )}
     </div>
   );
 };
 
-export default AllComment;
+export default AllReview;

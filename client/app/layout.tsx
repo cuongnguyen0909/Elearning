@@ -32,7 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       >
         <Providers>
           <SessionProvider>
-            <ThemeProvider attribute="class" defaultTheme={'system'} enableSystem>
+            <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
               {/* <Custom>{children}</Custom> */}
               {children}
               <Toaster position="top-center" reverseOrder={false} />

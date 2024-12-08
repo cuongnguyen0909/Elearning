@@ -38,8 +38,17 @@ const reviewApi = apiSlice.injectEndpoints({
         },
         credentials: 'include' as const
       })
+    }),
+    getAllReviews: builder.query({
+      query: () => {
+        return {
+          url: '/review/all',
+          credentials: 'include' as const
+        };
+      }
     })
   })
 });
 
-export const { useAddReviewMutation, useReplyToReviewMutation, useDeleteReviewReplyMutation } = reviewApi;
+export const { useAddReviewMutation, useReplyToReviewMutation, useDeleteReviewReplyMutation, useGetAllReviewsQuery } =
+  reviewApi;

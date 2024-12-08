@@ -7,6 +7,7 @@ import { IUser } from '../models/schemas/user.schema'
 import { reviewServices } from '../services/review.service'
 import catchAsyncError from '../utils/handlers/catch-async-error'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
+import { redis } from '../configs/connect.redis.config'
 
 const addReview = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -59,6 +60,7 @@ const getAllReviews = catchAsyncError(async (req: Request, res: Response, next: 
         if (!reviews || reviews instanceof ErrorHandler) {
             return next(new ErrorHandler(reviews.message, reviews.statusCode || StatusCodes.BAD_REQUEST))
         }
+        await redis.set('allReviews', JSON.stringify(reviews))
         res.status(StatusCodes.OK).json({
             success: true,
             reviews
