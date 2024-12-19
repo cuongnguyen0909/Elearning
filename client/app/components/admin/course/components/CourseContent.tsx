@@ -15,7 +15,7 @@ interface CourseContentProps {
 
 const CourseContent: FC<CourseContentProps> = (props) => {
   const { active, setActive, courseContent, setCourseContent, handleSubmit: handleCourseSubmit } = props;
-  const [isCollapsed, setIsCollapsed] = useState(Array(courseContent?.length).fill(false));
+  const [isCollapsed, setIsCollapsed] = useState(Array(courseContent?.length).fill(true));
   const [activeSection, setActiveSection] = useState(1);
   const [focusedInputIndex, setFocusedInputIndex] = useState<number | null>(null);
 
