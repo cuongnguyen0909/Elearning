@@ -8,6 +8,7 @@ import Header from '../components/header/Header';
 import Heading from '../../components/public/Heading';
 import { styles } from '../utils/style';
 import CourseCard from '../components/home/CourseCard';
+import Footer from '../components/footer/Footer';
 
 interface PageProps {}
 
@@ -75,7 +76,7 @@ const page: FC<PageProps> = (props) => {
             {courses && courses?.length > 0 && (
               <h4 className="px-12 pt-12 text-2xl font-bold text-gray-500">Tìm thấy {courses.length} khóa học</h4>
             )}
-            <div className="mid:grid-cols-2 mid:gap-[25px] md-12 grid grid-cols-1 gap-[20px] border-0 px-10 py-10 lg:grid-cols-3 lg:gap-[25px] 1500px:grid-cols-4 1500px:gap-[15px]">
+            <div className="mid:grid-cols-2 mid:gap-[25px] md-12 grid min-h-screen grid-cols-1 gap-[20px] border-0 px-10 py-10 lg:grid-cols-3 lg:gap-[25px] 1500px:grid-cols-4 1500px:gap-[15px]">
               {courses &&
                 courses?.length > 0 &&
                 courses.map((course: any, index: number) => (
@@ -91,6 +92,7 @@ const page: FC<PageProps> = (props) => {
                 </h1>
               </div>
             )}
+            <Footer route={route} open={open} setRoute={setRoute} setOpen={setOpen} />
           </div>
         </>
       )}

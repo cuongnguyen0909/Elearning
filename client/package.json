@@ -20,6 +20,7 @@
     "axios": "^1.7.7",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
+    "engine.io-client": "^6.6.2",
     "formik": "^2.4.6",
     "next": "13.5.7",
     "next-auth": "^4.24.10",
@@ -31,6 +32,8 @@
     "react-pro-sidebar": "^0.7.1",
     "react-redux": "^9.1.2",
     "recharts": "^2.13.3",
+    "socket.io-client": "^4.8.1",
+    "ws": "^8.18.0",
     "yup": "^1.4.0"
   },
   "devDependencies": {

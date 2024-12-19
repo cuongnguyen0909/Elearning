@@ -15,6 +15,7 @@ import { UserModel } from '../models/user.model'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
 import sendMail from '../utils/mails/send-mail'
 import { commentHelper } from '../helpers/comment.helper'
+import { notificationHelper } from '../helpers/notification.helper'
 
 const addComment = async (commentRequest: ICommentRequest, userId: any) => {
     try {
@@ -52,6 +53,8 @@ const addComment = async (commentRequest: ICommentRequest, userId: any) => {
             content: contentId,
             course: courseId
         })) as INotification
+        const allNotifications = (await notificationHelper.getAllNotifications()) as any
+        await redis.set('allNotifications', JSON.stringify(allNotifications) as any)
         const courseAfterUpdate: ICourse = (await courseHelper.getOneCourseById(courseId)) as unknown as ICourse
         await redis.set(courseId, JSON.stringify(courseAfterUpdate) as any)
         const newCommentPopulated: IComment = (await getOneCommentById(newComment?._id)) as unknown as IComment
@@ -116,6 +119,8 @@ const addCommentReply = async (commentRequest: IReplyCommentRequest, userId: any
                 TypeOfEmail.NOTIFICATION
             )
         }
+        const allNotifications = (await notificationHelper.getAllNotifications()) as any
+        await redis.set('allNotifications', JSON.stringify(allNotifications) as any)
         const courseAfterReplyComment: ICourse = (await courseHelper.getOneCourseById(
             comment.course as unknown as string
         )) as unknown as ICourse

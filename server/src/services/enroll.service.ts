@@ -16,6 +16,7 @@ import { redis } from '../configs/connect.redis.config'
 import { profile } from 'console'
 import { profileHelpers } from '../helpers/profile.helper'
 import { enrollHelper } from '../helpers/enroll.helper'
+import { notificationHelper } from '../helpers/notification.helper'
 
 require('dotenv').config()
 
@@ -91,12 +92,14 @@ const createNewEnrollment = async (enrollRequest: any, userId: string) => {
 
         const notification: INotification = (await NotificationModel.create({
             user: user?._id,
-            title: 'Đăng ký khóa học thành công',
-            message: `Bạn đã đăng ký khóa học ${course?.title}`
+            title: 'Đăng ký mới',
+            message: `${user?.name} đã đăng ký khóa học "${course?.title}"`
         })) as INotification
 
         const allEnrollments = await enrollHelper.getAllEntrollments()
         redis.set('allEnrollments', JSON.stringify(allEnrollments))
+        const allNotifications = await notificationHelper.getAllNotifications()
+        redis.set('allNotifications', JSON.stringify(allNotifications))
 
         return { newEnroll, course, notification, user }
     } catch (error: any) {

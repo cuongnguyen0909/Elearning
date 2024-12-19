@@ -230,7 +230,7 @@ const AdminSidebar: FC = () => {
                 setSelected={setSelected}
               />
               <Item
-                title="Đơn hàng"
+                title="Lượt đăng ký"
                 to="/admin/enrollment/all"
                 icon={<ReceiptOutlinedIcon />}
                 selected={selected}

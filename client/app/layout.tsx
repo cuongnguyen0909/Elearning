@@ -1,11 +1,18 @@
 'use client';
 import { SessionProvider } from 'next-auth/react';
-import { Josefin_Sans, Poppins, Arimo } from 'next/font/google';
-import React from 'react';
+import { Arimo, Josefin_Sans } from 'next/font/google';
+import React, { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
+import socketIO from 'socket.io-client';
 import { ThemeProvider } from '../components/theme/ThemeProvider';
 import './globals.css';
 import { Providers } from './Provider';
+import { useLoadUserQuery } from '../redux/features/api/apiSlice';
+import Loading from '../components/common/Loading';
+const ENPOINT = process.env.NEXT_PUBLIC_SOCKET_API_SERVER_URL || '';
+const socketId = socketIO(ENPOINT, {
+  transports: ['websocket']
+});
 
 const josefin = Josefin_Sans({
   subsets: ['latin'],
@@ -24,6 +31,9 @@ const arimo = Arimo({
 // }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  useEffect(() => {
+    socketId.on('connection', () => {});
+  }, []);
   return (
     <html lang="en">
       <body
@@ -32,7 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       >
         <Providers>
           <SessionProvider>
-            <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+            <ThemeProvider attribute="class" enableSystem={false}>
               {/* <Custom>{children}</Custom> */}
               {children}
               <Toaster position="top-center" reverseOrder={false} />
@@ -45,11 +55,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 
 // const Custom: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-//    const { isLoading, isFetching, refetch, isUninitialized } = useLoadUserQuery({});
-//    //    const refetchTeam = useCallback(() => {
-//    //       if (!isUninitialized) {
-//    //          refetch();
-//    //       }
-//    //    }, [isUninitialized, refetch]);
-//    return <>{isLoading || isFetching ? <Loading /> : children}</>;
+//   const { isLoading } = useLoadUserQuery({});
+//   useEffect(() => {
+//     socketId.on('connection', () => {});
+//   }, []);
+//   return <>{isLoading ? <Loading /> : children}</>;
 // };

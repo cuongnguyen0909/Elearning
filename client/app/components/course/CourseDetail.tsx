@@ -22,7 +22,7 @@ interface CourseDetailProps {
 }
 
 const CourseDetail: FC<CourseDetailProps> = (props) => {
-  const { data: userData, refetch } = useLoadUserQuery(
+  const { data: userData } = useLoadUserQuery(
     {},
     {
       refetchOnMountOrArgChange: true
@@ -246,7 +246,7 @@ const CourseDetail: FC<CourseDetailProps> = (props) => {
                   clientSecret
                 }}
               >
-                <CheckoutForm setOpen={setOpenPayment} data={courseData} />
+                <CheckoutForm setOpen={setOpenPayment} data={courseData} user={user}/>
               </Elements>
             )}
           </div>

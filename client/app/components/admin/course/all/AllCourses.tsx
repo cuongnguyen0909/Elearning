@@ -6,14 +6,18 @@ import { FC, useEffect, useState } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { FiEdit2 } from 'react-icons/fi';
 import Loading from '../../../../../components/common/Loading';
-import { useGetAllCoursesQuery } from '../../../../../redux/features/course/courseApi';
+import { useDeleteCourseMutation, useGetAllCoursesQuery } from '../../../../../redux/features/course/courseApi';
 import { styles } from '../../../../utils/style';
 import { useRouter } from 'next/navigation';
+import ConfirmationModal from '../../../../../components/modal/ConfimationModal';
+import toast from 'react-hot-toast';
 interface AllCoursesProps {}
 
 const AllCourses: FC<AllCoursesProps> = (props) => {
   const { theme, setTheme } = useTheme();
   const router = useRouter();
+  const [couseId, setCourseId] = useState('');
+  const [title, setTitle] = useState('');
   const { isLoading, isSuccess, error, data, refetch } = useGetAllCoursesQuery(
     {},
     {
@@ -22,6 +26,10 @@ const AllCourses: FC<AllCoursesProps> = (props) => {
   );
   const [loadingEdit, setLoadingEdit] = useState(false);
 
+  const [deleteCourse, { isLoading: isDeleting, isSuccess: isDeleteSuccess, error: deleteError }] =
+    useDeleteCourseMutation();
+
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const handleEditClick = (id: string) => {
     setLoadingEdit(true);
     router.push(`/admin/course/edit/${id}`);
@@ -33,6 +41,15 @@ const AllCourses: FC<AllCoursesProps> = (props) => {
   };
   const rows: any[] = [];
   const courses = data?.courses;
+
+  const handleDeteleCourse = async () => {
+    try {
+      await deleteCourse(couseId);
+      setOpenDeleteModal(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const columns: GridColDef[] = [
     {
@@ -91,7 +108,13 @@ const AllCourses: FC<AllCoursesProps> = (props) => {
               onClick={() => handleEditClick(params.row.id)} // Gọi hàm xử lý khi click Edit
             />
 
-            <Button>
+            <Button
+              onClick={() => {
+                setCourseId(params.row.id);
+                setOpenDeleteModal(true);
+                setTitle(params.row.title);
+              }} // Gọi hàm xử lý khi click Delete
+            >
               <AiOutlineDelete className="text-black dark:text-white" size={20} />
             </Button>
           </Box>
@@ -119,6 +142,15 @@ const AllCourses: FC<AllCoursesProps> = (props) => {
       refetch();
     }
   }, [isSuccess]);
+
+  useEffect(() => {
+    if (isDeleteSuccess) {
+      toast.success('Xóa khóa học thành công', {
+        duration: 2000
+      });
+      refetch();
+    }
+  }, [isDeleteSuccess]);
 
   return (
     <div className="ml-12 mt-[120px]">
@@ -198,6 +230,15 @@ const AllCourses: FC<AllCoursesProps> = (props) => {
             <DataGrid checkboxSelection rows={rows} columns={columns} />
           </Box>
         </Box>
+      )}
+      {openDeleteModal && (
+        <ConfirmationModal
+          open={openDeleteModal}
+          setOpen={setOpenDeleteModal}
+          title="Xác nhận xóa"
+          message={`Bạn có chắc chắn muốn xóa khóa học '${title}' không?`}
+          onConfirm={handleDeteleCourse}
+        />
       )}
     </div>
   );

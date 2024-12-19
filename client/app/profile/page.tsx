@@ -6,6 +6,7 @@ import Header from '../components/header/Header';
 import Protected from '../hooks/useProtected';
 import Profile from '../components/profile/Profile';
 import { useSelector } from 'react-redux';
+import Footer from '../components/footer/Footer';
 
 type Props = {};
 
@@ -39,6 +40,7 @@ const page: React.FC<Props> = (props) => {
             setActiveItem={setActiveItem}
           />
           <Profile user={user} />
+          <Footer route={route} open={open} setRoute={setRoute} setOpen={setOpen} />
         </div>
       </Protected>
     </div>

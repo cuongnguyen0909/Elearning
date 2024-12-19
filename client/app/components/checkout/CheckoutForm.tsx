@@ -6,14 +6,19 @@ import { styles } from '../../utils/style';
 import toast from 'react-hot-toast';
 import { redirect } from 'next/navigation';
 import Loading from '../../../components/common/Loading';
-
+import socketIO from 'socket.io-client';
+const ENPOINT = process.env.NEXT_PUBLIC_SOCKET_API_SERVER_URL || '';
+const socketId = socketIO(ENPOINT, {
+  transports: ['websocket']
+});
 interface CheckoutFormProps {
   setOpen: any;
   data: any;
+  user: any;
 }
 
 const CheckoutForm: FC<CheckoutFormProps> = (props) => {
-  const { setOpen, data } = props;
+  const { setOpen, data, user } = props;
   const stripe = useStripe();
   const elements = useElements();
   const [message, setMessage] = useState<any>('');
@@ -63,8 +68,16 @@ const CheckoutForm: FC<CheckoutFormProps> = (props) => {
   };
 
   useEffect(() => {
-    if (errorCreateEnrollment) {
+    // if (errorCreateEnrollment) {
+    //   setLoadUser(true);
+    // }
+    if (dataCreateEnrollment) {
       setLoadUser(true);
+      socketId.emit('notification', {
+        title: 'Đăng ký mới',
+        message: `Một học viên đã đăng ký khóa học ${data?.title}`,
+        user: user?._id
+      });
     }
     if (isSuccessCreateEnrollment) {
       toast.success('Thanh toán thành công', {
@@ -78,7 +91,7 @@ const CheckoutForm: FC<CheckoutFormProps> = (props) => {
       }
       toast.error('Thanh toán thất bại', { duration: 2000 });
     }
-  }, [errorCreateEnrollment, errorCreateEnrollment]);
+  }, [errorCreateEnrollment, isSuccessCreateEnrollment]);
   return (
     <>
       {isLoading && <Loading />}

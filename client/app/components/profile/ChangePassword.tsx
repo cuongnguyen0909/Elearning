@@ -50,7 +50,7 @@ const ChangePassword: React.FC<Props> = (props) => {
   return (
     <>
       {isChangePasswordLoading && <Loading />}
-      <div className="flex w-full flex-col items-center justify-center px-2 pl-7 font-Arimo text-black dark:text-white 800px:px-5 800px:pl-0">
+      <div className="flex w-full flex-col items-center justify-center px-2 pb-[200px] pl-7 font-Arimo text-black dark:text-white 800px:px-5 800px:pl-0">
         <h1 className="block pb-2 text-center text-[25px] font-semibold 800px:text-[30px]">Đổi mật khẩu</h1>
         <div className="w-full">
           <form className="flex flex-col items-center" aria-required onSubmit={passwordChangeHandler}>

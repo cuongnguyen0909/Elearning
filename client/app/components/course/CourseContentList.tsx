@@ -68,7 +68,7 @@ const CourseContentList: FC<CourseContentListProps> = (props) => {
 
         return (
           <div
-            className={` ${!isDemo && 'border border-[#00000022] bg-[#f7f9fa] shadow-md dark:border-b dark:border-[#ffffff8e] dark:bg-slate-900'} className-section ${isDemo && 'border-[#00000022] shadow-md dark:border dark:border-[#ffffff8e]'} `}
+            className={` ${!isDemo && 'border border-[#00000022] bg-[#f7f9fa] shadow-md dark:border-b dark:border-[#ffffff8e] dark:bg-slate-900'} className-section ${isDemo && 'border-[#00000022] shadow-md dark:border dark:border-[#ffffff8e] dark:bg-slate-900'} `}
           >
             <div className={`${isDemo ? '' : 'hover:bg-[#fff] dark:hover:bg-slate-700'}`}>
               <div className="flex w-full gap-2">

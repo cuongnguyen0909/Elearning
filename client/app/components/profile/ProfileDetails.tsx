@@ -83,7 +83,7 @@ const ProfileDetails: React.FC<Props> = (props) => {
   return (
     <>
       {(isLoading || isFetching || isProfileLoading) && <Loading />}
-      <div className="flex w-full flex-col items-center justify-center px-2 pl-7 800px:px-5 800px:pl-0">
+      <div className="flex w-full flex-col items-center justify-center px-2 pb-[200px] pl-7 800px:px-5 800px:pl-0">
         <div className="relative">
           <Image
             key={user?.avatar?.url || avatar}

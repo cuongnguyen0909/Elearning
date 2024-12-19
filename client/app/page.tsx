@@ -21,7 +21,6 @@ const Page: FC<Props> = (props: Props) => {
 
   useEffect(() => {
     setMounted(true);
-    setTheme('light');
   }, []);
 
   if (!mounted) return null;

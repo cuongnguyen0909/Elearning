@@ -4,7 +4,7 @@ import { signOut, useSession } from 'next-auth/react';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { redirect, usePathname, useRouter } from 'next/navigation';
 import { FC, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { AiOutlineLogout } from 'react-icons/ai';
@@ -64,8 +64,8 @@ const Header: FC<Props> = (props) => {
   const logOutHandler = async () => {
     setLogout(true);
     await signOut();
-    router.push('/');
     setIsShowPopupProfile(false);
+    redirect('/');
   };
 
   useEffect(() => {

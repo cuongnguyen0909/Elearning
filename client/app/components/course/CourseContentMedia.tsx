@@ -25,7 +25,11 @@ import { formatRelativeTime } from '../../utils/formatHelper';
 import { styles } from '../../utils/style';
 import CoursePlayer from '../admin/course/components/CoursePlayer';
 import CommentReply from './CommentReply';
-
+import socketIO from 'socket.io-client';
+const ENPOINT = process.env.NEXT_PUBLIC_SOCKET_API_SERVER_URL || '';
+const socketId = socketIO(ENPOINT, {
+  transports: ['websocket']
+});
 interface CourseContentMediaProps {
   data: any;
   id: any;
@@ -123,7 +127,7 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
     }
   }, [isCompleted]);
 
-  const { data: courseData, refetch: refectCourse } = useGetCoursesByIdQuery(id, {
+  const { data: courseData, refetch: refetchCourse } = useGetCoursesByIdQuery(id, {
     refetchOnMountOrArgChange: true
   });
 
@@ -187,6 +191,11 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
       });
       setComment('');
       refetch();
+      socketId.emit('notification', {
+        title: `Một bình luận mới`,
+        message: `Một bình luận mới: ${data?.[activeVideo]?.title}`,
+        user: user?._id
+      });
     }
     if (commentError) {
       if ('data' in commentError) {
@@ -218,6 +227,13 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
       });
       setReplyCommentContent('');
       refetch();
+      if (user.role !== ROLE.ADMIN) {
+        socketId.emit('notification', {
+          title: `Phản hồi mới`,
+          message: `Một phản hồi mới trong bình luận trong khóa học ${data?.[activeVideo]?.title}`,
+          user: user?._id
+        });
+      }
     }
     if (replyCommentError) {
       if ('data' in replyCommentError) {
@@ -283,7 +299,12 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
       });
       setReview('');
       setRating(0);
-      refectCourse();
+      refetchCourse();
+      socketId.emit('notification', {
+        title: `Đánh giá mới`,
+        message: `Một đánh giá mới cho khóa học: ${data?.[activeVideo]?.title}`,
+        user: user?._id
+      });
     }
     if (reviewError) {
       if ('data' in reviewError) {
@@ -320,7 +341,7 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
       setReviewId('');
       setReplyId('');
       setShowReplies({});
-      refectCourse();
+      refetchCourse();
     }
     if (replyReviewError) {
       if ('data' in replyReviewError) {
@@ -343,7 +364,7 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
       toast.success('Xóa phản hồi thành công', {
         duration: 2000
       });
-      refectCourse();
+      refetchCourse();
     }
     if (deleteReviewReplyError) {
       if ('data' in deleteReviewReplyError) {
@@ -456,7 +477,7 @@ const CourseContentMedia: FC<CourseContentMediaProps> = (props) => {
                 id=""
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                className="shadowm-sm ml-3 rounded border border-[#00000031] bg-transparent p-2 font-Arimo outline-none 800px:w-full 800px:text-[18px]"
+                className="shadowm-sm ml-3 rounded border border-[#00000031] bg-transparent p-2 font-Arimo outline-none dark:border-[#ffffff57] 800px:w-full 800px:text-[18px]"
                 cols={30}
                 rows={3}
                 placeholder="Nhập bình luận của bạn..."

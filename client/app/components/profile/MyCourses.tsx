@@ -25,7 +25,7 @@ const MyCourses: FC<MyCoursesProps> = (props) => {
   const myCourse = user?.user?.courses;
   return (
     <div>
-      <div className="flex flex-wrap gap-8 px-6">
+      <div className="flex flex-wrap gap-8 px-6 pb-[400px]">
         {myCourse &&
           myCourse?.length > 0 &&
           myCourse.map((course: any, index: number) => (

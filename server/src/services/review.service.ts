@@ -14,6 +14,7 @@ import { UserModel } from '../models/user.model'
 import ErrorHandler from '../utils/handlers/ErrorHandler'
 import sendMail from '../utils/mails/send-mail'
 import { reviewHelper } from '../helpers/review.helpers'
+import { notificationHelper } from '../helpers/notification.helper'
 
 const getReviewById = async (reviewId: any) => {
     try {
@@ -92,6 +93,8 @@ const addReview = async (reviewRequest: IReviewRequest, userId: any, courseId: s
             review: newReview?._id,
             course: courseId
         })
+        const allNotifications = (await notificationHelper.getAllNotifications()) as any
+        await redis.set('allNotifications', JSON.stringify(allNotifications) as any)
         const courseAfterUpdate: ICourse = (await courseHelper.getOneCourseById(courseId)) as unknown as ICourse
         await redis.set(courseId, JSON.stringify(courseAfterUpdate) as any)
         const reviewAfterUpdate: IReview = (await getReviewById(newReview?._id)) as unknown as IReview

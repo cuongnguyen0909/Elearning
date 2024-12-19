@@ -33,7 +33,7 @@ const updateNotificationStatus = async (notificationId: string) => {
         ;(await notification?.save()).populate({
             path: 'user'
         })
-        const allNotifications = await redis.get('allNotifications')
+        const allNotifications = await notificationHelper.getAllNotifications()
         await redis.set('allNotifications', JSON.stringify(allNotifications))
         return notification
     } catch (error: any) {
