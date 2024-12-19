@@ -24,7 +24,10 @@ const Courses: FC<CoursesProps> = (props) => {
         </strong>
       </h1>
       <div className="mid:grid-cols-2 mid:gap-[25px] md-12 grid grid-cols-1 gap-[20px] border-0 lg:grid-cols-3 lg:gap-[25px] 1500px:grid-cols-4 1500px:gap-[15px]">
-        {courses && courses?.map((course: any, index: number) => <CourseCard key={index} course={course} />)}
+        {courses &&
+          courses?.map(
+            (course: any, index: number) => !course?.isDeleted && <CourseCard key={index} course={course} />
+          )}
       </div>
     </div>
   );

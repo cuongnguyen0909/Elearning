@@ -44,7 +44,7 @@ const AllCourses: FC<AllCoursesProps> = (props) => {
 
   const handleDeteleCourse = async () => {
     try {
-      await deleteCourse(couseId);
+      await deleteCourse({ couseId });
       setOpenDeleteModal(false);
     } catch (error) {
       console.log(error);
@@ -122,19 +122,21 @@ const AllCourses: FC<AllCoursesProps> = (props) => {
       }
     }
   ];
+  console.log(courses);
   if (Array.isArray(courses)) {
     courses?.forEach((course: any) => {
-      const createdAt = new Date(course?.createdAt || '');
-      const formattedDate = !isNaN(createdAt.getTime()) ? createdAt.toLocaleDateString('en-US') : 'Invalid Date';
-      console.log(course?.ratings);
-      rows.push({
-        id: course?._id,
-        title: course?.title,
-        category: course?.category?.title,
-        ratings: course?.rating?.toFixed(1),
-        purchased: course?.purchased,
-        created_at: formattedDate
-      });
+      if (!course?.isDeleted) {
+        const createdAt = new Date(course?.createdAt || '');
+        const formattedDate = !isNaN(createdAt.getTime()) ? createdAt.toLocaleDateString('en-US') : 'Invalid Date';
+        rows.push({
+          id: course?._id,
+          title: course?.title,
+          category: course?.category?.title,
+          ratings: course?.rating?.toFixed(1),
+          purchased: course?.purchased,
+          created_at: formattedDate
+        });
+      }
     });
   }
   useEffect(() => {

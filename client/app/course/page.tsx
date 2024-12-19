@@ -43,6 +43,8 @@ const page: FC<PageProps> = (props) => {
     router.replace('/course'); // Reset URL
   };
 
+  const couserAfterFilter = courses?.filter((course: any) => course?.isDeleted === false);
+
   return (
     <div>
       {isLoading || loading ? (
@@ -73,19 +75,21 @@ const page: FC<PageProps> = (props) => {
                 </div>
               ))}
             </div>
-            {courses && courses?.length > 0 && (
-              <h4 className="px-12 pt-12 text-2xl font-bold text-gray-500">Tìm thấy {courses.length} khóa học</h4>
+            {couserAfterFilter && couserAfterFilter?.length > 0 && (
+              <h4 className="px-12 pt-12 text-2xl font-bold text-gray-500">
+                Tìm thấy {couserAfterFilter.length} khóa học
+              </h4>
             )}
             <div className="mid:grid-cols-2 mid:gap-[25px] md-12 grid min-h-screen grid-cols-1 gap-[20px] border-0 px-10 py-10 lg:grid-cols-3 lg:gap-[25px] 1500px:grid-cols-4 1500px:gap-[15px]">
-              {courses &&
-                courses?.length > 0 &&
-                courses.map((course: any, index: number) => (
-                  <div>
+              {couserAfterFilter &&
+                couserAfterFilter?.length > 0 &&
+                couserAfterFilter.map((course: any, index: number) => (
+                  <div key={index}>
                     <CourseCard key={index} course={course} isSearch={true} />
                   </div>
                 ))}
             </div>
-            {courses && courses?.length === 0 && (
+            {couserAfterFilter && couserAfterFilter?.length === 0 && (
               <div className="flex h-[50vh] items-center justify-center">
                 <h1 className="text-2xl font-bold text-gray-500">
                   Không tìm thấy khóa học nào phù hợp với yêu cầu của bạn
