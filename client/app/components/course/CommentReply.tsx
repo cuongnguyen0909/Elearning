@@ -35,24 +35,26 @@ const CommentReply: FC<CommentReplyProps> = (props) => {
     <div>
       <>
         <div className="my-3 w-full">
-          {data[activeVideo]?.comments?.map((comment: any, index: number) => (
-            <div key={index}>
-              <CommentItem
-                data={data}
-                activeVideo={activeVideo}
-                comment={comment}
-                reply={reply}
-                setReply={setReply}
-                handleReply={handleReply}
-                setCommentId={setCommentId}
-                commentId={commentId}
-                handleDeleteSubmit={handleDeleteSubmit}
-                handleDeleteReplySubmit={handleDeleteReplySubmit}
-                replyCommentId={replyCommentId}
-                setReplyCommentId={setReplyCommentId}
-              />
-            </div>
-          ))}
+          {(data[activeVideo]?.comments && [...data[activeVideo]?.comments]?.reverse()).map(
+            (comment: any, index: number) => (
+              <div key={index}>
+                <CommentItem
+                  data={data}
+                  activeVideo={activeVideo}
+                  comment={comment}
+                  reply={reply}
+                  setReply={setReply}
+                  handleReply={handleReply}
+                  setCommentId={setCommentId}
+                  commentId={commentId}
+                  handleDeleteSubmit={handleDeleteSubmit}
+                  handleDeleteReplySubmit={handleDeleteReplySubmit}
+                  replyCommentId={replyCommentId}
+                  setReplyCommentId={setReplyCommentId}
+                />
+              </div>
+            )
+          )}
         </div>
       </>
     </div>

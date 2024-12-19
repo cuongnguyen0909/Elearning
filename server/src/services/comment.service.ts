@@ -48,7 +48,7 @@ const addComment = async (commentRequest: ICommentRequest, userId: any) => {
         const newNotification: INotification = (await NotificationModel.create({
             user: user?._id,
             title: 'Nhận một bình luận mới.',
-            message: `${user?.name} đã bình luận ${courseContent?.title}`,
+            message: `${user?.name} đã bình luận cho bài học "${courseContent?.title}" trong khóa học "${course?.title}"`,
             comment: newComment?._id,
             content: contentId,
             course: courseId
